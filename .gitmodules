@@ -1,0 +1,9 @@
+[submodule "third_party/vibe-modeling"]
+	path = third_party/vibe-modeling
+	url = https://github.com/cjtrowbridge/vibe-modeling.git
+[submodule "agents"]
+	path = agents
+	url = https://github.com/cjtrowbridge/agents.git
+[submodule "third_party/lasergrbl"]
+	path = third_party/lasergrbl
+	url = https://github.com/arkypita/LaserGRBL.git
