@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "creality_falcon_a1_pro",
+  "name": "Creality Falcon A1 Pro",
+  "profile_status": "provisional",
+  "work_area_mm": {
+    "width": 358.0,
+    "height": 268.0
+  },
+  "maximum_speed_mm_per_min": 36000,
+  "power_scale": {
+    "minimum": 0,
+    "maximum": 1000
+  },
+  "focus_surface_height_mm": {
+    "minimum": 7.0,
+    "maximum": 30.0
+  },
+  "modules": {
+    "blue_20w": {
+      "wavelength_nm": 455,
+      "optical_power_w": 20,
+      "spot_mm": [0.08, 0.10],
+      "operations": ["vector_engrave", "score", "through_cut"]
+    }
+  },
+  "grbl": {
+    "units": "mm",
+    "positioning": "absolute",
+    "laser_mode": "M4",
+    "laser_off": "M5",
+    "arc_support": false
+  },
+  "sources": [
+    "https://www.creality.com/products/falcon-a1-pro-20w",
+    "https://wiki.creality.com/en/laser-engraver/falcon-a1-pro"
+  ]
+}

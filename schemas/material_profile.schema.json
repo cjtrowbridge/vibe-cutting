@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Material Profile",
+  "type": "object",
+  "required": ["schema_version", "id", "profile_status", "composition_known", "thickness_mm", "recipes"]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "basswood_3mm",
+  "name": "Basswood, 3 mm",
+  "profile_status": "manufacturer_seed_unverified",
+  "category": "wood",
+  "composition_known": true,
+  "thickness_mm": 3.0,
+  "compatible_modules": ["blue_20w"],
+  "recipes": {
+    "vector_engrave": {
+      "speed_mm_per_min": 5000,
+      "power_percent": 30,
+      "passes": 1,
+      "air_assist": "low"
+    },
+    "score": {
+      "speed_mm_per_min": 3000,
+      "power_percent": 20,
+      "passes": 1,
+      "air_assist": "low"
+    },
+    "through_cut": {
+      "speed_mm_per_min": 500,
+      "power_percent": 100,
+      "passes": 1,
+      "air_assist": "high"
+    }
+  },
+  "source": "https://wiki.creality.com/zh/laser-engraver/falcon-a1-pro/consumable-parameter-guide",
+  "warning": "These are manufacturer seed values and require local coupon calibration before fabrication-ready use."
+}

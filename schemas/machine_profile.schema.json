@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Machine Profile",
+  "type": "object",
+  "required": ["schema_version", "id", "work_area_mm", "power_scale", "modules", "grbl"]
+}

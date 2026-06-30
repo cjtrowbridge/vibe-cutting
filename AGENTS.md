@@ -26,3 +26,12 @@ Initialize or update all submodules:
 ```bash
 git submodule update --init --recursive
 ```
+
+## Laser Playbooks
+
+- `playbooks/how_to_add_a_new_laser_design.md`
+- `playbooks/how_to_build_and_audit_a_laser_job.md`
+- `playbooks/how_to_create_and_validate_a_machine_profile.md`
+- `playbooks/how_to_generate_and_validate_grbl_gcode.md`
+
+Use the relevant laser playbook before changing designs, profiles, build behavior, or G-code generation.

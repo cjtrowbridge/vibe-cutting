@@ -1,0 +1,18 @@
+{
+  "coin_diameter_mm": 30.0,
+  "coin_gap_mm": 1.0,
+  "edge_margin_mm": 2.0,
+  "layout": "hex_max",
+  "quantity": "maximum",
+  "revision": "rev_0002",
+  "schema_version": 1,
+  "sheet_height_mm": 300.0,
+  "sheet_width_mm": 300.0,
+  "text_lines": [
+    "GOOD FOR",
+    "ONE FREE",
+    "SHOT",
+    "ANYWHERE",
+    "ANY TIME"
+  ]
+}

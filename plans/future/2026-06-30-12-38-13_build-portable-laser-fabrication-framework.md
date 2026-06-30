@@ -86,6 +86,19 @@ OpenSCAD design/config -> SVG or DXF operation geometry
 
 An OpenSCAD-backed design may expose one entrypoint per semantic operation or part. The framework should import and validate those exported paths, attach process intent, and combine them with engraving assets and job configuration. Native SVG/Python designs and OpenSCAD-backed designs should converge on the same internal operation model.
 
+### Implemented Vector Foundation
+
+The 2026-06-30 bounded implementation plan delivered a dependency-free native vector foundation before the broader MVP:
+
+- `scripts/laser_build.py` resolves committed design, machine, and material JSON.
+- Current outputs and immutable numbered revisions use staged exact-artifact audits.
+- SVG, PNG preview, GRBL G-code, manifests, operation data, and setup guidance are generated from one command.
+- The first `shot_coins` design produces 81 nominal 30 mm coins inside the configured 300 x 268 mm effective area.
+- Focused tests cover packing, bounds, minimum spacing, SVG coordinates, G-code state, operation order, and exact artifact manifests.
+- All current machine and material settings remain provisional or calibration-only.
+
+OpenSCAD was not installed in the implementation environment, so the native vector backend established the pipeline without making an external tool a blocker. The OpenSCAD adapter remains planned work and must converge on this operation and artifact model.
+
 ## Design Principles
 
 - Keep geometry independent from laser brand, module, material, and process recipe.
@@ -133,8 +146,8 @@ Implementation must not begin until each blocking decision is recorded in an arc
 
 - Use JSON as the canonical machine, material, design, part, fixture, job, and manifest format.
 - Use versioned JSON Schemas for validation.
-- Keep OpenSCAD as the only required parametric design backend for the MVP.
-- Defer native Python/SVG design authoring until the canonical operation model is proven.
+- Use the dependency-free native vector backend as the initial pipeline proof.
+- Add OpenSCAD as an optional parametric design backend after its SVG operation adapter passes compatibility tests.
 - Define how `--design <name>` resolves the default committed design revision and default job binding without guessing.
 - Define one revision identity that pins effective design, machine, material, module, recipe, layout, fixture, and exporter inputs.
 
@@ -354,7 +367,7 @@ The first release must prove the architecture without attempting every planned f
 ### Included in the MVP
 
 - One repository-local entrypoint: `python3 scripts/laser_build.py --design <name>`.
-- OpenSCAD-backed parameterized designs exporting separate cut, score, and vector-engrave geometry.
+- Native vector designs and an optional OpenSCAD adapter exporting separate cut, score, and vector-engrave geometry into the same operation model.
 - One canonical operation model and deterministic operation ordering.
 - One machine profile: Creality Falcon A1 Pro with the 20 W blue module.
 - One locally calibrated starter material/thickness, recommended `3 mm` basswood.
@@ -370,7 +383,6 @@ The first release must prove the architecture without attempting every planned f
 ### Explicitly deferred beyond the MVP
 
 - Raster/photo engraving and dithering.
-- Native Python/SVG parametric design authoring.
 - Arbitrary-object camera placement.
 - Rotary engraving.
 - Automatic irregular nesting.
@@ -773,25 +785,25 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
 
 - [ ] 1. Establish architecture and contracts.
   - [x] 1.1 Record CC BY-NC-SA 4.0 as the host license and prohibit copying, importing, linking, vendoring, or runtime dependence on either reference submodule.
-  - [ ] 1.2 Select and document the Python baseline, dependency mechanism, supported operating systems, and dependency licenses.
+  - [x] 1.2 Select and document Python 3.11+ with a standard-library-only initial runtime and no dependency lock file.
   - [ ] 1.3 Write an architecture decision record for the compiler-style pipeline and machine-independent core.
   - [ ] 1.4 Complete an SVG/geometry compatibility spike and select the MVP normalization approach.
   - [ ] 1.5 Define and prototype the OpenSCAD-to-operation-model adapter using SVG exports.
   - [ ] 1.6 Define canonical units, coordinate axes, origin, winding, transforms, tolerances, and operation ordering.
   - [ ] 1.7 Define versioned JSON Schemas for machine, material, design, parts, fixture, job, and build manifests.
-  - [ ] 1.8 Define deterministic default design-revision and job-binding resolution.
+  - [x] 1.8 Define deterministic default design-revision resolution through `project.json`.
   - [ ] 1.9 Add dependency management, formatting, static checks, and automated tests before feature growth.
-  - [ ] 1.10 Define the stable `scripts/laser_build.py` argument, default-resolution, output, exit-code, non-emission, and dry-run contracts.
+  - [x] 1.10 Define the stable `scripts/laser_build.py` argument, default-resolution, output, non-emission, and dry-run contracts.
   - [ ] 1.11 Define the continuous-integration matrix for supported Python versions, operating systems, schemas, golden fixtures, and deterministic builds.
-  - [ ] 1.12 Create and approve the bounded Milestone 1 active plan rather than promoting this umbrella roadmap.
+  - [x] 1.12 Create and approve a bounded vector-foundation active plan rather than promoting this umbrella roadmap.
 
 - [ ] 2. Create each project-specific playbook before its governed implementation.
-  - [ ] 2.1 Create and index `how_to_add_a_new_laser_design.md`.
+  - [x] 2.1 Create and index `how_to_add_a_new_laser_design.md`.
   - [ ] 2.2 Create and index `how_to_author_openscad_laser_geometry.md`.
-  - [ ] 2.3 Create and index `how_to_create_and_validate_a_machine_profile.md`.
+  - [x] 2.3 Create and index `how_to_create_and_validate_a_machine_profile.md`.
   - [ ] 2.4 Create and index `how_to_calibrate_a_material_and_promote_recipes.md`.
-  - [ ] 2.5 Create and index `how_to_build_and_audit_a_laser_job.md`.
-  - [ ] 2.6 Create and index `how_to_generate_and_validate_grbl_gcode.md`.
+  - [x] 2.5 Create and index `how_to_build_and_audit_a_laser_job.md`.
+  - [x] 2.6 Create and index `how_to_generate_and_validate_grbl_gcode.md`.
   - [ ] 2.7 Create and index `how_to_preview_and_stream_with_lasergrbl.md`.
   - [ ] 2.8 Create and index `how_to_create_single_batch_set_and_nested_layouts.md`; mark nesting and multi-sheet sections `post-MVP`.
   - [ ] 2.9 Create and index `how_to_create_mixed_cut_score_and_engrave_jobs.md`; keep vector-only single-module use in MVP and mark module swaps `post-MVP`.
@@ -804,8 +816,8 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 2.16 Verify every playbook contains prerequisites, atomic steps, safety boundaries, artifacts, verification, failure handling, and related references.
 
 - [ ] 3. Create and synchronize governing project documentation.
-  - [ ] 3.1 Update human-facing `README.md` with purpose, prerequisites, quick start, safety, outputs, and documentation links.
-  - [ ] 3.2 Expand `AGENTS.md` with project playbook/reference indexes, task routing, synchronization policy, and mandatory completion evidence.
+  - [x] 3.1 Update human-facing `README.md` with purpose, prerequisites, quick start, safety, outputs, and documentation links.
+  - [x] 3.2 Expand `AGENTS.md` with the implemented laser playbook index and routing guidance.
   - [ ] 3.3 Create architecture and repository-structure documentation.
   - [ ] 3.4 Create coordinate, operation-model, artifact-lifecycle, and provenance documentation.
   - [ ] 3.5 Create configuration, schema, machine, material, design, parts, and job documentation.
@@ -823,7 +835,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 4.6 Validate every JSON template against its schema and every Markdown template against its governing playbook.
 
 - [ ] 5. Implement the machine-profile system.
-  - [ ] 5.1 Create the sourced provisional Falcon A1 Pro profile.
+  - [x] 5.1 Create the sourced provisional Falcon A1 Pro profile.
   - [ ] 5.2 Add machine-profile schema validation and limit assertion helpers.
   - [ ] 5.3 Read the physical machine or official device profile to verify X/Y travel, origin, focus semantics, firmware, and module capabilities.
   - [ ] 5.4 Record conservative usable margins and head/fixture keep-outs from physical measurements.
@@ -842,8 +854,8 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 7.2 Implement power-speed-pass test matrices for cutting and engraving.
   - [ ] 7.3 Implement MVP kerf, slot-fit, hole-size, and focus-ramp coupons.
   - [ ] 7.4 Capture measured results and promote only verified cells into fabrication recipes.
-  - [ ] 7.5 Seed Falcon profiles from official recommendations while marking every value as unverified until local testing.
-  - [ ] 7.6 Implement hard safety rejection for prohibited or unknown-composition materials.
+  - [x] 7.5 Seed the first Falcon basswood profile from an official recommendation while marking every value unverified.
+  - [x] 7.6 Implement hard rejection for unknown-composition materials.
   - [ ] 7.7 Implement raster-interval and depth-calibration coupons (`post-MVP`).
 
 - [ ] 8. Implement single-object, batch, and set layout.
@@ -855,7 +867,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 8.6 Add multi-sheet spillover and per-sheet manifests (`post-MVP`).
 
 - [ ] 9. Implement engraving workflows.
-  - [ ] 9.1 Support vector engraving embedded in cut designs.
+  - [x] 9.1 Support vector engraving embedded in the first cut design.
   - [ ] 9.2 Support raster engraving embedded in cut designs (`post-MVP`).
   - [ ] 9.3 Support engraving-only jobs on arbitrary objects using fixtures or measured datums (`post-MVP`).
   - [ ] 9.4 Add optional camera-assisted placement as an adapter capability rather than a core dependency (`post-MVP`).
@@ -863,24 +875,24 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 9.6 Support separate laser modules and fail when the requested material/effect is incompatible (`post-MVP`).
 
 - [ ] 10. Implement build, preview, and provenance.
-  - [ ] 10.1 Generate layered SVG and operation previews.
-  - [ ] 10.2 Generate exact artifact expectations from part and job manifests.
-  - [ ] 10.3 Stage complete builds under `.tmp/laser/<design>/`.
-  - [ ] 10.4 Hash design sources, configs, machine/material profiles, fixtures, and artifacts.
-  - [ ] 10.5 Atomically install current outputs and preserve immutable numbered revisions.
-  - [ ] 10.6 Implement audit-only verification for installed artifacts.
-  - [ ] 10.7 Ensure generated outputs are ignored and add committed golden fixtures only for tests.
-  - [ ] 10.8 Implement `scripts/laser_build.py --design <name>` with default config/job resolution and atomic installation to `output/<design>/`.
-  - [ ] 10.9 Implement optional `--config`, `--job`, `--quantity`, and `--new-revision` flags.
-  - [ ] 10.10 Implement `--validate-only`, `--audit-only`, and `--dry-run` flags.
-  - [ ] 10.11 Keep source organization behind the script modular without requiring package installation or additional user-facing commands.
-  - [ ] 10.12 Verify the script never streams to hardware or emits laser light and that every build mode has deterministic exit codes.
+  - [x] 10.1 Generate layered SVG and operation previews.
+  - [x] 10.2 Generate exact artifact expectations from job and build manifests.
+  - [x] 10.3 Stage complete builds under `.tmp/laser/<design>/`.
+  - [x] 10.4 Hash design sources, configs, machine/material profiles, and artifacts.
+  - [x] 10.5 Atomically install current outputs and preserve immutable numbered revisions.
+  - [x] 10.6 Implement audit-only verification for installed current artifacts.
+  - [x] 10.7 Ensure generated outputs are ignored and keep tests source-only.
+  - [x] 10.8 Implement `scripts/laser_build.py --design <name>` with default config resolution and atomic installation to `output/<design>/`.
+  - [?] 10.9 Implement optional `--config`, `--job`, `--quantity`, and `--new-revision` flags; all except `--job` are implemented.
+  - [x] 10.10 Implement `--validate-only`, `--audit-only`, and `--dry-run` flags.
+  - [x] 10.11 Keep the initial implementation behind one script without package installation or additional user-facing commands.
+  - [?] 10.12 The script has no hardware transport or streaming code; deterministic exit-code coverage remains pending.
 
 - [ ] 11. Implement exporters and operator handoff.
-  - [ ] 11.1 Export standards-compliant SVG with semantic layer metadata and deterministic colors.
+  - [x] 11.1 Export SVG with semantic operation groups, deterministic colors, units, and a lower-left coordinate transform.
   - [ ] 11.2 Export DXF for vector-only interchange.
   - [ ] 11.3 Export raster assets with pinned size, resolution, and preprocessing metadata (`post-MVP`).
-  - [ ] 11.4 Generate an operation sheet and material setup checklist.
+  - [x] 11.4 Generate operation data and a material setup checklist.
   - [ ] 11.5 Implement a versioned GRBL dialect adapter with explicit coordinate, power-scale, motion, arc, laser-mode, and accessory capabilities.
   - [ ] 11.6 Generate deterministic `.gcode` and `.nc` artifacts from the canonical operation model.
   - [ ] 11.7 Validate generated G-code using LaserGRBL preview, bounds checks, framing, and controlled hardware acceptance tests.
@@ -889,7 +901,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 11.10 Add direct framework-to-device streaming only after command semantics, buffering, interlocks, framing, abort behavior, and emergency-stop behavior are tested on hardware (`post-MVP`).
 
 - [ ] 12. Complete hardware acceptance and portability proof.
-  - [ ] 12.1 Run dry-run and artifact audits without hardware.
+  - [x] 12.1 Run dry-run and artifact audits without hardware for the first design.
   - [ ] 12.2 Run frame-only bounds tests on the Falcon A1 Pro.
   - [ ] 12.3 Cut and measure calibration coupons across initial materials and thicknesses.
   - [ ] 12.4 Verify engraving registration, repeatability, camera/manual datum workflows, and mixed-operation ordering.
