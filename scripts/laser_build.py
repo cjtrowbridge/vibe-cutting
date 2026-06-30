@@ -22,22 +22,22 @@ ARTIFACT_NAMES = {
     "material_setup.md",
 }
 FONT = {
-    "A": ("01110", "10001", "10001", "11111", "10001", "10001", "10001"),
-    "D": ("11110", "10001", "10001", "10001", "10001", "10001", "11110"),
-    "E": ("11111", "10000", "10000", "11110", "10000", "10000", "11111"),
-    "F": ("11111", "10000", "10000", "11110", "10000", "10000", "10000"),
-    "G": ("01110", "10001", "10000", "10111", "10001", "10001", "01110"),
-    "H": ("10001", "10001", "10001", "11111", "10001", "10001", "10001"),
-    "I": ("11111", "00100", "00100", "00100", "00100", "00100", "11111"),
-    "M": ("10001", "11011", "10101", "10101", "10001", "10001", "10001"),
-    "N": ("10001", "11001", "10101", "10011", "10001", "10001", "10001"),
-    "O": ("01110", "10001", "10001", "10001", "10001", "10001", "01110"),
-    "R": ("11110", "10001", "10001", "11110", "10100", "10010", "10001"),
-    "S": ("01111", "10000", "10000", "01110", "00001", "00001", "11110"),
-    "T": ("11111", "00100", "00100", "00100", "00100", "00100", "00100"),
-    "W": ("10001", "10001", "10001", "10101", "10101", "10101", "01010"),
-    "Y": ("10001", "10001", "01010", "00100", "00100", "00100", "00100"),
-    " ": ("00000",) * 7,
+    "A": (((0, 0), (0, 4), (2, 6), (4, 4), (4, 0)), ((0, 3), (4, 3))),
+    "D": (((0, 0), (0, 6), (2.8, 6), (4, 5), (4, 1), (2.8, 0), (0, 0)),),
+    "E": (((4, 6), (0, 6), (0, 0), (4, 0)), ((0, 3), (3.2, 3))),
+    "F": (((4, 6), (0, 6), (0, 0)), ((0, 3), (3.2, 3))),
+    "G": (((4, 5), (3, 6), (1, 6), (0, 5), (0, 1), (1, 0), (4, 0), (4, 3), (2.5, 3)),),
+    "H": (((0, 0), (0, 6)), ((4, 0), (4, 6)), ((0, 3), (4, 3))),
+    "I": (((0, 6), (4, 6)), ((2, 6), (2, 0)), ((0, 0), (4, 0))),
+    "M": (((0, 0), (0, 6), (2, 3), (4, 6), (4, 0)),),
+    "N": (((0, 0), (0, 6), (4, 0), (4, 6)),),
+    "O": (((1, 0), (0, 1), (0, 5), (1, 6), (3, 6), (4, 5), (4, 1), (3, 0), (1, 0)),),
+    "R": (((0, 0), (0, 6), (3, 6), (4, 5), (4, 4), (3, 3), (0, 3)), ((2.5, 3), (4, 0))),
+    "S": (((4, 5), (3, 6), (1, 6), (0, 5), (0, 4), (1, 3), (3, 3), (4, 2), (4, 1), (3, 0), (1, 0), (0, 1)),),
+    "T": (((0, 6), (4, 6)), ((2, 6), (2, 0))),
+    "W": (((0, 6), (1, 0), (2, 3), (3, 0), (4, 6)),),
+    "Y": (((0, 6), (2, 3), (4, 6)), ((2, 3), (2, 0))),
+    " ": (),
 }
 
 
@@ -111,6 +111,7 @@ def validate_context(context):
             "sheet_height_mm",
             "edge_margin_mm",
             "coin_gap_mm",
+            "engraving_inset_mm",
             "layout",
             "quantity",
             "text_lines",
@@ -125,6 +126,8 @@ def validate_context(context):
         fail(f"Unsupported layout: {config['layout']}")
     if config["coin_diameter_mm"] <= 0 or config["coin_gap_mm"] < 0 or config["edge_margin_mm"] < 0:
         fail("Coin diameter, gap, and margin values are invalid.")
+    if not 0 < config["engraving_inset_mm"] < config["coin_diameter_mm"] / 2:
+        fail("Engraving inset must be greater than zero and smaller than the coin radius.")
     if not config["text_lines"] or any(not isinstance(line, str) for line in config["text_lines"]):
         fail("text_lines must contain strings.")
     unsupported = sorted({char for line in config["text_lines"] for char in line.upper()} - set(FONT))
@@ -198,45 +201,79 @@ def compute_layout(config, machine, quantity_override=None):
     }
 
 
-def text_segments(center, diameter, lines):
-    maximum_units = max(len(line) * 6 - 1 for line in lines)
-    scale = min(0.52, (diameter - 5.0) / maximum_units)
-    line_height = 7 * scale
+def text_scale(diameter, lines, inset):
+    maximum_units = max((len(line) - 1) * 6 + 4 for line in lines)
+    usable_radius = diameter / 2 - inset
+    line_gap = 0.75
+    low = 0.0
+    high = 0.52
+    for _ in range(64):
+        scale = (low + high) / 2
+        width = maximum_units * scale
+        height = len(lines) * 6 * scale + (len(lines) - 1) * line_gap
+        if math.hypot(width / 2, height / 2) <= usable_radius:
+            low = scale
+        else:
+            high = scale
+    if low <= 0:
+        fail("Engraving text cannot fit inside the configured coin inset.")
+    return low
+
+
+def text_segments(center, diameter, lines, inset):
+    scale = text_scale(diameter, lines, inset)
+    line_height = 6 * scale
     line_gap = 0.75
     total_height = len(lines) * line_height + (len(lines) - 1) * line_gap
-    top = center[1] - total_height / 2
+    top = center[1] + total_height / 2
     segments = []
     for line_index, text in enumerate(lines):
         text = text.upper()
-        width = (len(text) * 6 - 1) * scale
+        width = ((len(text) - 1) * 6 + 4) * scale
         left = center[0] - width / 2
-        baseline = top + line_index * (line_height + line_gap)
-        for pixel_row in range(7):
-            bits = "0".join(FONT[char][pixel_row] for char in text)
-            run_start = None
-            for index, bit in enumerate(bits + "0"):
-                if bit == "1" and run_start is None:
-                    run_start = index
-                elif bit == "0" and run_start is not None:
-                    y = baseline + (pixel_row + 0.5) * scale
-                    segments.append(
-                        (
-                            left + (run_start + 0.12) * scale,
-                            y,
-                            left + (index - 0.12) * scale,
-                            y,
-                        )
+        line_top = top - line_index * (line_height + line_gap)
+        for character_index, character in enumerate(text):
+            character_left = left + character_index * 6 * scale
+            for polyline in FONT[character]:
+                points = [
+                    (
+                        character_left + point_x * scale,
+                        line_top - (6 - point_y) * scale,
                     )
-                    run_start = None
+                    for point_x, point_y in polyline
+                ]
+                segments.extend(
+                    (start_x, start_y, end_x, end_y)
+                    for (start_x, start_y), (end_x, end_y) in zip(points, points[1:])
+                )
     return segments
 
 
+def assert_segments_within_circle(segments, center, usable_radius):
+    center_x, center_y = center
+    for segment_index, segment in enumerate(segments):
+        for endpoint_index, (point_x, point_y) in enumerate(
+            ((segment[0], segment[1]), (segment[2], segment[3]))
+        ):
+            distance = math.hypot(point_x - center_x, point_y - center_y)
+            if distance > usable_radius + 1e-9:
+                fail(
+                    "Engraving geometry exceeds its coin boundary: "
+                    f"segment={segment_index} endpoint={endpoint_index} "
+                    f"distance={distance:.4f}mm limit={usable_radius:.4f}mm"
+                )
+
+
 def all_engraving_segments(config, layout):
-    return [
-        segment
-        for center in layout["centers"]
-        for segment in text_segments(center, float(config["coin_diameter_mm"]), config["text_lines"])
-    ]
+    diameter = float(config["coin_diameter_mm"])
+    inset = float(config["engraving_inset_mm"])
+    usable_radius = diameter / 2 - inset
+    segments = []
+    for center in layout["centers"]:
+        coin_segments = text_segments(center, diameter, config["text_lines"], inset)
+        assert_segments_within_circle(coin_segments, center, usable_radius)
+        segments.extend(coin_segments)
+    return segments
 
 
 def generate_svg(config, layout, segments):
@@ -392,6 +429,7 @@ def job_manifest(context, layout, segment_count):
         "stock_mm": [config["sheet_width_mm"], config["sheet_height_mm"], context["material"]["thickness_mm"]],
         "effective_work_area_mm": [layout["effective_width_mm"], layout["effective_height_mm"]],
         "coin_diameter_mm": config["coin_diameter_mm"],
+        "engraving_inset_mm": config["engraving_inset_mm"],
         "quantity": layout["quantity"],
         "maximum_quantity": layout["maximum_quantity"],
         "layout": {

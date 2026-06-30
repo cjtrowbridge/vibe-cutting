@@ -18,7 +18,7 @@ The `third_party/` submodules are read-only behavioral references and are never 
 
 1. Resolve `designs/<name>/project.json` and its default numbered config.
 2. Load referenced machine and material profiles.
-3. Fail closed on missing fields, unsupported characters, incompatible modules, invalid recipes, or impossible layouts.
+3. Fail closed on missing fields, unsupported characters, incompatible modules, invalid recipes, impossible layouts, or engraving geometry outside its owning shape.
 4. Generate geometry and perform deterministic bounded layout.
 5. Generate engraving before through-cut operations.
 6. Stage the exact artifact set under `.tmp/laser/<design>/`.

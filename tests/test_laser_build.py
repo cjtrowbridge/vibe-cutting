@@ -115,6 +115,82 @@ class LaserBuildTests(unittest.TestCase):
         self.assertEqual(manifest["effective_work_area_mm"], [300.0, 268.0])
         self.assertEqual(len(manifest["warnings"]), 2)
 
+    def test_engraving_segments_stay_inside_configured_inset(self):
+        config = self.context["config"]
+        layout = laser_build.compute_layout(
+            config,
+            self.context["machine"],
+            quantity_override=1,
+        )
+        center = layout["centers"][0]
+        usable_radius = config["coin_diameter_mm"] / 2 - config["engraving_inset_mm"]
+        segments = laser_build.text_segments(
+            center,
+            config["coin_diameter_mm"],
+            config["text_lines"],
+            config["engraving_inset_mm"],
+        )
+
+        laser_build.assert_segments_within_circle(segments, center, usable_radius)
+        self.assertLessEqual(
+            max(
+                math.dist(center, point)
+                for segment in segments
+                for point in ((segment[0], segment[1]), (segment[2], segment[3]))
+            ),
+            usable_radius + 1e-9,
+        )
+
+    def test_out_of_bounds_engraving_is_rejected(self):
+        with self.assertRaisesRegex(SystemExit, "Engraving geometry exceeds"):
+            laser_build.assert_segments_within_circle(
+                [(0.0, 0.0, 15.0, 0.0)],
+                (0.0, 0.0),
+                14.0,
+            )
+
+    def test_vector_text_is_upright_and_ordered_top_to_bottom(self):
+        config = self.context["config"]
+        center = (0.0, 0.0)
+        segments = laser_build.text_segments(
+            center,
+            config["coin_diameter_mm"],
+            config["text_lines"],
+            config["engraving_inset_mm"],
+        )
+
+        def line_segment_count(text):
+            return sum(
+                len(polyline) - 1
+                for character in text
+                for polyline in laser_build.FONT[character]
+            )
+
+        top_count = line_segment_count(config["text_lines"][0])
+        bottom_count = line_segment_count(config["text_lines"][-1])
+        top_points = [
+            point
+            for segment in segments[:top_count]
+            for point in ((segment[0], segment[1]), (segment[2], segment[3]))
+        ]
+        bottom_points = [
+            point
+            for segment in segments[-bottom_count:]
+            for point in ((segment[0], segment[1]), (segment[2], segment[3]))
+        ]
+        self.assertGreater(min(point[1] for point in top_points), max(point[1] for point in bottom_points))
+        self.assertTrue(any(abs(y2 - y1) > 1e-9 for _, y1, _, y2 in segments))
+
+        letter_a = laser_build.text_segments(center, 30.0, ["A"], 1.0)
+        highest_y = max(max(segment[1], segment[3]) for segment in letter_a)
+        apex_y = max(
+            point_y
+            for segment in letter_a
+            for point_x, point_y in ((segment[0], segment[1]), (segment[2], segment[3]))
+            if abs(point_x - center[0]) < 1e-9
+        )
+        self.assertAlmostEqual(apex_y, highest_y)
+
     def test_build_manifest_supports_exact_artifact_audit(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             stage = Path(temporary_directory)

@@ -2,5 +2,5 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Design Configuration",
   "type": "object",
-  "required": ["schema_version", "revision"]
+  "required": ["schema_version", "revision", "engraving_inset_mm"]
 }

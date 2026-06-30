@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-06-30-14-02-21 | plans/past/2026-06-30-13-57-36_enforce-engraving-containment.md | Enforce Engraving Containment | Make shot-coin text legible, correctly oriented, contained inside its circular cut boundary, and rejected if any engraving geometry crosses the configured inset.
 2026-06-30-13-50-19 | plans/past/2026-06-30-13-38-55_implement-vector-mvp-and-shot-coin-test.md | Implement Vector MVP and Shot Coin Test | Build the dependency-free vector laser pipeline and validate it with a maximally packed 30 mm basswood shot-coin design.
 2026-06-30-13-24-30 | plans/past/2026-06-30-13-21-49_finalize-framework-roadmap-before-execution.md | Finalize Framework Roadmap Before Execution | Add missing decision gates, MVP boundaries, milestone decomposition, risks, and acceptance criteria before pipeline implementation begins.
 2026-06-30-13-08-40 | plans/past/2026-06-30-12-53-18_integrate-lasergrbl-reference-and-refine-roadmap.md | Integrate LaserGRBL Reference and Refine Roadmap | Add LaserGRBL as a reference submodule and make the fabrication-framework roadmap implementation-ready across code, playbooks, references, and documentation.
