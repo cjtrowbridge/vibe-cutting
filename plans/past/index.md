@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-01-01-12-27 | plans/past/2026-07-01-00-58-49_trial-liberation-sans-engraving.md | Trial Liberation Sans Engraving | Add an OpenSCAD-backed Liberation Sans Bold engraving mode and validate it on both coin designs.
 2026-07-01-00-53-32 | plans/past/2026-07-01-00-51-32_add-hug-coin-variant.md | Add Hug Coin Variant | Add and validate a separate 30 mm coin design that engraves HUG instead of SHOT.
 2026-06-30-14-02-21 | plans/past/2026-06-30-13-57-36_enforce-engraving-containment.md | Enforce Engraving Containment | Make shot-coin text legible, correctly oriented, contained inside its circular cut boundary, and rejected if any engraving geometry crosses the configured inset.
 2026-06-30-13-50-19 | plans/past/2026-06-30-13-38-55_implement-vector-mvp-and-shot-coin-test.md | Implement Vector MVP and Shot Coin Test | Build the dependency-free vector laser pipeline and validate it with a maximally packed 30 mm basswood shot-coin design.

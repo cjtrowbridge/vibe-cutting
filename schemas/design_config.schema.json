@@ -2,5 +2,27 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Design Configuration",
   "type": "object",
+  "properties": {
+    "text_backend": {
+      "enum": ["native_stroke", "openscad_font"]
+    },
+    "font_name": {
+      "type": "string"
+    },
+    "font_file": {
+      "type": "string"
+    },
+    "font_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "font_fill": {
+      "enum": ["horizontal_hatch"]
+    },
+    "hatch_spacing_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
   "required": ["schema_version", "revision", "engraving_inset_mm"]
 }

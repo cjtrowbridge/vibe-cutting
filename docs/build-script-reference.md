@@ -1,6 +1,6 @@
 # Build Script Reference
 
-Requires Python 3.11 or newer and no third-party Python packages.
+Requires Python 3.11 or newer and no third-party Python packages. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer.
 
 ```bash
 python3 scripts/laser_build.py --design shot_coins
@@ -29,5 +29,5 @@ Only one mode flag may be selected. `--quantity` and `--config` refine a normal 
 ## Current Limits
 
 - The implemented backend supports the native `shot_coins` vector design shape.
-- Raster engraving, DXF, OpenSCAD import, hardware streaming, and arbitrary nesting remain roadmap work.
+- Raster engraving, DXF, general OpenSCAD part import, hardware streaming, and arbitrary nesting remain roadmap work.
 - The generated Falcon/basswood job is calibration-only.

@@ -97,6 +97,7 @@ The 2026-06-30 bounded implementation plan delivered a dependency-free native ve
 - Focused tests cover packing, bounds, minimum spacing, SVG coordinates, G-code state, operation order, and exact artifact manifests.
 - Shot-coin revision `rev_0003` uses upright continuous-line vector glyphs, circle-aware text scaling, and fail-closed engraving containment assertions.
 - The `hug_coins` variant proves a second design can reuse the same machine, material, layout, containment, preview, G-code, manifest, and audit pipeline.
+- Default coin revisions now use an OpenSCAD 2021.01+ adapter with a pinned SIL OFL 1.1 Liberation Sans Bold file, linear SVG parsing, Y-axis normalization, deterministic hatch fill, and font provenance in manifests.
 - All current machine and material settings remain provisional or calibration-only.
 
 OpenSCAD was not installed in the implementation environment, so the native vector backend established the pipeline without making an external tool a blocker. The OpenSCAD adapter remains planned work and must converge on this operation and artifact model.
@@ -790,7 +791,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [x] 1.2 Select and document Python 3.11+ with a standard-library-only initial runtime and no dependency lock file.
   - [ ] 1.3 Write an architecture decision record for the compiler-style pipeline and machine-independent core.
   - [ ] 1.4 Complete an SVG/geometry compatibility spike and select the MVP normalization approach.
-  - [ ] 1.5 Define and prototype the OpenSCAD-to-operation-model adapter using SVG exports.
+  - [x] 1.5 Define and prototype an OpenSCAD font-to-operation-model adapter using SVG exports.
   - [ ] 1.6 Define canonical units, coordinate axes, origin, winding, transforms, tolerances, and operation ordering.
   - [ ] 1.7 Define versioned JSON Schemas for machine, material, design, parts, fixture, job, and build manifests.
   - [x] 1.8 Define deterministic default design-revision resolution through `project.json`.
@@ -801,7 +802,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
 
 - [ ] 2. Create each project-specific playbook before its governed implementation.
   - [x] 2.1 Create and index `how_to_add_a_new_laser_design.md`.
-  - [ ] 2.2 Create and index `how_to_author_openscad_laser_geometry.md`.
+  - [x] 2.2 Create and index `how_to_author_openscad_laser_geometry.md`.
   - [x] 2.3 Create and index `how_to_create_and_validate_a_machine_profile.md`.
   - [ ] 2.4 Create and index `how_to_calibrate_a_material_and_promote_recipes.md`.
   - [x] 2.5 Create and index `how_to_build_and_audit_a_laser_job.md`.

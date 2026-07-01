@@ -5,14 +5,18 @@ import csv
 import hashlib
 import json
 import math
+import re
 import shutil
 import struct
+import subprocess
 import tempfile
+import xml.etree.ElementTree as ElementTree
 import zlib
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+OPENSCAD_TEXT_SOURCE = REPO_ROOT / "openscad" / "text_geometry.scad"
 ARTIFACT_NAMES = {
     "design.svg",
     "preview.png",
@@ -76,6 +80,34 @@ def require(data, keys, label):
         fail(f"{label} missing required fields: {', '.join(missing)}")
 
 
+def openscad_version():
+    executable = shutil.which("openscad")
+    if executable is None:
+        fail("OpenSCAD is required by this design but was not found.")
+    try:
+        result = subprocess.run(
+            [executable, "--version"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        fail(f"Could not determine OpenSCAD version: {exc}")
+    output = "\n".join(part for part in (result.stdout, result.stderr) if part)
+    match = re.search(r"OpenSCAD version\s+([0-9.]+)", output)
+    if result.returncode != 0 or not match:
+        fail(f"Could not determine OpenSCAD version: {output.strip()}")
+    return match.group(1)
+
+
+def version_tuple(version):
+    try:
+        return tuple(int(part) for part in version.split("."))
+    except ValueError:
+        fail(f"Invalid dotted version: {version}")
+
+
 def resolve_design(design_name, config_arg=None):
     design_root = REPO_ROOT / "designs" / design_name
     project_path = design_root / "project.json"
@@ -131,9 +163,55 @@ def validate_context(context):
         fail("Engraving inset must be greater than zero and smaller than the coin radius.")
     if not config["text_lines"] or any(not isinstance(line, str) for line in config["text_lines"]):
         fail("text_lines must contain strings.")
-    unsupported = sorted({char for line in config["text_lines"] for char in line.upper()} - set(FONT))
-    if unsupported:
-        fail(f"Unsupported engraving characters: {''.join(unsupported)}")
+    text_backend = config.get("text_backend", "native_stroke")
+    if text_backend == "native_stroke":
+        unsupported = sorted({char for line in config["text_lines"] for char in line.upper()} - set(FONT))
+        if unsupported:
+            fail(f"Unsupported engraving characters: {''.join(unsupported)}")
+    elif text_backend == "openscad_font":
+        require(
+            config,
+            [
+                "font_name",
+                "font_file",
+                "font_sha256",
+                "font_fill",
+                "hatch_spacing_mm",
+                "font_line_gap_ratio",
+                "openscad_curve_segments",
+                "openscad_minimum_version",
+            ],
+            "OpenSCAD font config",
+        )
+        if config["font_fill"] != "horizontal_hatch":
+            fail(f"Unsupported font fill: {config['font_fill']}")
+        if config["hatch_spacing_mm"] <= 0:
+            fail("Font hatch spacing must be greater than zero.")
+        if config["font_line_gap_ratio"] < 0:
+            fail("Font line gap ratio cannot be negative.")
+        if config["openscad_curve_segments"] < 8:
+            fail("OpenSCAD curve segments must be at least 8.")
+        font_path = (REPO_ROOT / config["font_file"]).resolve()
+        try:
+            font_path.relative_to(REPO_ROOT)
+        except ValueError:
+            fail("Font file must remain inside the repository.")
+        if not font_path.is_file():
+            fail(f"Missing configured font file: {font_path}")
+        if sha256(font_path) != config["font_sha256"]:
+            fail(f"Configured font hash does not match: {font_path}")
+        if shutil.which("openscad") is None:
+            fail("OpenSCAD is required by this design but was not found.")
+        installed_version = openscad_version()
+        if version_tuple(installed_version) < version_tuple(config["openscad_minimum_version"]):
+            fail(
+                f"OpenSCAD {config['openscad_minimum_version']} or newer is required; "
+                f"found {installed_version}."
+            )
+        if not OPENSCAD_TEXT_SOURCE.is_file():
+            fail(f"Missing OpenSCAD text source: {OPENSCAD_TEXT_SOURCE}")
+    else:
+        fail(f"Unsupported text backend: {text_backend}")
     module = "blue_20w"
     if module not in machine["modules"] or module not in material["compatible_modules"]:
         fail("The selected machine module and material profile are incompatible.")
@@ -250,6 +328,181 @@ def text_segments(center, diameter, lines, inset):
     return segments
 
 
+def parse_linear_svg_path(path_data):
+    unsupported = sorted(set(re.findall(r"[A-DF-Za-df-z]", path_data)) - set("MLZmlz"))
+    if unsupported:
+        fail(f"Unsupported OpenSCAD SVG path commands: {''.join(unsupported)}")
+    tokens = re.findall(
+        r"[MLZmlz]|[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?",
+        path_data.replace(",", " "),
+    )
+    contours = []
+    contour = []
+    command = None
+    index = 0
+
+    def close_contour():
+        nonlocal contour
+        if not contour:
+            return
+        if len(contour) < 3:
+            fail("OpenSCAD SVG contour has fewer than three points.")
+        if contour[-1] != contour[0]:
+            contour.append(contour[0])
+        contours.append(contour)
+        contour = []
+
+    while index < len(tokens):
+        token = tokens[index]
+        if token.isalpha():
+            command = token.upper()
+            index += 1
+            if command == "Z":
+                close_contour()
+                command = None
+            continue
+        if command not in {"M", "L"} or index + 1 >= len(tokens) or tokens[index + 1].isalpha():
+            fail("Malformed OpenSCAD SVG path data.")
+        point = (float(token), float(tokens[index + 1]))
+        index += 2
+        if command == "M":
+            close_contour()
+            contour = [point]
+            command = "L"
+        else:
+            contour.append(point)
+    close_contour()
+    if not contours:
+        fail("OpenSCAD SVG path did not contain any contours.")
+    return contours
+
+
+def render_openscad_text(text, config):
+    executable = shutil.which("openscad")
+    if executable is None:
+        fail("OpenSCAD is required by this design but was not found.")
+    with tempfile.TemporaryDirectory(prefix="vibe-cutting-openscad-") as temporary_directory:
+        svg_path = Path(temporary_directory) / "text.svg"
+        command = [
+            executable,
+            "-o",
+            str(svg_path),
+            "-D",
+            f"text_value={json.dumps(text)}",
+            "-D",
+            f"font_name={json.dumps(config['font_name'])}",
+            "-D",
+            "font_size=100",
+            "-D",
+            f"curve_segments={int(config['openscad_curve_segments'])}",
+            str(OPENSCAD_TEXT_SOURCE),
+        ]
+        try:
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            fail(f"OpenSCAD text export failed: {exc}")
+        diagnostics = "\n".join(part for part in (result.stdout, result.stderr) if part)
+        if result.returncode != 0:
+            fail(f"OpenSCAD text export failed for {text!r}: {diagnostics.strip()}")
+        if "can't find font" in diagnostics.lower():
+            fail(f"OpenSCAD could not find configured font: {config['font_name']}")
+        try:
+            root = ElementTree.parse(svg_path).getroot()
+        except (ElementTree.ParseError, FileNotFoundError) as exc:
+            fail(f"OpenSCAD produced invalid SVG for {text!r}: {exc}")
+        path_elements = [element for element in root.iter() if element.tag.rsplit("}", 1)[-1] == "path"]
+        contours = []
+        for element in path_elements:
+            path_data = element.get("d")
+            if path_data:
+                contours.extend(parse_linear_svg_path(path_data))
+        if not contours:
+            fail(f"OpenSCAD produced no text contours for {text!r}.")
+        return contours
+
+
+def contour_bounds(contours):
+    points = [point for contour in contours for point in contour]
+    if not points:
+        fail("Cannot calculate bounds for empty contours.")
+    x_values = [point[0] for point in points]
+    y_values = [point[1] for point in points]
+    return min(x_values), min(y_values), max(x_values), max(y_values)
+
+
+def hatch_contours(contours, spacing):
+    _, minimum_y, _, maximum_y = contour_bounds(contours)
+    scanline = (math.floor(minimum_y / spacing) + 1) * spacing
+    segments = []
+    while scanline < maximum_y - 1e-9:
+        intersections = []
+        for contour in contours:
+            for (start_x, start_y), (end_x, end_y) in zip(contour, contour[1:]):
+                if abs(end_y - start_y) <= 1e-12:
+                    continue
+                crosses = (start_y <= scanline < end_y) or (end_y <= scanline < start_y)
+                if crosses:
+                    ratio = (scanline - start_y) / (end_y - start_y)
+                    intersections.append(start_x + ratio * (end_x - start_x))
+        intersections.sort()
+        if len(intersections) % 2:
+            fail(f"OpenSCAD hatch topology produced an odd intersection count at Y={scanline:.4f}.")
+        for start_x, end_x in zip(intersections[::2], intersections[1::2]):
+            if end_x - start_x > 1e-9:
+                segments.append((start_x, scanline, end_x, scanline))
+        scanline += spacing
+    if not segments:
+        fail("OpenSCAD text hatching produced no engraving segments.")
+    return segments
+
+
+def openscad_font_segments(config):
+    shaped_lines = []
+    maximum_height = 0.0
+    for text in config["text_lines"]:
+        contours = render_openscad_text(text, config)
+        minimum_x, minimum_y, maximum_x, maximum_y = contour_bounds(contours)
+        maximum_height = max(maximum_height, maximum_y - minimum_y)
+        shaped_lines.append(
+            {
+                "contours": contours,
+                "center_x": (minimum_x + maximum_x) / 2,
+                "center_y": (minimum_y + maximum_y) / 2,
+            }
+        )
+    line_gap = maximum_height * float(config["font_line_gap_ratio"])
+    total_height = len(shaped_lines) * maximum_height + (len(shaped_lines) - 1) * line_gap
+    combined = []
+    for line_index, shaped in enumerate(shaped_lines):
+        line_center_y = total_height / 2 - maximum_height / 2 - line_index * (maximum_height + line_gap)
+        combined.extend(
+            [
+                (
+                    point_x - shaped["center_x"],
+                    shaped["center_y"] - point_y + line_center_y,
+                )
+                for point_x, point_y in contour
+            ]
+            for contour in shaped["contours"]
+        )
+    maximum_radius = max(math.hypot(point_x, point_y) for contour in combined for point_x, point_y in contour)
+    usable_radius = float(config["coin_diameter_mm"]) / 2 - float(config["engraving_inset_mm"])
+    if maximum_radius <= 0:
+        fail("OpenSCAD text geometry has an invalid radius.")
+    scale = usable_radius / maximum_radius
+    scaled = [
+        [(point_x * scale, point_y * scale) for point_x, point_y in contour]
+        for contour in combined
+    ]
+    return hatch_contours(scaled, float(config["hatch_spacing_mm"]))
+
+
 def assert_segments_within_circle(segments, center, usable_radius):
     center_x, center_y = center
     for segment_index, segment in enumerate(segments):
@@ -265,13 +518,27 @@ def assert_segments_within_circle(segments, center, usable_radius):
                 )
 
 
-def all_engraving_segments(config, layout):
+def all_engraving_segments(config, layout, relative_segments=None):
     diameter = float(config["coin_diameter_mm"])
     inset = float(config["engraving_inset_mm"])
     usable_radius = diameter / 2 - inset
     segments = []
+    text_backend = config.get("text_backend", "native_stroke")
+    if text_backend == "openscad_font" and relative_segments is None:
+        relative_segments = openscad_font_segments(config)
     for center in layout["centers"]:
-        coin_segments = text_segments(center, diameter, config["text_lines"], inset)
+        if text_backend == "openscad_font":
+            coin_segments = [
+                (
+                    segment[0] + center[0],
+                    segment[1] + center[1],
+                    segment[2] + center[0],
+                    segment[3] + center[1],
+                )
+                for segment in relative_segments
+            ]
+        else:
+            coin_segments = text_segments(center, diameter, config["text_lines"], inset)
         assert_segments_within_circle(coin_segments, center, usable_radius)
         segments.extend(coin_segments)
     return segments
@@ -418,6 +685,8 @@ def job_manifest(context, layout, segment_count):
         warnings.append("Stock exceeds the machine work area; geometry is constrained to the effective intersection.")
     if context["material"]["profile_status"] != "verified":
         warnings.append("Material recipes are unverified manufacturer seed values; calibration is required.")
+    if config.get("text_backend") == "openscad_font":
+        warnings.append("Normal-font hatch spacing is unverified; run an engraving calibration before fabrication.")
     return {
         "schema_version": 1,
         "design": context["project"]["id"],
@@ -443,6 +712,17 @@ def job_manifest(context, layout, segment_count):
         },
         "engraving_text": " ".join(config["text_lines"]).lower(),
         "engraving_segment_count": segment_count,
+        "engraving": {
+            "backend": config.get("text_backend", "native_stroke"),
+            "font_name": config.get("font_name"),
+            "font_file": config.get("font_file"),
+            "font_sha256": config.get("font_sha256"),
+            "fill": config.get("font_fill", "single_line"),
+            "hatch_spacing_mm": config.get("hatch_spacing_mm"),
+            "line_gap_ratio": config.get("font_line_gap_ratio"),
+            "openscad_version": openscad_version() if config.get("text_backend") == "openscad_font" else None,
+            "openscad_minimum_version": config.get("openscad_minimum_version"),
+        },
         "operation_order": ["vector_engrave", "through_cut"],
         "recipes": context["material"]["recipes"],
         "warnings": warnings,
@@ -478,6 +758,8 @@ def write_setup(path, context, layout):
                 f"- Stock: {context['config']['sheet_width_mm']} x {context['config']['sheet_height_mm']} x {context['material']['thickness_mm']} mm",
                 f"- Effective work area: {layout['effective_width_mm']} x {layout['effective_height_mm']} mm",
                 f"- Coin quantity: {layout['quantity']}",
+                f"- Engraving backend: {context['config'].get('text_backend', 'native_stroke')}",
+                f"- Engraving font: {context['config'].get('font_name', 'built-in continuous-line vector font')}",
                 "- Confirm ventilation, air assist, lens condition, focus, enclosure, emergency stop, and fire response equipment.",
                 "- Run a non-emitting frame before fabrication.",
                 "- Do not fabricate with these recipes until calibration coupons pass.",
@@ -496,6 +778,9 @@ def source_records(context):
         context["machine_path"],
         context["material_path"],
     ]
+    if context["config"].get("text_backend") == "openscad_font":
+        paths.append(OPENSCAD_TEXT_SOURCE)
+        paths.append((REPO_ROOT / context["config"]["font_file"]).resolve())
     return [{"path": str(path.relative_to(REPO_ROOT)), "sha256": sha256(path)} for path in paths]
 
 
@@ -583,10 +868,13 @@ def execute(args):
     if args.audit_only:
         audit(REPO_ROOT / "output" / args.design)
         return
+    relative_segments = None
+    if context["config"].get("text_backend") == "openscad_font":
+        relative_segments = openscad_font_segments(context["config"])
     if args.dry_run or args.validate_only:
         print(f"[laser] {'Dry run' if args.dry_run else 'Validation'} passed; no artifacts installed.")
         return
-    segments = all_engraving_segments(context["config"], layout)
+    segments = all_engraving_segments(context["config"], layout, relative_segments)
     temp_parent = REPO_ROOT / ".tmp" / "laser" / args.design
     temp_parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=f"{revision}_", dir=temp_parent))

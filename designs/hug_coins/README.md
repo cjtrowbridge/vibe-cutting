@@ -21,3 +21,7 @@ The 300 x 300 mm stock exceeds the Falcon A1 Pro's provisional 268 mm short-axis
 The text uses upright continuous-line vector glyphs and a 1 mm engraving inset. Generation fails if any engraving endpoint crosses that inset.
 
 The included 3 mm basswood recipes are unverified manufacturer seed values. Run calibration coupons before fabrication.
+
+Revision `rev_0002` is the default normal-font trial. OpenSCAD shapes the pinned Liberation Sans Bold font, and the pipeline converts its filled contours into 0.18 mm horizontal engraving hatches before applying the same containment checks.
+
+The hatch spacing and engraving recipe are calibration-only.

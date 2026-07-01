@@ -28,6 +28,6 @@ The `third_party/` submodules are read-only behavioral references and are never 
 
 ## Backend Boundary
 
-The native vector backend proves the pipeline without external runtime dependencies. OpenSCAD remains an optional future geometry frontend for parameterized parts and projected assemblies. An OpenSCAD adapter will export operation geometry into the same validation, layout, manifest, and G-code stages rather than owning process recipes or machine control.
+The native vector backend proves the pipeline without external runtime dependencies. The implemented OpenSCAD font adapter exports pinned-font SVG contours, accepts only linear path commands, converts SVG Y-down coordinates to the canonical Y-up system, scales multiline text inside its owning circle, and creates deterministic horizontal hatch engraving. Parameterized parts and projected assemblies remain future OpenSCAD adapter work.
 
 The current design schema and geometry implementation are intentionally narrow. Future design types should add replaceable geometry adapters rather than embedding machine-specific behavior in design files.

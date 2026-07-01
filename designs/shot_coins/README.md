@@ -23,3 +23,7 @@ The included 3 mm basswood recipes are unverified manufacturer seed values. Run 
 The design uses the dependency-free native vector backend. OpenSCAD is not required for this design.
 
 Revision `rev_0003` replaces the original fragmented pixel-run lettering with upright continuous-line vector glyphs. The complete text block is scaled against the circular boundary, and generation fails if any engraving endpoint crosses the configured 1 mm inset.
+
+Revision `rev_0004` is the default normal-font trial. OpenSCAD shapes the pinned Liberation Sans Bold font, and the pipeline converts its filled contours into 0.18 mm horizontal engraving hatches before applying the same containment checks.
+
+The hatch spacing and engraving recipe are calibration-only.
