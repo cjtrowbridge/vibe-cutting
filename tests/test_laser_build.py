@@ -113,7 +113,21 @@ class LaserBuildTests(unittest.TestCase):
         self.assertEqual(manifest["operation_order"], ["vector_engrave", "through_cut"])
         self.assertEqual(manifest["maximum_quantity"], 81)
         self.assertEqual(manifest["effective_work_area_mm"], [300.0, 268.0])
+        self.assertEqual(manifest["engraving_text"], "good for one free shot anywhere any time")
         self.assertEqual(len(manifest["warnings"]), 2)
+
+    def test_hug_variant_resolves_and_generates_contained_text(self):
+        context = laser_build.resolve_design("hug_coins")
+        laser_build.validate_context(context)
+        layout = laser_build.compute_layout(context["config"], context["machine"])
+        segments = laser_build.all_engraving_segments(context["config"], layout)
+        manifest = laser_build.job_manifest(context, layout, len(segments))
+
+        self.assertEqual(context["config"]["text_lines"][2], "HUG")
+        self.assertEqual(layout["quantity"], 81)
+        self.assertEqual(manifest["design"], "hug_coins")
+        self.assertEqual(manifest["engraving_text"], "good for one free hug anywhere any time")
+        self.assertGreater(len(laser_build.FONT["U"][0]), 2)
 
     def test_engraving_segments_stay_inside_configured_inset(self):
         config = self.context["config"]

@@ -27,6 +27,12 @@ Use `--new-revision` to create a new immutable design config and matching artifa
 
 `shot_coins` lays out 30 mm coins engraved with “good for one free shot anywhere any time.” Revision `rev_0003` uses upright continuous-line vector lettering and rejects any engraving segment that crosses the configured 1 mm inset from the coin edge. The configured 300 x 300 x 3 mm basswood sheet is larger than the Falcon A1 Pro's provisional 268 mm short-axis work area, so the layout uses the safe 300 x 268 mm intersection. It fits 81 coins with the configured 2 mm margins and 1 mm spacing.
 
+`hug_coins` uses the same geometry, material, machine, layout, and containment rules while substituting “hug” for “shot”:
+
+```bash
+python3 scripts/laser_build.py --design hug_coins
+```
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

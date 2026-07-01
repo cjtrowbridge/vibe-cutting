@@ -96,6 +96,7 @@ The 2026-06-30 bounded implementation plan delivered a dependency-free native ve
 - The first `shot_coins` design produces 81 nominal 30 mm coins inside the configured 300 x 268 mm effective area.
 - Focused tests cover packing, bounds, minimum spacing, SVG coordinates, G-code state, operation order, and exact artifact manifests.
 - Shot-coin revision `rev_0003` uses upright continuous-line vector glyphs, circle-aware text scaling, and fail-closed engraving containment assertions.
+- The `hug_coins` variant proves a second design can reuse the same machine, material, layout, containment, preview, G-code, manifest, and audit pipeline.
 - All current machine and material settings remain provisional or calibration-only.
 
 OpenSCAD was not installed in the implementation environment, so the native vector backend established the pipeline without making an external tool a blocker. The OpenSCAD adapter remains planned work and must converge on this operation and artifact model.

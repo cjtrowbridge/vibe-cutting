@@ -9,6 +9,7 @@ python3 scripts/laser_build.py --design shot_coins --validate-only
 python3 scripts/laser_build.py --design shot_coins --audit-only
 python3 scripts/laser_build.py --design shot_coins --quantity 40
 python3 scripts/laser_build.py --design shot_coins --new-revision
+python3 scripts/laser_build.py --design hug_coins
 ```
 
 Normal builds atomically replace `output/<design>/`. Revision builds create immutable `revisions/<design>/rev_000N/` directories. The script generates artifacts only and cannot stream to hardware.
