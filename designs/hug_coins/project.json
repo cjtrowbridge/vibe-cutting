@@ -3,7 +3,7 @@
   "id": "hug_coins",
   "name": "Good For One Free Hug Coins",
   "backend": "native_vector",
-  "default_config": "configs/rev_0002.json",
+  "default_config": "configs/rev_0003.json",
   "machine_profile": "../../machines/creality/falcon_a1_pro.json",
   "material_profile": "../../materials/wood/basswood_3mm.json"
 }

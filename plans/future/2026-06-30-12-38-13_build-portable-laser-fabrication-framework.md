@@ -97,7 +97,7 @@ The 2026-06-30 bounded implementation plan delivered a dependency-free native ve
 - Focused tests cover packing, bounds, minimum spacing, SVG coordinates, G-code state, operation order, and exact artifact manifests.
 - Shot-coin revision `rev_0003` uses upright continuous-line vector glyphs, circle-aware text scaling, and fail-closed engraving containment assertions.
 - The `hug_coins` variant proves a second design can reuse the same machine, material, layout, containment, preview, G-code, manifest, and audit pipeline.
-- Default coin revisions now use an OpenSCAD 2021.01+ adapter with a pinned SIL OFL 1.1 Liberation Sans Bold file, linear SVG parsing, Y-axis normalization, deterministic hatch fill, and font provenance in manifests.
+- Default coin revisions now use an OpenSCAD 2021.01+ adapter with pinned SIL OFL 1.1 Liberation Sans Regular files, linear SVG parsing, Y-axis normalization, deterministic hatch fill, and font provenance in manifests; prior Bold revisions remain reproducible.
 - All current machine and material settings remain provisional or calibration-only.
 
 OpenSCAD was not installed in the implementation environment, so the native vector backend established the pipeline without making an external tool a blocker. The OpenSCAD adapter remains planned work and must converge on this operation and artifact model.

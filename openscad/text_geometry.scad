@@ -1,4 +1,5 @@
 use <../assets/fonts/liberation-sans/LiberationSans-Bold.ttf>
+use <../assets/fonts/liberation-sans/LiberationSans-Regular.ttf>
 
 text_value = is_undef(text_value) ? "TEXT" : text_value;
 font_name = is_undef(font_name) ? "Liberation Sans:style=Bold" : font_name;

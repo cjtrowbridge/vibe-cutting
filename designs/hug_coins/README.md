@@ -25,3 +25,5 @@ The included 3 mm basswood recipes are unverified manufacturer seed values. Run 
 Revision `rev_0002` is the default normal-font trial. OpenSCAD shapes the pinned Liberation Sans Bold font, and the pipeline converts its filled contours into 0.18 mm horizontal engraving hatches before applying the same containment checks.
 
 The hatch spacing and engraving recipe are calibration-only.
+
+Revision `rev_0003` is the current default. It uses pinned Liberation Sans Regular to improve visual character separation while retaining the font's default spacing. The Bold revision remains reproducible at `rev_0002`.

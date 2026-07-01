@@ -3,7 +3,7 @@
   "id": "shot_coins",
   "name": "Good For One Free Shot Coins",
   "backend": "native_vector",
-  "default_config": "configs/rev_0004.json",
+  "default_config": "configs/rev_0005.json",
   "machine_profile": "../../machines/creality/falcon_a1_pro.json",
   "material_profile": "../../materials/wood/basswood_3mm.json"
 }
