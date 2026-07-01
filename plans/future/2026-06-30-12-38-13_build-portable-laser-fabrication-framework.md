@@ -98,6 +98,7 @@ The 2026-06-30 bounded implementation plan delivered a dependency-free native ve
 - Shot-coin revision `rev_0003` uses upright continuous-line vector glyphs, circle-aware text scaling, and fail-closed engraving containment assertions.
 - The `hug_coins` variant proves a second design can reuse the same machine, material, layout, containment, preview, G-code, manifest, and audit pipeline.
 - Default coin revisions now use an OpenSCAD 2021.01+ adapter with pinned SIL OFL 1.1 Liberation Sans Regular files, linear SVG parsing, Y-axis normalization, deterministic hatch fill, and font provenance in manifests; prior Bold revisions remain reproducible.
+- Reusable `merit_badge_set` configs now generate 24 mixed-type 72 x 42 mm rounded tokens with measured title/body wrapping, even type allocation, rounded-shape containment, and complete per-type manifest counts.
 - All current machine and material settings remain provisional or calibration-only.
 
 OpenSCAD was not installed in the implementation environment, so the native vector backend established the pipeline without making an external tool a blocker. The OpenSCAD adapter remains planned work and must converge on this operation and artifact model.
@@ -863,7 +864,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
 
 - [ ] 8. Implement single-object, batch, and set layout.
   - [ ] 8.1 Place a single object with explicit origin and margins.
-  - [ ] 8.2 Generate rectangular arrays for repeated identical objects.
+  - [x] 8.2 Generate deterministic rectangular arrays for repeated identical and mixed-type objects.
   - [ ] 8.3 Place complete multi-part sets with set-level quantity and completeness checks.
   - [ ] 8.4 Add rotation, grain-direction, spacing, and stock-edge constraints.
   - [ ] 8.5 Add deterministic nesting behind a replaceable layout interface (`post-MVP`).

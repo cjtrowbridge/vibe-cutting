@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "revision": "rev_0001",
+  "design_type": "merit_badge_set",
+  "set_name": "BWB",
+  "sheet_width_mm": 300.0,
+  "sheet_height_mm": 300.0,
+  "edge_margin_mm": 2.0,
+  "token_width_mm": 72.0,
+  "token_height_mm": 42.0,
+  "corner_radius_mm": 4.0,
+  "token_gap_mm": 2.0,
+  "engraving_inset_mm": 2.0,
+  "text_padding_mm": 4.0,
+  "layout": "grid_fill",
+  "quantity": "maximum",
+  "text_backend": "openscad_font",
+  "font_name": "Liberation Sans:style=Regular",
+  "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+  "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+  "title_font_name": "Liberation Sans:style=Bold",
+  "title_font_file": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
+  "title_font_sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939",
+  "font_fill": "horizontal_hatch",
+  "hatch_spacing_mm": 0.18,
+  "font_line_gap_ratio": 0.22,
+  "title_font_size_mm": 3.6,
+  "title_line_height_mm": 5.0,
+  "body_font_size_mm": 3.0,
+  "body_line_height_mm": 4.0,
+  "section_gap_mm": 1.5,
+  "openscad_curve_segments": 48,
+  "openscad_minimum_version": "2021.01",
+  "badges": [
+    {
+      "id": "mutual_aid_field_agent",
+      "title": "Mutual Aid Field Agent",
+      "description": "For anyone who shows up without needing to be asked."
+    },
+    {
+      "id": "civic_mischief_technician",
+      "title": "Civic Mischief Technician",
+      "description": "For playful, useful interventions in public space."
+    },
+    {
+      "id": "disaster_weirdness_liaison",
+      "title": "Disaster Weirdness Liaison",
+      "description": "For the person who can function inside chaos and still make people laugh."
+    },
+    {
+      "id": "volunteer_wrangler",
+      "title": "Volunteer Wrangler",
+      "description": "For whoever can turn five confused Burners into a work crew."
+    },
+    {
+      "id": "community_resilience_scout",
+      "title": "Community Resilience Scout",
+      "description": "For preparedness, local knowledge, and helping people before things break."
+    },
+    {
+      "id": "radical_resourcefulness_badge",
+      "title": "Radical Resourcefulness Badge",
+      "description": "For fixing the problem with trash, rope, solar, snacks, and charm."
+    },
+    {
+      "id": "public_benefit_goblin",
+      "title": "Public Benefit Goblin",
+      "description": "For tiny useful acts done anonymously."
+    },
+    {
+      "id": "leave_it_better_officer",
+      "title": "Leave It Better Officer",
+      "description": "For cleanups, repairs, beautification, and stewardship."
+    },
+    {
+      "id": "infrastructure_fairy",
+      "title": "Infrastructure Fairy",
+      "description": "For the person who magically makes water, shade, power, comms, or charging appear."
+    }
+  ]
+}

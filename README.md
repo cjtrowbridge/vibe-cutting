@@ -33,6 +33,16 @@ Use `--new-revision` to create a new immutable design config and matching artifa
 python3 scripts/laser_build.py --design hug_coins
 ```
 
+Three reusable merit-badge sets use 72 x 42 mm rounded tokens, measured title/body wrapping, and deterministic 24-slot allocation:
+
+```bash
+python3 scripts/laser_build.py --design bwb_merit_badges
+python3 scripts/laser_build.py --design queer_sex_party_merit_badges
+python3 scripts/laser_build.py --design community_garden_merit_badges
+```
+
+Copy an existing merit-badge design and replace its `badges` list to create another set. See `docs/designs/merit-badge-sheets.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

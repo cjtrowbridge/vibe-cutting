@@ -160,6 +160,94 @@ class LaserBuildTests(unittest.TestCase):
             bold_context["config"]["font_sha256"],
         )
 
+    def test_merit_badge_sets_use_reusable_24_token_layout(self):
+        expected_counts = {
+            "bwb_merit_badges": [3, 3, 3, 3, 3, 3, 2, 2, 2],
+            "queer_sex_party_merit_badges": [4, 4, 4, 4, 4, 4],
+            "community_garden_merit_badges": [3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        }
+        for design_name, counts in expected_counts.items():
+            with self.subTest(design=design_name):
+                context = laser_build.resolve_design(design_name)
+                laser_build.validate_context(context)
+                layout = laser_build.compute_layout(context["config"], context["machine"])
+                paths = laser_build.cut_paths(context["config"], layout)
+
+                self.assertEqual(layout["quantity"], 24)
+                self.assertEqual((layout["columns"], layout["rows"]), (4, 6))
+                self.assertEqual(list(layout["badge_counts"].values()), counts)
+                self.assertEqual(sum(layout["badge_counts"].values()), 24)
+                self.assertEqual(len(paths), 24)
+                self.assertTrue(all(path[0] == path[-1] for path in paths))
+                for path in paths:
+                    self.assertTrue(
+                        all(
+                            0 <= point_x <= layout["effective_width_mm"]
+                            and 0 <= point_y <= layout["effective_height_mm"]
+                            for point_x, point_y in path
+                        )
+                    )
+                width = context["config"]["token_width_mm"]
+                height = context["config"]["token_height_mm"]
+                gap = context["config"]["token_gap_mm"]
+                for index, first in enumerate(layout["centers"]):
+                    for second in layout["centers"][index + 1 :]:
+                        self.assertTrue(
+                            abs(first[0] - second[0]) >= width + gap - 1e-9
+                            or abs(first[1] - second[1]) >= height + gap - 1e-9
+                        )
+
+    def test_merit_badge_text_wraps_and_stays_inside_rounded_tokens(self):
+        context = laser_build.resolve_design("queer_sex_party_merit_badges")
+        config = context["config"]
+        badge = next(
+            badge
+            for badge in config["badges"]
+            if badge["id"] == "lube_logistics_coordinator"
+        )
+        geometry = laser_build.merit_badge_relative_segments(config, badge)
+
+        self.assertGreater(len(geometry["body_lines"]), 1)
+        self.assertEqual(" ".join(geometry["body_lines"]), badge["description"])
+        laser_build.assert_segments_within_rounded_rectangle(
+            geometry["segments"],
+            (0.0, 0.0),
+            config["token_width_mm"],
+            config["token_height_mm"],
+            config["corner_radius_mm"],
+            config["engraving_inset_mm"],
+        )
+        oversized = copy.deepcopy(config)
+        oversized["body_font_size_mm"] = 20.0
+        with self.assertRaisesRegex(SystemExit, "Merit badge"):
+            laser_build.merit_badge_relative_segments(oversized, badge)
+
+    def test_merit_badge_manifest_and_gcode_match_allocated_set(self):
+        context = laser_build.resolve_design("community_garden_merit_badges")
+        layout = laser_build.compute_layout(context["config"], context["machine"])
+        segments = laser_build.all_engraving_segments(context["config"], layout)
+        manifest = laser_build.job_manifest(context, layout, len(segments))
+        gcode = laser_build.generate_gcode(
+            context["config"],
+            context["machine"],
+            context["material"],
+            layout,
+            segments,
+        )
+
+        self.assertEqual(manifest["design_type"], "merit_badge_set")
+        self.assertEqual(manifest["token"]["shape"], "rounded_rectangle")
+        self.assertEqual(sum(badge["quantity"] for badge in manifest["badges"]), 24)
+        self.assertIn("season’s abundance.", manifest["badges"][0]["description"])
+        laser_on = False
+        for line in gcode.splitlines():
+            if line.startswith(("M3", "M4")):
+                laser_on = True
+            elif line == "M5":
+                laser_on = False
+            elif line.startswith("G0"):
+                self.assertFalse(laser_on, line)
+
     def test_openscad_font_normalizes_svg_to_upright_y_axis(self):
         config = copy.deepcopy(self.context["config"])
         config["text_lines"] = ["F"]

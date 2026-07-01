@@ -34,5 +34,6 @@ git submodule update --init --recursive
 - `playbooks/how_to_create_and_validate_a_machine_profile.md`
 - `playbooks/how_to_generate_and_validate_grbl_gcode.md`
 - `playbooks/how_to_author_openscad_laser_geometry.md`
+- `playbooks/how_to_create_and_iterate_merit_badge_sheets.md`
 
 Use the relevant laser playbook before changing designs, profiles, build behavior, or G-code generation.

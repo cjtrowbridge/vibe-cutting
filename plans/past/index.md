@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-01-10-50-25 | plans/past/2026-07-01-10-32-32_build-reusable-merit-badge-sheets.md | Build Reusable Merit Badge Sheets | Add a reusable mixed-type merit-badge sheet mode and produce BWB, queer sex party, and community garden starter sets with readable title-and-description text.
 2026-07-01-07-31-29 | plans/past/2026-07-01-07-26-55_trial-liberation-sans-regular.md | Trial Liberation Sans Regular | Replace the default Bold coin lettering with pinned Liberation Sans Regular and validate legibility, spacing, containment, and reproducibility.
 2026-07-01-01-12-27 | plans/past/2026-07-01-00-58-49_trial-liberation-sans-engraving.md | Trial Liberation Sans Engraving | Add an OpenSCAD-backed Liberation Sans Bold engraving mode and validate it on both coin designs.
 2026-07-01-00-53-32 | plans/past/2026-07-01-00-51-32_add-hug-coin-variant.md | Add Hug Coin Variant | Add and validate a separate 30 mm coin design that engraves HUG instead of SHOT.

@@ -10,6 +10,7 @@ python3 scripts/laser_build.py --design shot_coins --audit-only
 python3 scripts/laser_build.py --design shot_coins --quantity 40
 python3 scripts/laser_build.py --design shot_coins --new-revision
 python3 scripts/laser_build.py --design hug_coins
+python3 scripts/laser_build.py --design bwb_merit_badges
 ```
 
 Normal builds atomically replace `output/<design>/`. Revision builds create immutable `revisions/<design>/rev_000N/` directories. The script generates artifacts only and cannot stream to hardware.
@@ -29,5 +30,6 @@ Only one mode flag may be selected. `--quantity` and `--config` refine a normal 
 ## Current Limits
 
 - The implemented backend supports the native `shot_coins` vector design shape.
+- The `merit_badge_set` backend supports mixed-type rounded tokens with measured title/body wrapping and even slot allocation.
 - Raster engraving, DXF, general OpenSCAD part import, hardware streaming, and arbitrary nesting remain roadmap work.
 - The generated Falcon/basswood job is calibration-only.

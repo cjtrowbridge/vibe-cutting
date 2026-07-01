@@ -31,3 +31,9 @@ The `third_party/` submodules are read-only behavioral references and are never 
 The native vector backend proves the pipeline without external runtime dependencies. The implemented OpenSCAD font adapter exports pinned-font SVG contours, accepts only linear path commands, converts SVG Y-down coordinates to the canonical Y-up system, scales multiline text inside its owning circle, and creates deterministic horizontal hatch engraving. Parameterized parts and projected assemblies remain future OpenSCAD adapter work.
 
 The current design schema and geometry implementation are intentionally narrow. Future design types should add replaceable geometry adapters rather than embedding machine-specific behavior in design files.
+
+## Merit Badge Sets
+
+`merit_badge_set` configs provide a reusable mixed-type sheet mode. The layout engine fills a deterministic rectangular grid and evenly distributes available positions across declared badge types. OpenSCAD measures title and description widths for word wrapping; the pipeline then validates line-box height, text-safe rectangle bounds, rounded-token containment, cut bounds, and non-overlap before artifact installation.
+
+Liberation Sans Bold titles and Regular descriptions are independently pinned and hashed. Rounded-rectangle cut paths and hatch engraving feed the same SVG, PNG, G-code, manifest, staging, and audit pipeline as coin designs.

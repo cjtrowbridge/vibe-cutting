@@ -17,6 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OPENSCAD_TEXT_SOURCE = REPO_ROOT / "openscad" / "text_geometry.scad"
+OPENSCAD_CONTOUR_CACHE = {}
 ARTIFACT_NAMES = {
     "design.svg",
     "preview.png",
@@ -131,6 +132,19 @@ def resolve_design(design_name, config_arg=None):
     }
 
 
+def validate_pinned_font(config, name_key, file_key, hash_key, label):
+    require(config, [name_key, file_key, hash_key], label)
+    font_path = (REPO_ROOT / config[file_key]).resolve()
+    try:
+        font_path.relative_to(REPO_ROOT)
+    except ValueError:
+        fail(f"{label} file must remain inside the repository.")
+    if not font_path.is_file():
+        fail(f"Missing {label.lower()} file: {font_path}")
+    if sha256(font_path) != config[hash_key]:
+        fail(f"Configured {label.lower()} hash does not match: {font_path}")
+
+
 def validate_context(context):
     config = context["config"]
     machine = context["machine"]
@@ -139,15 +153,11 @@ def validate_context(context):
         config,
         [
             "revision",
-            "coin_diameter_mm",
             "sheet_width_mm",
             "sheet_height_mm",
             "edge_margin_mm",
-            "coin_gap_mm",
-            "engraving_inset_mm",
             "layout",
             "quantity",
-            "text_lines",
         ],
         "Design config",
     )
@@ -155,14 +165,83 @@ def validate_context(context):
     require(material, ["id", "composition_known", "thickness_mm", "compatible_modules", "recipes"], "Material profile")
     if not material["composition_known"]:
         fail("Material composition must be known.")
-    if config["layout"] != "hex_max":
-        fail(f"Unsupported layout: {config['layout']}")
-    if config["coin_diameter_mm"] <= 0 or config["coin_gap_mm"] < 0 or config["edge_margin_mm"] < 0:
-        fail("Coin diameter, gap, and margin values are invalid.")
-    if not 0 < config["engraving_inset_mm"] < config["coin_diameter_mm"] / 2:
-        fail("Engraving inset must be greater than zero and smaller than the coin radius.")
-    if not config["text_lines"] or any(not isinstance(line, str) for line in config["text_lines"]):
-        fail("text_lines must contain strings.")
+    design_type = config.get("design_type", "coin_sheet")
+    if config["edge_margin_mm"] < 0:
+        fail("Sheet edge margin cannot be negative.")
+    if design_type == "coin_sheet":
+        require(
+            config,
+            ["coin_diameter_mm", "coin_gap_mm", "engraving_inset_mm", "text_lines"],
+            "Coin config",
+        )
+        if config["layout"] != "hex_max":
+            fail(f"Unsupported coin layout: {config['layout']}")
+        if config["coin_diameter_mm"] <= 0 or config["coin_gap_mm"] < 0:
+            fail("Coin diameter and gap values are invalid.")
+        if not 0 < config["engraving_inset_mm"] < config["coin_diameter_mm"] / 2:
+            fail("Engraving inset must be greater than zero and smaller than the coin radius.")
+        if not config["text_lines"] or any(not isinstance(line, str) for line in config["text_lines"]):
+            fail("text_lines must contain strings.")
+    elif design_type == "merit_badge_set":
+        require(
+            config,
+            [
+                "set_name",
+                "token_width_mm",
+                "token_height_mm",
+                "corner_radius_mm",
+                "token_gap_mm",
+                "engraving_inset_mm",
+                "text_padding_mm",
+                "title_font_name",
+                "title_font_file",
+                "title_font_sha256",
+                "title_font_size_mm",
+                "title_line_height_mm",
+                "body_font_size_mm",
+                "body_line_height_mm",
+                "section_gap_mm",
+                "badges",
+            ],
+            "Merit badge config",
+        )
+        if config["layout"] != "grid_fill":
+            fail(f"Unsupported merit badge layout: {config['layout']}")
+        if config["token_width_mm"] <= 0 or config["token_height_mm"] <= 0 or config["token_gap_mm"] < 0:
+            fail("Merit badge token dimensions and gap are invalid.")
+        if not 0 <= config["corner_radius_mm"] <= min(config["token_width_mm"], config["token_height_mm"]) / 2:
+            fail("Merit badge corner radius is invalid.")
+        if not 0 < config["engraving_inset_mm"] < min(config["token_width_mm"], config["token_height_mm"]) / 2:
+            fail("Merit badge engraving inset is invalid.")
+        if config["text_padding_mm"] < config["corner_radius_mm"]:
+            fail("Merit badge text padding must be at least the corner radius.")
+        if not config["badges"]:
+            fail("Merit badge set must contain at least one badge type.")
+        for badge in config["badges"]:
+            require(badge, ["id", "title", "description"], "Merit badge")
+            if not all(isinstance(badge[key], str) and badge[key].strip() for key in ("id", "title", "description")):
+                fail("Merit badge id, title, and description must be non-empty strings.")
+        badge_ids = [badge["id"] for badge in config["badges"]]
+        if len(set(badge_ids)) != len(badge_ids):
+            fail("Merit badge ids must be unique.")
+        for key in (
+            "title_font_size_mm",
+            "title_line_height_mm",
+            "body_font_size_mm",
+            "body_line_height_mm",
+            "section_gap_mm",
+        ):
+            if config[key] <= 0:
+                fail(f"Merit badge typography value must be greater than zero: {key}")
+        validate_pinned_font(
+            config,
+            "title_font_name",
+            "title_font_file",
+            "title_font_sha256",
+            "Title font",
+        )
+    else:
+        fail(f"Unsupported design type: {design_type}")
     text_backend = config.get("text_backend", "native_stroke")
     if text_backend == "native_stroke":
         unsupported = sorted({char for line in config["text_lines"] for char in line.upper()} - set(FONT))
@@ -191,15 +270,7 @@ def validate_context(context):
             fail("Font line gap ratio cannot be negative.")
         if config["openscad_curve_segments"] < 8:
             fail("OpenSCAD curve segments must be at least 8.")
-        font_path = (REPO_ROOT / config["font_file"]).resolve()
-        try:
-            font_path.relative_to(REPO_ROOT)
-        except ValueError:
-            fail("Font file must remain inside the repository.")
-        if not font_path.is_file():
-            fail(f"Missing configured font file: {font_path}")
-        if sha256(font_path) != config["font_sha256"]:
-            fail(f"Configured font hash does not match: {font_path}")
+        validate_pinned_font(config, "font_name", "font_file", "font_sha256", "Body font")
         if shutil.which("openscad") is None:
             fail("OpenSCAD is required by this design but was not found.")
         installed_version = openscad_version()
@@ -225,7 +296,7 @@ def validate_context(context):
             fail(f"{operation} power percentage is invalid.")
 
 
-def compute_layout(config, machine, quantity_override=None):
+def compute_coin_layout(config, machine, quantity_override=None):
     diameter = float(config["coin_diameter_mm"])
     gap = float(config["coin_gap_mm"])
     margin = float(config["edge_margin_mm"])
@@ -267,6 +338,7 @@ def compute_layout(config, machine, quantity_override=None):
         fail(f"Requested quantity {requested} is outside the supported range 1-{maximum}.")
     return {
         "centers": centers[:requested],
+        "placements": [{"center": center} for center in centers[:requested]],
         "maximum_quantity": maximum,
         "quantity": requested,
         "rows": rows,
@@ -278,6 +350,93 @@ def compute_layout(config, machine, quantity_override=None):
         "envelope_width_mm": envelope_width,
         "envelope_height_mm": envelope_height,
     }
+
+
+def allocate_badge_counts(badges, quantity):
+    if quantity < len(badges):
+        fail(
+            f"Requested quantity {quantity} cannot include all {len(badges)} merit badge types."
+        )
+    base, remainder = divmod(quantity, len(badges))
+    return {
+        badge["id"]: base + (1 if index < remainder else 0)
+        for index, badge in enumerate(badges)
+    }
+
+
+def compute_merit_badge_layout(config, machine, quantity_override=None):
+    token_width = float(config["token_width_mm"])
+    token_height = float(config["token_height_mm"])
+    gap = float(config["token_gap_mm"])
+    margin = float(config["edge_margin_mm"])
+    effective_width = min(float(config["sheet_width_mm"]), float(machine["work_area_mm"]["width"]))
+    effective_height = min(float(config["sheet_height_mm"]), float(machine["work_area_mm"]["height"]))
+    usable_width = effective_width - 2 * margin
+    usable_height = effective_height - 2 * margin
+    columns = math.floor((usable_width + gap) / (token_width + gap))
+    rows = math.floor((usable_height + gap) / (token_height + gap))
+    if rows < 1 or columns < 1:
+        fail("No merit badge token fits inside the effective work area.")
+    maximum = rows * columns
+    requested = maximum if quantity_override is None else int(quantity_override)
+    if requested < 1 or requested > maximum:
+        fail(f"Requested quantity {requested} is outside the supported range 1-{maximum}.")
+    badge_counts = allocate_badge_counts(config["badges"], requested)
+    envelope_width = columns * token_width + (columns - 1) * gap
+    envelope_height = rows * token_height + (rows - 1) * gap
+    x_origin = margin + (usable_width - envelope_width) / 2
+    y_origin = margin + (usable_height - envelope_height) / 2
+    centers = [
+        (
+            x_origin + token_width / 2 + column * (token_width + gap),
+            y_origin + token_height / 2 + row * (token_height + gap),
+        )
+        for row in range(rows)
+        for column in range(columns)
+    ][:requested]
+    badge_by_id = {badge["id"]: badge for badge in config["badges"]}
+    allocated_badges = [
+        badge_by_id[badge_id]
+        for badge_id, count in badge_counts.items()
+        for _ in range(count)
+    ]
+    placements = [
+        {
+            "center": center,
+            "badge": badge,
+            "copy_index": index + 1,
+        }
+        for badge in config["badges"]
+        for index, center in enumerate(
+            [
+                centers[position]
+                for position, allocated_badge in enumerate(allocated_badges)
+                if allocated_badge["id"] == badge["id"]
+            ]
+        )
+    ]
+    placements.sort(key=lambda placement: centers.index(placement["center"]))
+    return {
+        "centers": centers,
+        "placements": placements,
+        "badge_counts": badge_counts,
+        "maximum_quantity": maximum,
+        "quantity": requested,
+        "rows": rows,
+        "columns": columns,
+        "pitch_x_mm": token_width + gap,
+        "pitch_y_mm": token_height + gap,
+        "effective_width_mm": effective_width,
+        "effective_height_mm": effective_height,
+        "envelope_width_mm": envelope_width,
+        "envelope_height_mm": envelope_height,
+    }
+
+
+def compute_layout(config, machine, quantity_override=None):
+    if config.get("design_type", "coin_sheet") == "merit_badge_set":
+        return compute_merit_badge_layout(config, machine, quantity_override)
+    return compute_coin_layout(config, machine, quantity_override)
 
 
 def text_scale(diameter, lines, inset):
@@ -377,10 +536,14 @@ def parse_linear_svg_path(path_data):
     return contours
 
 
-def render_openscad_text(text, config):
+def render_openscad_text(text, config, font_name=None):
     executable = shutil.which("openscad")
     if executable is None:
         fail("OpenSCAD is required by this design but was not found.")
+    selected_font = font_name or config["font_name"]
+    cache_key = (text, selected_font, int(config["openscad_curve_segments"]))
+    if cache_key in OPENSCAD_CONTOUR_CACHE:
+        return OPENSCAD_CONTOUR_CACHE[cache_key]
     with tempfile.TemporaryDirectory(prefix="vibe-cutting-openscad-") as temporary_directory:
         svg_path = Path(temporary_directory) / "text.svg"
         command = [
@@ -390,7 +553,7 @@ def render_openscad_text(text, config):
             "-D",
             f"text_value={json.dumps(text)}",
             "-D",
-            f"font_name={json.dumps(config['font_name'])}",
+            f"font_name={json.dumps(selected_font)}",
             "-D",
             "font_size=100",
             "-D",
@@ -411,7 +574,7 @@ def render_openscad_text(text, config):
         if result.returncode != 0:
             fail(f"OpenSCAD text export failed for {text!r}: {diagnostics.strip()}")
         if "can't find font" in diagnostics.lower():
-            fail(f"OpenSCAD could not find configured font: {config['font_name']}")
+            fail(f"OpenSCAD could not find configured font: {selected_font}")
         try:
             root = ElementTree.parse(svg_path).getroot()
         except (ElementTree.ParseError, FileNotFoundError) as exc:
@@ -424,6 +587,7 @@ def render_openscad_text(text, config):
                 contours.extend(parse_linear_svg_path(path_data))
         if not contours:
             fail(f"OpenSCAD produced no text contours for {text!r}.")
+        OPENSCAD_CONTOUR_CACHE[cache_key] = contours
         return contours
 
 
@@ -503,6 +667,121 @@ def openscad_font_segments(config):
     return hatch_contours(scaled, float(config["hatch_spacing_mm"]))
 
 
+def centered_scaled_contours(text, config, font_name, font_size_mm):
+    contours = render_openscad_text(text, config, font_name)
+    minimum_x, minimum_y, maximum_x, maximum_y = contour_bounds(contours)
+    center_x = (minimum_x + maximum_x) / 2
+    center_y = (minimum_y + maximum_y) / 2
+    scale = float(font_size_mm) / 100
+    return [
+        [
+            (
+                (point_x - center_x) * scale,
+                (center_y - point_y) * scale,
+            )
+            for point_x, point_y in contour
+        ]
+        for contour in contours
+    ]
+
+
+def measured_text_width(text, config, font_name, font_size_mm):
+    contours = centered_scaled_contours(text, config, font_name, font_size_mm)
+    minimum_x, _, maximum_x, _ = contour_bounds(contours)
+    return maximum_x - minimum_x
+
+
+def wrap_measured_text(text, maximum_width, config, font_name, font_size_mm):
+    words = text.split()
+    if not words:
+        fail("Cannot wrap empty merit badge text.")
+    lines = []
+    current = words[0]
+    if measured_text_width(current, config, font_name, font_size_mm) > maximum_width + 1e-9:
+        fail(f"Merit badge word is too wide for its token: {current}")
+    for word in words[1:]:
+        candidate = f"{current} {word}"
+        if measured_text_width(candidate, config, font_name, font_size_mm) <= maximum_width + 1e-9:
+            current = candidate
+            continue
+        lines.append(current)
+        current = word
+        if measured_text_width(current, config, font_name, font_size_mm) > maximum_width + 1e-9:
+            fail(f"Merit badge word is too wide for its token: {current}")
+    lines.append(current)
+    return lines
+
+
+def merit_badge_relative_segments(config, badge):
+    inner_width = float(config["token_width_mm"]) - 2 * float(config["text_padding_mm"])
+    inner_height = float(config["token_height_mm"]) - 2 * float(config["text_padding_mm"])
+    title_lines = wrap_measured_text(
+        badge["title"],
+        inner_width,
+        config,
+        config["title_font_name"],
+        config["title_font_size_mm"],
+    )
+    body_lines = wrap_measured_text(
+        badge["description"],
+        inner_width,
+        config,
+        config["font_name"],
+        config["body_font_size_mm"],
+    )
+    title_block_height = len(title_lines) * float(config["title_line_height_mm"])
+    body_block_height = len(body_lines) * float(config["body_line_height_mm"])
+    total_height = title_block_height + float(config["section_gap_mm"]) + body_block_height
+    if total_height > inner_height + 1e-9:
+        fail(
+            f"Merit badge text does not fit token height: {badge['id']} "
+            f"needs {total_height:.3f}mm, has {inner_height:.3f}mm"
+        )
+    contours = []
+    cursor = total_height / 2
+    for text in title_lines:
+        line_contours = centered_scaled_contours(
+            text,
+            config,
+            config["title_font_name"],
+            config["title_font_size_mm"],
+        )
+        _, minimum_y, _, maximum_y = contour_bounds(line_contours)
+        if maximum_y - minimum_y > config["title_line_height_mm"] + 1e-9:
+            fail(f"Merit badge title line height is too small: {badge['id']}")
+        line_center_y = cursor - float(config["title_line_height_mm"]) / 2
+        contours.extend(
+            [[(point_x, point_y + line_center_y) for point_x, point_y in contour] for contour in line_contours]
+        )
+        cursor -= float(config["title_line_height_mm"])
+    cursor -= float(config["section_gap_mm"])
+    for text in body_lines:
+        line_contours = centered_scaled_contours(
+            text,
+            config,
+            config["font_name"],
+            config["body_font_size_mm"],
+        )
+        _, minimum_y, _, maximum_y = contour_bounds(line_contours)
+        if maximum_y - minimum_y > config["body_line_height_mm"] + 1e-9:
+            fail(f"Merit badge body line height is too small: {badge['id']}")
+        line_center_y = cursor - float(config["body_line_height_mm"]) / 2
+        contours.extend(
+            [[(point_x, point_y + line_center_y) for point_x, point_y in contour] for contour in line_contours]
+        )
+        cursor -= float(config["body_line_height_mm"])
+    segments = hatch_contours(contours, float(config["hatch_spacing_mm"]))
+    for segment in segments:
+        for point_x, point_y in ((segment[0], segment[1]), (segment[2], segment[3])):
+            if abs(point_x) > inner_width / 2 + 1e-9 or abs(point_y) > inner_height / 2 + 1e-9:
+                fail(f"Merit badge engraving exceeds its text-safe rectangle: {badge['id']}")
+    return {
+        "segments": segments,
+        "title_lines": title_lines,
+        "body_lines": body_lines,
+    }
+
+
 def assert_segments_within_circle(segments, center, usable_radius):
     center_x, center_y = center
     for segment_index, segment in enumerate(segments):
@@ -518,7 +797,67 @@ def assert_segments_within_circle(segments, center, usable_radius):
                 )
 
 
+def point_inside_rounded_rectangle(point, center, width, height, radius, inset):
+    point_x, point_y = point
+    center_x, center_y = center
+    half_width = width / 2 - inset
+    half_height = height / 2 - inset
+    inner_radius = max(0.0, radius - inset)
+    delta_x = abs(point_x - center_x)
+    delta_y = abs(point_y - center_y)
+    if delta_x > half_width + 1e-9 or delta_y > half_height + 1e-9:
+        return False
+    if inner_radius == 0 or delta_x <= half_width - inner_radius or delta_y <= half_height - inner_radius:
+        return True
+    return (
+        math.hypot(
+            delta_x - (half_width - inner_radius),
+            delta_y - (half_height - inner_radius),
+        )
+        <= inner_radius + 1e-9
+    )
+
+
+def assert_segments_within_rounded_rectangle(segments, center, width, height, radius, inset):
+    for segment_index, segment in enumerate(segments):
+        for endpoint_index, point in enumerate(
+            ((segment[0], segment[1]), (segment[2], segment[3]))
+        ):
+            if not point_inside_rounded_rectangle(point, center, width, height, radius, inset):
+                fail(
+                    "Engraving geometry exceeds its rounded token boundary: "
+                    f"segment={segment_index} endpoint={endpoint_index}"
+                )
+
+
 def all_engraving_segments(config, layout, relative_segments=None):
+    if config.get("design_type", "coin_sheet") == "merit_badge_set":
+        segments = []
+        badge_geometry = {}
+        for placement in layout["placements"]:
+            badge = placement["badge"]
+            if badge["id"] not in badge_geometry:
+                badge_geometry[badge["id"]] = merit_badge_relative_segments(config, badge)
+            center_x, center_y = placement["center"]
+            token_segments = [
+                (
+                    segment[0] + center_x,
+                    segment[1] + center_y,
+                    segment[2] + center_x,
+                    segment[3] + center_y,
+                )
+                for segment in badge_geometry[badge["id"]]["segments"]
+            ]
+            assert_segments_within_rounded_rectangle(
+                token_segments,
+                placement["center"],
+                float(config["token_width_mm"]),
+                float(config["token_height_mm"]),
+                float(config["corner_radius_mm"]),
+                float(config["engraving_inset_mm"]),
+            )
+            segments.extend(token_segments)
+        return segments
     diameter = float(config["coin_diameter_mm"])
     inset = float(config["engraving_inset_mm"])
     usable_radius = diameter / 2 - inset
@@ -544,6 +883,66 @@ def all_engraving_segments(config, layout, relative_segments=None):
     return segments
 
 
+def circle_path(center, radius, segments):
+    center_x, center_y = center
+    return [
+        (
+            center_x + radius * math.cos(2 * math.pi * index / segments),
+            center_y + radius * math.sin(2 * math.pi * index / segments),
+        )
+        for index in range(segments + 1)
+    ]
+
+
+def rounded_rectangle_path(center, width, height, radius, corner_segments):
+    center_x, center_y = center
+    half_width = width / 2
+    half_height = height / 2
+    corners = (
+        (center_x + half_width - radius, center_y + half_height - radius, 0),
+        (center_x - half_width + radius, center_y + half_height - radius, 90),
+        (center_x - half_width + radius, center_y - half_height + radius, 180),
+        (center_x + half_width - radius, center_y - half_height + radius, 270),
+    )
+    points = []
+    for corner_x, corner_y, start_angle in corners:
+        points.extend(
+            (
+                corner_x + radius * math.cos(math.radians(start_angle + 90 * index / corner_segments)),
+                corner_y + radius * math.sin(math.radians(start_angle + 90 * index / corner_segments)),
+            )
+            for index in range(corner_segments + 1)
+        )
+    if points[-1] != points[0]:
+        points.append(points[0])
+    return points
+
+
+def cut_paths(config, layout, circle_segments=96, corner_segments=8):
+    if config.get("design_type", "coin_sheet") == "merit_badge_set":
+        paths = [
+            rounded_rectangle_path(
+                placement["center"],
+                float(config["token_width_mm"]),
+                float(config["token_height_mm"]),
+                float(config["corner_radius_mm"]),
+                corner_segments,
+            )
+            for placement in layout["placements"]
+        ]
+    else:
+        radius = float(config["coin_diameter_mm"]) / 2
+        paths = [circle_path(center, radius, circle_segments) for center in layout["centers"]]
+    for path in paths:
+        for point_x, point_y in path:
+            if not (
+                -1e-9 <= point_x <= layout["effective_width_mm"] + 1e-9
+                and -1e-9 <= point_y <= layout["effective_height_mm"] + 1e-9
+            ):
+                fail(f"Cut geometry exceeds the effective work area at ({point_x:.4f}, {point_y:.4f}).")
+    return paths
+
+
 def generate_svg(config, layout, segments):
     width = layout["effective_width_mm"]
     height = layout["effective_height_mm"]
@@ -561,8 +960,14 @@ def generate_svg(config, layout, segments):
     lines.append("</g>")
     lines.append('<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">')
     lines.extend(
-        f'<circle cx="{x:.3f}" cy="{y:.3f}" r="{float(config["coin_diameter_mm"]) / 2:.3f}"/>'
-        for x, y in layout["centers"]
+        '<path d="'
+        + " ".join(
+            [f"M {path[0][0]:.3f},{path[0][1]:.3f}"]
+            + [f"L {point_x:.3f},{point_y:.3f}" for point_x, point_y in path[1:]]
+            + ["Z"]
+        )
+        + '"/>'
+        for path in cut_paths(config, layout, circle_segments=144, corner_segments=12)
     )
     lines.extend(["</g>", "</g>", "</svg>"])
     return "\n".join(lines) + "\n"
@@ -597,16 +1002,10 @@ def generate_gcode(config, machine, material, layout, segments):
             ]
         )
     lines.extend(["; through_cut", f"F{cut['speed_mm_per_min']}"])
-    radius = float(config["coin_diameter_mm"]) / 2
-    segment_count = 96
-    for center_x, center_y in layout["centers"]:
-        start_x = center_x + radius
-        lines.extend(["M5", f"G0 X{start_x:.3f} Y{center_y:.3f}", f"M4 S{cut_power}"])
-        for index in range(1, segment_count + 1):
-            angle = 2 * math.pi * index / segment_count
-            x = center_x + radius * math.cos(angle)
-            y = center_y + radius * math.sin(angle)
-            lines.append(f"G1 X{x:.3f} Y{y:.3f}")
+    for path in cut_paths(config, layout, circle_segments=96, corner_segments=8):
+        lines.extend(["M5", f"G0 X{path[0][0]:.3f} Y{path[0][1]:.3f}", f"M4 S{cut_power}"])
+        for point_x, point_y in path[1:]:
+            lines.append(f"G1 X{point_x:.3f} Y{point_y:.3f}")
         lines.append("M5")
     lines.extend(["M5", "G0 X0.000 Y0.000", "M5", "; end"])
     return "\n".join(lines) + "\n"
@@ -657,14 +1056,12 @@ def generate_preview_png(config, layout, segments):
             height - 1 - round(y2 * pixels_per_mm),
             (30, 80, 220),
         )
-    radius = float(config["coin_diameter_mm"]) / 2
-    for center_x, center_y in layout["centers"]:
+    for path in cut_paths(config, layout, circle_segments=144, corner_segments=12):
         previous = None
-        for index in range(145):
-            angle = 2 * math.pi * index / 144
+        for point_x, point_y in path:
             point = (
-                round((center_x + radius * math.cos(angle)) * pixels_per_mm),
-                height - 1 - round((center_y + radius * math.sin(angle)) * pixels_per_mm),
+                round(point_x * pixels_per_mm),
+                height - 1 - round(point_y * pixels_per_mm),
             )
             if previous:
                 draw_line(image, width, height, previous[0], previous[1], point[0], point[1], (220, 30, 30))
@@ -687,9 +1084,10 @@ def job_manifest(context, layout, segment_count):
         warnings.append("Material recipes are unverified manufacturer seed values; calibration is required.")
     if config.get("text_backend") == "openscad_font":
         warnings.append("Normal-font hatch spacing is unverified; run an engraving calibration before fabrication.")
-    return {
+    manifest = {
         "schema_version": 1,
         "design": context["project"]["id"],
+        "design_type": config.get("design_type", "coin_sheet"),
         "revision": config["revision"],
         "machine_profile": context["machine"]["id"],
         "machine_profile_status": context["machine"]["profile_status"],
@@ -698,7 +1096,6 @@ def job_manifest(context, layout, segment_count):
         "readiness": "calibration_only",
         "stock_mm": [config["sheet_width_mm"], config["sheet_height_mm"], context["material"]["thickness_mm"]],
         "effective_work_area_mm": [layout["effective_width_mm"], layout["effective_height_mm"]],
-        "coin_diameter_mm": config["coin_diameter_mm"],
         "engraving_inset_mm": config["engraving_inset_mm"],
         "quantity": layout["quantity"],
         "maximum_quantity": layout["maximum_quantity"],
@@ -706,11 +1103,10 @@ def job_manifest(context, layout, segment_count):
             "type": config["layout"],
             "rows": layout["rows"],
             "columns": layout["columns"],
-            "gap_mm": config["coin_gap_mm"],
+            "gap_mm": config.get("coin_gap_mm", config.get("token_gap_mm")),
             "edge_margin_mm": config["edge_margin_mm"],
             "envelope_mm": [layout["envelope_width_mm"], layout["envelope_height_mm"]],
         },
-        "engraving_text": " ".join(config["text_lines"]).lower(),
         "engraving_segment_count": segment_count,
         "engraving": {
             "backend": config.get("text_backend", "native_stroke"),
@@ -727,6 +1123,33 @@ def job_manifest(context, layout, segment_count):
         "recipes": context["material"]["recipes"],
         "warnings": warnings,
     }
+    if config.get("design_type", "coin_sheet") == "merit_badge_set":
+        manifest["set_name"] = config["set_name"]
+        manifest["token"] = {
+            "shape": "rounded_rectangle",
+            "width_mm": config["token_width_mm"],
+            "height_mm": config["token_height_mm"],
+            "corner_radius_mm": config["corner_radius_mm"],
+            "text_padding_mm": config["text_padding_mm"],
+        }
+        manifest["badges"] = [
+            {
+                "id": badge["id"],
+                "title": badge["title"],
+                "description": badge["description"],
+                "quantity": layout["badge_counts"][badge["id"]],
+            }
+            for badge in config["badges"]
+        ]
+        manifest["engraving"]["title_font_name"] = config["title_font_name"]
+        manifest["engraving"]["title_font_file"] = config["title_font_file"]
+        manifest["engraving"]["title_font_sha256"] = config["title_font_sha256"]
+        manifest["engraving"]["title_font_size_mm"] = config["title_font_size_mm"]
+        manifest["engraving"]["body_font_size_mm"] = config["body_font_size_mm"]
+    else:
+        manifest["coin_diameter_mm"] = config["coin_diameter_mm"]
+        manifest["engraving_text"] = " ".join(config["text_lines"]).lower()
+    return manifest
 
 
 def write_operations(path, material):
@@ -757,7 +1180,7 @@ def write_setup(path, context, layout):
                 f"- Material: {context['material']['name']} ({context['material']['profile_status']})",
                 f"- Stock: {context['config']['sheet_width_mm']} x {context['config']['sheet_height_mm']} x {context['material']['thickness_mm']} mm",
                 f"- Effective work area: {layout['effective_width_mm']} x {layout['effective_height_mm']} mm",
-                f"- Coin quantity: {layout['quantity']}",
+                f"- Token quantity: {layout['quantity']}",
                 f"- Engraving backend: {context['config'].get('text_backend', 'native_stroke')}",
                 f"- Engraving font: {context['config'].get('font_name', 'built-in continuous-line vector font')}",
                 "- Confirm ventilation, air assist, lens condition, focus, enclosure, emergency stop, and fire response equipment.",
@@ -781,6 +1204,8 @@ def source_records(context):
     if context["config"].get("text_backend") == "openscad_font":
         paths.append(OPENSCAD_TEXT_SOURCE)
         paths.append((REPO_ROOT / context["config"]["font_file"]).resolve())
+        if context["config"].get("design_type") == "merit_badge_set":
+            paths.append((REPO_ROOT / context["config"]["title_font_file"]).resolve())
     return [{"path": str(path.relative_to(REPO_ROOT)), "sha256": sha256(path)} for path in paths]
 
 
@@ -869,12 +1294,16 @@ def execute(args):
         audit(REPO_ROOT / "output" / args.design)
         return
     relative_segments = None
-    if context["config"].get("text_backend") == "openscad_font":
+    segments = None
+    if context["config"].get("design_type") == "merit_badge_set":
+        segments = all_engraving_segments(context["config"], layout)
+    elif context["config"].get("text_backend") == "openscad_font":
         relative_segments = openscad_font_segments(context["config"])
     if args.dry_run or args.validate_only:
         print(f"[laser] {'Dry run' if args.dry_run else 'Validation'} passed; no artifacts installed.")
         return
-    segments = all_engraving_segments(context["config"], layout, relative_segments)
+    if segments is None:
+        segments = all_engraving_segments(context["config"], layout, relative_segments)
     temp_parent = REPO_ROOT / ".tmp" / "laser" / args.design
     temp_parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=f"{revision}_", dir=temp_parent))

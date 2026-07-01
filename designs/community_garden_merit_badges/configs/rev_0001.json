@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "revision": "rev_0001",
+  "design_type": "merit_badge_set",
+  "set_name": "Community Garden",
+  "sheet_width_mm": 300.0,
+  "sheet_height_mm": 300.0,
+  "edge_margin_mm": 2.0,
+  "token_width_mm": 72.0,
+  "token_height_mm": 42.0,
+  "corner_radius_mm": 4.0,
+  "token_gap_mm": 2.0,
+  "engraving_inset_mm": 2.0,
+  "text_padding_mm": 4.0,
+  "layout": "grid_fill",
+  "quantity": "maximum",
+  "text_backend": "openscad_font",
+  "font_name": "Liberation Sans:style=Regular",
+  "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+  "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+  "title_font_name": "Liberation Sans:style=Bold",
+  "title_font_file": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
+  "title_font_sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939",
+  "font_fill": "horizontal_hatch",
+  "hatch_spacing_mm": 0.18,
+  "font_line_gap_ratio": 0.22,
+  "title_font_size_mm": 3.6,
+  "title_line_height_mm": 5.0,
+  "body_font_size_mm": 3.0,
+  "body_line_height_mm": 4.0,
+  "section_gap_mm": 1.5,
+  "openscad_curve_segments": 48,
+  "openscad_minimum_version": "2021.01",
+  "badges": [
+    {
+      "id": "seed_librarian",
+      "title": "Seed Librarian",
+      "description": "Preserves, labels, shares, and remembers which tiny envelope contains next season’s abundance."
+    },
+    {
+      "id": "compost_goblin",
+      "title": "Compost Goblin",
+      "description": "Transforms rot, scraps, leaves, and questionable buckets into dark civic magic."
+    },
+    {
+      "id": "irrigation_whisperer",
+      "title": "Irrigation Whisperer",
+      "description": "Understands hoses, timers, leaks, pressure, and the emotional needs of thirsty plants."
+    },
+    {
+      "id": "tomato_diplomat",
+      "title": "Tomato Diplomat",
+      "description": "Negotiates trellises, pruning, volunteers, and the annual crisis of too many tomatoes."
+    },
+    {
+      "id": "pollinator_concierge",
+      "title": "Pollinator Concierge",
+      "description": "Creates landing zones for bees, butterflies, hummingbirds, and other tiny garden celebrities."
+    },
+    {
+      "id": "seedling_midwife",
+      "title": "Seedling Midwife",
+      "description": "Coaxes fragile starts through germination, transplant shock, hardening off, and existential dread."
+    },
+    {
+      "id": "harvest_distribution_agent",
+      "title": "Harvest Distribution Agent",
+      "description": "Makes sure abundance becomes meals, gifts, pantry donations, and not just zucchini trauma."
+    },
+    {
+      "id": "garden_gossip_archivist",
+      "title": "Garden Gossip Archivist",
+      "description": "Keeps track of what worked, what failed, who planted what, and why the squash tunnel became controversial."
+    },
+    {
+      "id": "permaculture_pattern_scout",
+      "title": "Permaculture Pattern Scout",
+      "description": "Sees edges, guilds, flows, microclimates, and the possibility of a food forest in every awkward corner."
+    },
+    {
+      "id": "herb_spiral_initiate",
+      "title": "Herb Spiral Initiate",
+      "description": "Builds tiny topographies for thyme, sage, oregano, and the dream of Mediterranean drainage."
+    },
+    {
+      "id": "mutual_aid_produce_fairy",
+      "title": "Mutual Aid Produce Fairy",
+      "description": "Quietly turns garden surplus into nourishment for people who need it."
+    }
+  ]
+}

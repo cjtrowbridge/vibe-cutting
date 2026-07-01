@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Merit Badge Set",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "revision",
+    "design_type",
+    "set_name",
+    "token_width_mm",
+    "token_height_mm",
+    "corner_radius_mm",
+    "token_gap_mm",
+    "text_padding_mm",
+    "title_font_name",
+    "title_font_size_mm",
+    "font_name",
+    "body_font_size_mm",
+    "badges"
+  ],
+  "properties": {
+    "design_type": {
+      "const": "merit_badge_set"
+    },
+    "badges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
