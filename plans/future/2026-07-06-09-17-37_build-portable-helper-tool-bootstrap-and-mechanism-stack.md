@@ -60,19 +60,19 @@ Each phase must define:
 
 ## Execution Plan
 
-- [ ] 1. Define portable host and bootstrap contracts.
-  - [ ] 1.1 Define the supported OS/architecture matrix for Debian-family Linux, Windows, and macOS.
-  - [ ] 1.2 Define unsupported-host behavior and required diagnostic output.
-  - [ ] 1.3 Define the minimum ordinary system capabilities assumed by each native launcher.
-  - [ ] 1.4 Define repository-local installation roots beneath `.tools/`.
-  - [ ] 1.5 Add `.tools/` and generated host-readiness reports to `.gitignore`.
-  - [ ] 1.6 Define approval gates for downloads, operating-system package managers, administrative privileges, and large tool environments.
-  - [ ] 1.7 Define bootstrap states: `uninitialized`, `manager-ready`, `base-ready`, `tools-partial`, `tools-ready`, and `verified`.
-  - [ ] 1.8 Define helper readiness states: `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`.
-  - [ ] 1.9 Record an architecture decision for the zero-Python bootstrap and polymorphic helper-provider model.
-  - [ ] 1.10 Define the bounded child-plan template and acceptance gate for each delivery phase.
-  - [ ] 1.11 Define Git as a verified host prerequisite and document minimum supported versions.
-  - [ ] 1.12 Define the managed `run` command contract for repository Python scripts and other repo-local commands.
+- [x] 1. Define portable host and bootstrap contracts.
+  - [x] 1.1 Define the supported OS/architecture matrix for Debian-family Linux, Windows, and macOS.
+  - [x] 1.2 Define unsupported-host behavior and required diagnostic output.
+  - [x] 1.3 Define the minimum ordinary system capabilities assumed by each native launcher.
+  - [x] 1.4 Define repository-local installation roots beneath `.tools/`.
+  - [x] 1.5 Add `.tools/` and generated host-readiness reports to `.gitignore`.
+  - [x] 1.6 Define approval gates for downloads, operating-system package managers, administrative privileges, and large tool environments.
+  - [x] 1.7 Define bootstrap states: `uninitialized`, `manager-ready`, `base-ready`, `tools-partial`, `tools-ready`, and `verified`.
+  - [x] 1.8 Define helper readiness states: `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`.
+  - [x] 1.9 Record an architecture decision for the zero-Python bootstrap and polymorphic helper-provider model.
+  - [x] 1.10 Define the bounded child-plan template and acceptance gate for each delivery phase.
+  - [x] 1.11 Define Git as a verified host prerequisite and document minimum supported versions.
+  - [x] 1.12 Define the managed `run` command contract for repository Python scripts and other repo-local commands.
 
 - [ ] 2. Create the `setup/` bootstrap surface.
   - [ ] 2.1 Create `setup/README.md` with Linux/macOS and Windows bootstrap commands.

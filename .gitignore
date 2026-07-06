@@ -1,4 +1,6 @@
 .tmp/
+.tools/
+reports/host-readiness/
 output/
 revisions/
 __pycache__/

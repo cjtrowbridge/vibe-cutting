@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-10-42-46 | plans/past/2026-07-06-10-29-35_define-portable-helper-bootstrap-contracts.md | Define Portable Helper Bootstrap Contracts | Complete Phase 0 by fixing host prerequisites, bootstrap boundaries, readiness states, managed command invocation, and gated child-plan acceptance rules.
 2026-07-06-10-27-07 | plans/past/2026-07-06-08-17-15_create-helper-tool-adapter-system.md | Create Helper Tool Adapter System | Create a reusable helper-tool foundation, add Boxes.py support, and pin the initial mechanical-geometry helper repositories for later integration.
 2026-07-06-07-44-51 | plans/past/2026-07-06-07-42-40_add-and-review-boxes-submodule.md | Add and Review Boxes Submodule | Add florianfesti/boxes as a third-party submodule, inspect its contents, and explain its architecture without integrating it yet.
 2026-07-01-10-50-25 | plans/past/2026-07-01-10-32-32_build-reusable-merit-badge-sheets.md | Build Reusable Merit Badge Sheets | Add a reusable mixed-type merit-badge sheet mode and produce BWB, queer sex party, and community garden starter sets with readable title-and-description text.

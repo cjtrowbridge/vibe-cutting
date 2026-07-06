@@ -29,6 +29,28 @@ Initialize or update all submodules:
 git submodule update --init --recursive
 ```
 
+## Portable Bootstrap Contract
+
+Git 2.31+ and the platform-native shell or PowerShell are the only development tools the portable bootstrap may assume. Do not assume host Python, Pixi, Conda, OpenSCAD, FreeCAD, or helper dependencies.
+
+Before implementing or changing bootstrap behavior, read:
+
+- `references/portable-helper-host-contract.md`
+- `references/helper-readiness-states.md`
+- `references/managed-bootstrap-command-contract.md`
+- `docs/decisions/0001-portable-helper-bootstrap-and-provider-model.md`
+
+The target managed invocation is:
+
+```text
+./setup/bootstrap.sh run -- <repo-command>
+.\setup\bootstrap.ps1 run -- <repo-command>
+```
+
+Until Phase 1 implements those launchers, `python3 scripts/helper_tool.py` remains a transitional development-host command and must not be described as clean-host portable.
+
+Execute the helper-stack roadmap through one bounded child plan per phase. Use `templates/helper-stack-phase-plan.md`, produce an acceptance report from `templates/helper-stack-phase-acceptance-report.md`, archive the accepted child plan, and obtain approval before promoting the next phase.
+
 Inspect and prepare callable helper tools:
 
 ```bash
@@ -67,3 +89,11 @@ Use the relevant laser playbook before changing designs, profiles, build behavio
 
 - `references/helper-tool-contract.md`
 - `references/geometry-backend-selection.md`
+- `references/portable-helper-host-contract.md`
+- `references/helper-readiness-states.md`
+- `references/managed-bootstrap-command-contract.md`
+
+## Helper Templates
+
+- `templates/helper-stack-phase-plan.md`
+- `templates/helper-stack-phase-acceptance-report.md`

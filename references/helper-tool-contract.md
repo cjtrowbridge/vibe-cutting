@@ -4,6 +4,14 @@
 
 Define the common contract for third-party repositories that agents may invoke as separate tools without importing their code into the host process.
 
+This contract is used with:
+
+- `references/portable-helper-host-contract.md` for host prerequisites and installation boundaries.
+- `references/helper-readiness-states.md` for evidence-bearing readiness claims.
+- `references/managed-bootstrap-command-contract.md` for portable managed invocation.
+
+The existing `python3 scripts/helper_tool.py` workflow is transitional. After Phase 1, agents invoke it through the managed `run` interface and must not depend on host Python.
+
 ## Tool Classes
 
 - **Reference-only:** inspected for documented behavior but never executed or imported.
@@ -29,9 +37,9 @@ Every callable helper has one `tool_adapters/<id>.json` file validated against `
 Agents must:
 
 1. Select tools by declared capability.
-2. Run `python3 scripts/helper_tool.py check <id>`.
+2. Run `setup/bootstrap.* run -- scripts/helper_tool.py check <id>` after portable bootstrap exists; use the direct Python command only as the documented transitional development workflow.
 3. Request approval before `setup` when the manifest says setup may use the network.
-4. Invoke the tool only through `python3 scripts/helper_tool.py run <id> -- ...`.
+4. Invoke the tool only through the managed helper dispatcher.
 5. Write outputs only beneath the manifest’s allowed output roots.
 6. Treat generated files as untrusted until parsed and validated by the host pipeline.
 7. Record tool ID, pinned revision, arguments/config hash, and output hashes in build provenance.
@@ -46,7 +54,7 @@ Agents must not:
 
 ## Environment Contract
 
-`scripts/helper_tool.py setup <id>` installs the pinned local submodule and its declared dependencies beneath `.tmp/helper-tools/<id>/`. The environment is disposable and is accepted only when:
+The current `scripts/helper_tool.py setup <id>` implementation installs beneath `.tmp/helper-tools/<id>/`; Phase 3 replaces this transitional model. The portable target installs fingerprinted environments beneath `.tools/environments/<id>/`. Either environment is accepted only when:
 
 - The source submodule exists and is clean.
 - Its checked-out commit matches the manifest pin.
