@@ -86,6 +86,16 @@ OpenSCAD design/config -> SVG or DXF operation geometry
 
 An OpenSCAD-backed design may expose one entrypoint per semantic operation or part. The framework should import and validate those exported paths, attach process intent, and combine them with engraving assets and job configuration. Native SVG/Python designs and OpenSCAD-backed designs should converge on the same internal operation model.
 
+### Callable Helper-Tool Role
+
+Specialized third-party repositories may be registered as callable helpers when they materially reduce fabrication-geometry, conversion, layout, or testing risk. Callable helpers remain separate pinned submodules and run only as subprocesses through `scripts/helper_tool.py`; they are not imported into the host process.
+
+Every helper must have a machine-readable `tool_adapters/<id>.json` contract declaring its capabilities, source pin, license, runtime, accepted outputs, operation mappings, and safety boundaries. Agents select helpers by capability through `references/geometry-backend-selection.md` and tool-specific playbooks.
+
+Helper output is untrusted source material. It must converge on the same host operation model as native and OpenSCAD geometry before layout, recipes, preflight, previews, manifests, G-code, or readiness claims are accepted.
+
+Boxes.py is the first callable helper. Use it for supported fitted panel assemblies, boxes, trays, shelves, finger joints, dovetails, living hinges, gears, and related structural geometry. Accept SVG only; never treat Boxes.py-generated G-code as authoritative host output.
+
 ### Implemented Vector Foundation
 
 The 2026-06-30 bounded implementation plan delivered a dependency-free native vector foundation before the broader MVP:
@@ -118,8 +128,9 @@ OpenSCAD was not installed in the implementation environment, so the native vect
 - Treat LaserGRBL as the preferred open controller/streamer, not as the canonical design compiler.
 - Generate G-code before the LaserGRBL handoff because LaserGRBL's SVG support does not preserve separate cut/engrave behavior by layer or color.
 - Keep the generated G-code portable enough to load in another compatible GRBL sender when LaserGRBL is unavailable.
-- Treat third-party source as reference evidence, not automatically reusable implementation.
+- Assign every third-party repository an explicit role: reference-only, callable helper, runtime library, or operator application.
 - Do not copy, import, link, vendor, or create runtime dependencies on code from either reference submodule.
+- Invoke callable helpers only through pinned subprocess adapters and treat their outputs as untrusted interchange artifacts.
 - Prefer independently specified behavior, clean-room implementation, and golden compatibility fixtures derived from public formats and observed outputs.
 
 ## Pre-Execution Decision Gates
@@ -130,6 +141,7 @@ Implementation must not begin until each blocking decision is recorded in an arc
 
 - The root `LICENSE` declares Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International for host-authored repository material.
 - `third_party/vibe-modeling` and `third_party/lasergrbl` are external read-only reference repositories, not implementation source or runtime dependencies.
+- `third_party/boxes` is a separately licensed callable helper invoked in a subprocess; it is not imported or relicensed as host source.
 - Their contents remain governed by their own upstream licenses and are not relicensed by the host `LICENSE`.
 - Use a clean-room implementation that studies documented behavior, public formats, and independently generated compatibility outputs without copying source.
 - Do not import, link, vendor, translate, adapt, or copy code from either submodule into host implementation.
@@ -142,6 +154,7 @@ Implementation must not begin until each blocking decision is recorded in an arc
 - Keep `scripts/laser_build.py` cross-platform across Windows, Linux, and macOS even though LaserGRBL itself is Windows-native.
 - Prefer the Python standard library for orchestration, JSON, XML, hashing, subprocesses, paths, and manifests.
 - Add third-party dependencies only when they materially reduce geometry, SVG, schema, raster, or testing risk.
+- Prefer subprocess-only callable helpers with isolated `.tmp` environments when a separately maintained tool can produce a validated interchange artifact.
 - Pin every runtime and development dependency with its license and supported platform matrix.
 - Decide whether the project uses a virtual environment plus requirements/lock files or another reproducible dependency mechanism.
 - Block implementation of geometry normalization until the chosen SVG/geometry approach passes a focused compatibility spike.
@@ -163,7 +176,7 @@ Implementation must not begin until each blocking decision is recorded in an arc
 - Block emitting tests until non-emitting travel, framing, bounds, interlock, exhaust, focus, and emergency-stop checks pass.
 - If hardware is unavailable, allow software milestones to reach `test-ready` but not `fabrication-ready`.
 
-## Local Reference Repositories
+## Local Third-Party Repositories
 
 ### `third_party/vibe-modeling`
 
@@ -210,6 +223,27 @@ Constraints on using this reference:
 - Neither reference submodule may be imported by host Python code, invoked as a required build dependency, packaged into releases, or treated as host-owned source.
 - Compatibility tests should compare generated G-code behavior, bounds, state transitions, and preview expectations rather than importing LaserGRBL internals.
 
+### `third_party/boxes`
+
+Pinned callable-helper revision: `836f5f72bedb33ac4262ed925545eacb31e926a8`.
+
+Use Boxes.py through `scripts/helper_tool.py` for:
+
+- Parametric boxes, trays, shelves, enclosures, racks, and wall-storage structures.
+- Finger joints, dovetails, living hinges, tabs, gears, and supported fabrication parts.
+- Material-thickness-aware geometry and Boxes.py edge-aware burn compensation.
+- Reproducible SVG generation through its YAML multi-generator mode.
+
+Constraints:
+
+- Keep Boxes.py as a separate GPL-3.0-or-later submodule and subprocess tool.
+- Never import it into the host Python process, modify its source, or copy its implementation.
+- Accept SVG source geometry only until other formats receive separate compatibility validation.
+- Map declared operation colors into host semantic operations and reject unknown fabrication colors.
+- Keep machine recipes, bounds, ordering, artifacts, G-code, readiness, and hardware control in the host pipeline.
+- Record tool ID, revision, invocation/config hash, source SVG hash, measured thickness, and burn value in provenance.
+- Use only calibrated burn values and never apply kerf compensation twice.
+
 ## Proposed Repository Structure
 
 ```text
@@ -221,8 +255,12 @@ src/vibe_cutting/
   exporters/
   manifests/
 scripts/
+  helper_tool.py
   laser_build.py
+tool_adapters/
+  boxes.json
 schemas/
+  helper_tool.schema.json
 machines/
   creality/falcon_a1_pro.json
 materials/
@@ -249,6 +287,7 @@ playbooks/
 references/
 templates/
 third_party/
+  boxes/
   vibe-modeling/
   lasergrbl/
 ```
@@ -652,6 +691,29 @@ Required content:
 - Require user approval before changing compatibility claims or copied/synthesized material.
 - Preserve rollback pointers for every updated submodule.
 
+### `playbooks/how_to_add_and_validate_a_helper_tool.md`
+
+Required content:
+
+- Classify the tool and define narrow capabilities, routing, output, safety, and license contracts.
+- Add a pinned submodule and schema-valid adapter manifest.
+- Install dependencies only into an isolated disposable environment.
+- Invoke only through the generic subprocess runner.
+- Test pin matching, path confinement, readiness, determinism, output parsing, and failure behavior.
+- Update agent routing, human documentation, and rollback guidance.
+
+### `playbooks/how_to_use_boxes_for_laser_geometry.md`
+
+Required content:
+
+- Select Boxes.py only for supported fitted structures and fabrication primitives.
+- Discover generators and arguments through the generic helper runner.
+- Use YAML multi-generator mode for reproducible source SVG.
+- Define thickness, burn ownership, and double-kerf prevention.
+- Map SVG colors into host operations and reject unknown semantics.
+- Preserve host ownership of recipes, validation, G-code, artifacts, and readiness.
+- Record complete helper provenance.
+
 ### `playbooks/how_to_review_laser_job_safety_and_fabrication_readiness.md`
 
 Required content:
@@ -680,7 +742,9 @@ Human-facing documentation must explain concepts and workflows without embedding
   - Map task types to mandatory playbooks.
   - Define documentation synchronization rules, generated-artifact policy, safety-stop authority, required verification summaries, and third-party licensing boundaries.
 - `docs/architecture.md`
-  - Define the compiler pipeline, module boundaries, dependency direction, extension points, and reasons OpenSCAD/LaserGRBL are adapters rather than the core.
+  - Define the compiler pipeline, module boundaries, dependency direction, extension points, callable-helper boundary, and reasons OpenSCAD/LaserGRBL/helper tools are adapters rather than the core.
+- `docs/helper-tools.md`
+  - Define helper classes, adapter manifests, setup, invocation, trust boundaries, provenance, updates, and failure behavior.
 - `docs/repository-structure.md`
   - Define ownership and lifecycle of every top-level directory and generated destination.
 - `docs/coordinate-systems-and-units.md`
@@ -719,6 +783,8 @@ Human-facing documentation must explain concepts and workflows without embedding
   - Explain why G-code is the handoff, supported LaserGRBL versions, loading/preview/streaming workflow, limitations, and cross-platform alternatives.
 - `docs/exporter-and-adapter-contracts.md`
   - Define pure inputs/outputs, capability declaration, deterministic behavior, error handling, test fixtures, and readiness gates.
+- `docs/tools/boxes.md`
+  - Define Boxes.py routing, setup, generator discovery, deterministic YAML generation, SVG operation colors, kerf/thickness ownership, provenance, and unsupported uses.
 - `docs/build-script-reference.md`
   - Define `scripts/laser_build.py`, its arguments, defaults, exit codes, output layout, dry-run behavior, and examples.
   - Cover normal builds, explicit configs/jobs, quantities, new revisions, validation-only, audit-only, and dry-run modes.
@@ -768,6 +834,8 @@ Human-facing documentation must explain concepts and workflows without embedding
 - `references/artifact-readiness-levels.md`: exact requirements for blocked, calibration-only, test-ready, and fabrication-ready outputs.
 - `references/third-party-source-map.md`: pinned upstream paths and the behavior each path informs.
 - `references/lasergrbl-compatibility-observations.md`: local observations from loading generated golden G-code, without copying GPLv3 implementation.
+- `references/helper-tool-contract.md`: common roles, manifests, setup, invocation, provenance, update, and failure boundaries for callable helpers.
+- `references/geometry-backend-selection.md`: capability-based selection among native, OpenSCAD, callable-helper, and combined geometry sources.
 
 ### Templates
 
@@ -800,6 +868,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [x] 1.10 Define the stable `scripts/laser_build.py` argument, default-resolution, output, non-emission, and dry-run contracts.
   - [ ] 1.11 Define the continuous-integration matrix for supported Python versions, operating systems, schemas, golden fixtures, and deterministic builds.
   - [x] 1.12 Create and approve a bounded vector-foundation active plan rather than promoting this umbrella roadmap.
+  - [x] 1.13 Define and implement a manifest-driven subprocess contract for callable helper tools with Boxes.py as the first adapter.
 
 - [ ] 2. Create each project-specific playbook before its governed implementation.
   - [x] 2.1 Create and index `how_to_add_a_new_laser_design.md`.
@@ -818,6 +887,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 2.14 Create and index `how_to_update_reference_submodules_and_review_compatibility.md`.
   - [ ] 2.15 Create and index `how_to_review_laser_job_safety_and_fabrication_readiness.md`.
   - [ ] 2.16 Verify every playbook contains prerequisites, atomic steps, safety boundaries, artifacts, verification, failure handling, and related references.
+  - [x] 2.17 Create and index generic helper-tool and Boxes.py geometry playbooks.
 
 - [ ] 3. Create and synchronize governing project documentation.
   - [x] 3.1 Update human-facing `README.md` with purpose, prerequisites, quick start, safety, outputs, and documentation links.
@@ -829,6 +899,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 3.7 Create safety, calibration, layout, fixture, operator, readiness, and troubleshooting documentation.
   - [ ] 3.8 Create testing, compatibility, portability, and migration documentation.
   - [ ] 3.9 Verify all documented paths, commands, schemas, examples, and readiness claims against the repository.
+  - [x] 3.10 Document callable helper tools and the Boxes.py integration boundary.
 
 - [ ] 4. Create reusable references and templates.
   - [ ] 4.1 Create operation-ordering and GRBL state-model references.
@@ -837,6 +908,7 @@ Tasks labeled `post-MVP` require separate future plans and do not block the MVP 
   - [ ] 4.4 Create JSON templates for machine, material, design, parts, job, and fixture configs.
   - [ ] 4.5 Create report templates for calibration, hardware acceptance, fabrication runs, safety reviews, and incidents.
   - [ ] 4.6 Validate every JSON template against its schema and every Markdown template against its governing playbook.
+  - [x] 4.7 Create reusable helper-tool contract and geometry-backend selection references.
 
 - [ ] 5. Implement the machine-profile system.
   - [x] 5.1 Create the sourced provisional Falcon A1 Pro profile.

@@ -2,11 +2,17 @@
 
 A configuration-driven pipeline for designing, previewing, validating, and revising laser-cut and laser-engraved projects.
 
-The current vector MVP uses one Python entrypoint. Native stroke-font designs remain dependency-free; the default coin revisions use OpenSCAD to shape a pinned Liberation Sans Regular font. The pipeline generates fabrication artifacts but never connects to or controls a laser.
+The current vector MVP uses one Python build entrypoint. Native stroke-font designs remain dependency-free; the default coin revisions use OpenSCAD to shape a pinned Liberation Sans Regular font. Specialized third-party helpers can be invoked as separate pinned tools for geometry the native backend does not provide. The pipeline generates fabrication artifacts but never connects to or controls a laser.
 
 ## Quick Start
 
 Requires Python 3.11 or newer. The default coin revisions also require OpenSCAD 2021.01 or newer.
+
+Initialize all pinned tools and references after cloning:
+
+```bash
+git submodule update --init --recursive
+```
 
 ```bash
 python3 scripts/laser_build.py --design shot_coins --validate-only
@@ -43,6 +49,21 @@ python3 scripts/laser_build.py --design community_garden_merit_badges
 
 Copy an existing merit-badge design and replace its `badges` list to create another set. See `docs/designs/merit-badge-sheets.md`.
 
+## Helper Tools
+
+Callable helper tools remain separate third-party repositories and run in subprocesses through a common host interface:
+
+```bash
+python3 scripts/helper_tool.py list
+python3 scripts/helper_tool.py check boxes
+python3 scripts/helper_tool.py setup boxes
+python3 scripts/helper_tool.py run boxes -- --list
+```
+
+`setup` may download Python dependencies into `.tmp/helper-tools/`; it does not install into the host project or modify the submodule.
+
+Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures. Its SVG is an input to the host pipeline—not authoritative G-code. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.
@@ -53,7 +74,7 @@ The 0.18 mm normal-font hatch spacing is also unverified. Calibrate filled engra
 
 ## Architecture
 
-The native vector backend remains the dependency-free fallback. The OpenSCAD font adapter exports pinned-font contours, normalizes them into the framework coordinate system, and converts filled glyphs into deterministic engraving hatches. LaserGRBL is the preferred open application for independently previewing and streaming the generated GRBL G-code.
+The native vector backend remains the dependency-free fallback. The OpenSCAD font adapter exports pinned-font contours, normalizes them into the framework coordinate system, and converts filled glyphs into deterministic engraving hatches. Callable helpers such as Boxes.py supply specialized source geometry through pinned subprocess adapters. LaserGRBL is the preferred open application for independently previewing and streaming the generated GRBL G-code.
 
 The bundled Liberation Sans Regular and Bold files remain separately licensed under SIL OFL 1.1; see `assets/fonts/liberation-sans/`.
 

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "id": "boxes",
+  "display_name": "Boxes.py",
+  "tool_class": "callable_helper",
+  "source": {
+    "type": "git_submodule",
+    "path": "third_party/boxes",
+    "upstream": "https://github.com/florianfesti/boxes",
+    "pinned_revision": "836f5f72bedb33ac4262ed925545eacb31e926a8",
+    "license": "GPL-3.0-or-later",
+    "license_file": "LICENSE.txt"
+  },
+  "capabilities": [
+    "parametric_boxes",
+    "finger_joints",
+    "dovetail_joints",
+    "living_hinges",
+    "trays",
+    "shelves",
+    "wall_storage",
+    "gears",
+    "fixtures",
+    "material_thickness_compensation",
+    "kerf_compensation",
+    "svg_geometry"
+  ],
+  "routing": {
+    "use_for": [
+      "Assemblies made from fitted laser-cut panels",
+      "Boxes, trays, shelves, enclosures, racks, and wall storage",
+      "Finger joints, dovetails, living hinges, gears, and related fabrication features",
+      "Parameterized structural geometry already represented by a Boxes.py generator"
+    ],
+    "avoid_for": [
+      "Simple repeated tokens or flat shapes already supported by the native backend",
+      "Geometry derived from a three-dimensional CSG assembly",
+      "Raster engraving, machine control, material recipe selection, or G-code generation",
+      "Tasks that require modifying or copying Boxes.py source into the host repository"
+    ]
+  },
+  "runtime": {
+    "kind": "python_module",
+    "python_minimum": "3.10",
+    "module": "boxes.scripts.boxes_main",
+    "install_source": "third_party/boxes",
+    "environment_path": ".tmp/helper-tools/boxes",
+    "working_directory": "."
+  },
+  "outputs": {
+    "accepted_formats": [
+      "svg"
+    ],
+    "primary_format": "svg",
+    "operation_colors": {
+      "rgb(0,0,0)": "outer_cut",
+      "rgb(0,0,255)": "inner_cut",
+      "rgb(0,255,0)": "vector_engrave",
+      "rgb(0,255,255)": "deep_vector_engrave",
+      "rgb(255,0,0)": "annotation"
+    }
+  },
+  "safety": {
+    "controls_hardware": false,
+    "setup_may_use_network": true,
+    "may_modify_source": false,
+    "allowed_output_roots": [
+      ".tmp",
+      "output",
+      "revisions"
+    ]
+  }
+}

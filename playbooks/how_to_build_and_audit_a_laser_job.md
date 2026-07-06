@@ -9,15 +9,19 @@ Generate a complete, deterministic artifact set without controlling hardware.
 ## Procedure
 
 1. Confirm the active plan approves the design and build scope.
-2. Run `python3 scripts/laser_build.py --design <name> --validate-only`.
-3. Run the normal build.
-4. Inspect `preview.png`, `design.svg`, `operations.csv`, and `material_setup.md`.
-5. Run `python3 scripts/laser_build.py --design <name> --audit-only`.
-6. Do not stream `job.gcode` until machine and material acceptance gates pass.
+2. For helper-backed designs, run `python3 scripts/helper_tool.py check <id>` and verify the expected pin, clean source, install marker, and readiness.
+3. Generate helper geometry through its tool-specific playbook and verify deterministic source output.
+4. Run `python3 scripts/laser_build.py --design <name> --validate-only`.
+5. Run the normal build.
+6. Inspect `preview.png`, `design.svg`, `operations.csv`, and `material_setup.md`.
+7. Confirm manifests include helper ID, revision, invocation/config hash, and source-output hash when applicable.
+8. Run `python3 scripts/laser_build.py --design <name> --audit-only`.
+9. Do not stream `job.gcode` until machine and material acceptance gates pass.
 
 ## Verification
 
 - Exact artifact inventory and hashes pass.
+- Helper provenance matches the adapter manifest and checked-out submodule.
 - Bounds stay inside the effective machine/stock area.
 - Engraving precedes cutting.
 - Rapid moves occur with the laser off.

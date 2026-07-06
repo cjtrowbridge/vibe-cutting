@@ -7,3 +7,18 @@
 [submodule "third_party/lasergrbl"]
 	path = third_party/lasergrbl
 	url = https://github.com/arkypita/LaserGRBL.git
+[submodule "third_party/boxes"]
+	path = third_party/boxes
+	url = https://github.com/florianfesti/boxes.git
+[submodule "third_party/cadquery"]
+	path = third_party/cadquery
+	url = https://github.com/CadQuery/cadquery.git
+[submodule "third_party/cq_gears"]
+	path = third_party/cq_gears
+	url = https://github.com/meadiode/cq_gears.git
+[submodule "third_party/bosl2"]
+	path = third_party/bosl2
+	url = https://github.com/BelfrySCAD/BOSL2.git
+[submodule "third_party/freecad-gears"]
+	path = third_party/freecad-gears
+	url = https://github.com/looooo/freecad.gears.git

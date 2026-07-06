@@ -1,6 +1,6 @@
 # Build Script Reference
 
-Requires Python 3.11 or newer and no third-party Python packages. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer.
+The core build script requires Python 3.11 or newer and no third-party Python packages. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer. Helper-backed geometry uses separately installed `.tmp` environments managed by `scripts/helper_tool.py`.
 
 ```bash
 python3 scripts/laser_build.py --design shot_coins
@@ -14,6 +14,18 @@ python3 scripts/laser_build.py --design bwb_merit_badges
 ```
 
 Normal builds atomically replace `output/<design>/`. Revision builds create immutable `revisions/<design>/rev_000N/` directories. The script generates artifacts only and cannot stream to hardware.
+
+## Helper Tools
+
+```bash
+python3 scripts/helper_tool.py list
+python3 scripts/helper_tool.py describe boxes
+python3 scripts/helper_tool.py check boxes
+python3 scripts/helper_tool.py setup boxes
+python3 scripts/helper_tool.py run boxes -- --list
+```
+
+`check` exits nonzero until the submodule, pin, license, isolated install marker, and subprocess import are valid. `setup` may use the network and writes only beneath `.tmp/helper-tools/<id>/`. Helper source geometry must be imported by a supported design adapter before `laser_build.py` can validate or build it.
 
 ## Modes
 
@@ -31,5 +43,5 @@ Only one mode flag may be selected. `--quantity` and `--config` refine a normal 
 
 - The implemented backend supports the native `shot_coins` vector design shape.
 - The `merit_badge_set` backend supports mixed-type rounded tokens with measured title/body wrapping and even slot allocation.
-- Raster engraving, DXF, general OpenSCAD part import, hardware streaming, and arbitrary nesting remain roadmap work.
+- Raster engraving, DXF, general OpenSCAD part import, Boxes.py SVG ingestion, hardware streaming, and arbitrary nesting remain roadmap work.
 - The generated Falcon/basswood job is calibration-only.

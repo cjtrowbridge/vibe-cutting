@@ -1,10 +1,28 @@
 # Architecture
 
-`scripts/laser_build.py` is the single user-facing entrypoint. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
+`scripts/laser_build.py` is the single user-facing build entrypoint. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
 
 The script never connects to a machine. LaserGRBL is used separately to preview and stream generated G-code.
 
-The `third_party/` submodules are read-only behavioral references and are never imported or required at runtime.
+Third-party repositories have explicit roles. `vibe-modeling` and LaserGRBL are read-only behavioral references. Boxes.py is a callable helper invoked in a separate process through `scripts/helper_tool.py`; it is never imported into the host process and its output remains untrusted until host validation.
+
+## Helper-Tool Boundary
+
+`tool_adapters/*.json` declares each callable helper’s source pin, license, capabilities, invocation, accepted outputs, and safety boundaries. `scripts/helper_tool.py` verifies the clean submodule pin and installs dependencies into a disposable `.tmp/helper-tools/<id>/` target before invocation.
+
+The dependency direction is:
+
+```text
+design intent -> callable helper -> source geometry
+                                      |
+                                      v
+                         host operation model
+                                      |
+                                      v
+             layout -> preflight -> artifacts -> G-code
+```
+
+Helpers cannot own machine/material recipes, bounds acceptance, operation ordering, authoritative manifests, G-code, readiness claims, or hardware control.
 
 ## Coordinate Contract
 
@@ -30,7 +48,7 @@ The `third_party/` submodules are read-only behavioral references and are never 
 
 The native vector backend proves the pipeline without external runtime dependencies. The implemented OpenSCAD font adapter exports pinned-font SVG contours, accepts only linear path commands, converts SVG Y-down coordinates to the canonical Y-up system, scales multiline text inside its owning circle, and creates deterministic horizontal hatch engraving. Parameterized parts and projected assemblies remain future OpenSCAD adapter work.
 
-The current design schema and geometry implementation are intentionally narrow. Future design types should add replaceable geometry adapters rather than embedding machine-specific behavior in design files.
+The current design schema and geometry implementation are intentionally narrow. Future design types should add replaceable native, OpenSCAD, or callable-helper geometry adapters rather than embedding machine-specific behavior in design files.
 
 ## Merit Badge Sets
 
