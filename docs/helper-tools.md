@@ -32,11 +32,13 @@ Schema-version `2` helper adapters declare a runtime provider:
 
 Provider adapters declare allowed input roots, output roots, exact output inventories, readiness states, setup metadata, invocation metadata, and provenance fields.
 
-Readiness states are `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`. Phase 2 adapters must not claim fabrication approval.
+Readiness states are `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`. Current helper adapters must not claim fabrication approval.
 
 ## Trust Boundary
 
 Helper output is never authoritative by itself. The host pipeline must parse it, map semantic operations, normalize coordinates, enforce machine and stock bounds, attach recipes, generate previews and G-code, and audit the final artifact set.
+
+Mechanism helpers must also be represented in the host-owned mechanism graph and pass `scripts/mechanism_validate.py` before a mechanism design is built.
 
 Helper tools cannot control hardware through this interface. They run only when their source is present, clean, correctly pinned, licensed as declared, installed, and importable in the isolated environment.
 

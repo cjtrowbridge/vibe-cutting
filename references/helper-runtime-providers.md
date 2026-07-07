@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Helper runtime providers describe how a callable helper is prepared and invoked without making that helper part of the host codebase. Provider adapters are schema-version `2` manifests. Boxes.py is the first migrated provider helper.
+Helper runtime providers describe how a callable helper is prepared and invoked without making that helper part of the host codebase. Provider adapters are schema-version `2` manifests. Boxes.py, CadQuery + CQ_Gears, BOSL2, and FreeCAD Gears are provider helpers.
 
 ## Provider Types
 
@@ -33,4 +33,4 @@ Readiness states are evidence-bearing and cumulative only when the provider prov
 
 ## Phase Boundaries
 
-Phase 2 provides schemas, validation, provider scaffolding, readiness reports, and failure-preservation utilities. It does not migrate Boxes.py, install helper dependencies, or create fabrication-approved provider outputs.
+The implemented provider stack covers Boxes.py, CadQuery + CQ_Gears, BOSL2, and FreeCAD Gears on the development Linux x86-64 host. It does not create fabrication-approved provider outputs.

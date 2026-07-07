@@ -31,12 +31,11 @@ Add a third-party submodule as a capability-routed, subprocess-only helper witho
 
 ```bash
 setup/bootstrap.sh run -- scripts/helper_tool.py validate
-python3 scripts/helper_tool.py list
-python3 scripts/helper_tool.py validate
-python3 scripts/helper_tool.py describe <id>
-python3 scripts/helper_tool.py check <id>
-python3 scripts/helper_tool.py setup <id>
-python3 scripts/helper_tool.py run <id> -- <tool arguments>
+setup/bootstrap.sh run -- scripts/helper_tool.py list
+setup/bootstrap.sh run -- scripts/helper_tool.py describe <id>
+setup/bootstrap.sh run -- scripts/helper_tool.py check <id>
+setup/bootstrap.sh run -- scripts/helper_tool.py setup <id>
+setup/bootstrap.sh run -- scripts/helper_tool.py run <id> -- <tool arguments>
 ```
 
 Request user approval before setup when dependency downloads may occur.

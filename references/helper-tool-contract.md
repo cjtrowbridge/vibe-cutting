@@ -9,6 +9,7 @@ This contract is used with:
 - `references/portable-helper-host-contract.md` for host prerequisites and installation boundaries.
 - `references/helper-readiness-states.md` for evidence-bearing readiness claims.
 - `references/managed-bootstrap-command-contract.md` for portable managed invocation.
+- `references/mechanism-validation-contract.md` when helper geometry affects a mechanism.
 
 The existing `python3 scripts/helper_tool.py` workflow is transitional. After Phase 1, agents invoke it through the managed `run` interface and must not depend on host Python.
 
@@ -47,6 +48,7 @@ Agents must:
 5. Write outputs only beneath the manifest’s allowed output roots.
 6. Treat generated files as untrusted until parsed and validated by the host pipeline.
 7. Record tool ID, pinned revision, arguments/config hash, and output hashes in build provenance.
+8. Record helper request hashes in the mechanism graph when helper geometry affects a mechanism.
 
 Agents must not:
 

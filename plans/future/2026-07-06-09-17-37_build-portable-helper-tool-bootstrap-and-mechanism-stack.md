@@ -213,30 +213,30 @@ Each phase must define:
   - [x] 11.8 Generate SVG, PNG preview, operations, setup documentation, manifests, and calibration-only G-code through vibe-cutting.
   - [x] 11.9 Add deterministic revision and audit tests.
 
-- [ ] 12. Add agent governance and human documentation.
-  - [ ] 12.1 Update `AGENTS.md` with bootstrap-first startup and helper-routing rules.
-  - [ ] 12.2 Update `README.md` with zero-Python Linux/macOS and Windows quick starts.
-  - [ ] 12.3 Add `docs/host-bootstrap.md`.
-  - [ ] 12.4 Add `docs/toolchain-support-matrix.md`.
-  - [ ] 12.5 Expand `docs/helper-tools.md` for provider types and readiness states.
-  - [ ] 12.6 Add or update `docs/tools/boxes.md`.
-  - [ ] 12.7 Add `docs/tools/cq-gears.md`.
-  - [ ] 12.8 Add `docs/tools/bosl2.md`.
+- [x] 12. Add agent governance and human documentation.
+  - [x] 12.1 Update `AGENTS.md` with bootstrap-first startup and helper-routing rules.
+  - [x] 12.2 Update `README.md` with zero-Python Linux/macOS and Windows quick starts.
+  - [x] 12.3 Add `docs/host-bootstrap.md`.
+  - [x] 12.4 Add `docs/toolchain-support-matrix.md`.
+  - [x] 12.5 Expand `docs/helper-tools.md` for provider types and readiness states.
+  - [x] 12.6 Add or update `docs/tools/boxes.md`.
+  - [x] 12.7 Add `docs/tools/cq-gears.md`.
+  - [x] 12.8 Add `docs/tools/bosl2.md`.
   - [x] 12.9 Add `docs/tools/freecad-gears.md`.
-  - [ ] 12.10 Add `docs/mechanism-model.md`.
-  - [ ] 12.11 Add `docs/mechanism-validation.md`.
-  - [ ] 12.12 Add `references/helper-runtime-providers.md`.
-  - [ ] 12.13 Add `references/mechanism-validation-contract.md`.
-  - [ ] 12.14 Update `references/helper-tool-contract.md`.
-  - [ ] 12.15 Update `references/geometry-backend-selection.md`.
-  - [ ] 12.16 Add `playbooks/how_to_bootstrap_a_fabrication_host.md`.
-  - [ ] 12.17 Update `playbooks/how_to_add_and_validate_a_helper_tool.md`.
-  - [ ] 12.18 Update `playbooks/how_to_use_boxes_for_laser_geometry.md`.
-  - [ ] 12.19 Add `playbooks/how_to_use_cq_gears_for_laser_mechanisms.md`.
-  - [ ] 12.20 Add `playbooks/how_to_use_bosl2_gear_geometry.md`.
+  - [x] 12.10 Add `docs/mechanism-model.md`.
+  - [x] 12.11 Add `docs/mechanism-validation.md`.
+  - [x] 12.12 Add `references/helper-runtime-providers.md`.
+  - [x] 12.13 Add `references/mechanism-validation-contract.md`.
+  - [x] 12.14 Update `references/helper-tool-contract.md`.
+  - [x] 12.15 Update `references/geometry-backend-selection.md`.
+  - [x] 12.16 Add `playbooks/how_to_bootstrap_a_fabrication_host.md`.
+  - [x] 12.17 Update `playbooks/how_to_add_and_validate_a_helper_tool.md`.
+  - [x] 12.18 Update `playbooks/how_to_use_boxes_for_laser_geometry.md`.
+  - [x] 12.19 Add `playbooks/how_to_use_cq_gears_for_laser_mechanisms.md`.
+  - [x] 12.20 Add `playbooks/how_to_use_bosl2_gear_geometry.md`.
   - [x] 12.21 Add `playbooks/how_to_use_freecad_gears_for_inspection.md`.
-  - [ ] 12.22 Add `playbooks/how_to_author_and_validate_laser_mechanisms.md`.
-  - [ ] 12.23 Update all playbook and reference indexes.
+  - [x] 12.22 Add `playbooks/how_to_author_and_validate_laser_mechanisms.md`.
+  - [x] 12.23 Update all playbook and reference indexes.
 
 - [ ] 13. Create host-readiness reports.
   - [ ] 13.1 Define a machine-readable host-readiness JSON schema.

@@ -38,6 +38,8 @@ Before implementing or changing bootstrap behavior, read:
 - `references/portable-helper-host-contract.md`
 - `references/helper-readiness-states.md`
 - `references/managed-bootstrap-command-contract.md`
+- `docs/host-bootstrap.md`
+- `docs/toolchain-support-matrix.md`
 - `docs/decisions/0001-portable-helper-bootstrap-and-provider-model.md`
 
 Use the managed bootstrap for portable host setup and repository Python commands:
@@ -90,23 +92,26 @@ Provider-based helper adapters use schema-version `2` and declare one of `pixi_e
 - `playbooks/how_to_generate_and_validate_grbl_gcode.md`
 - `playbooks/how_to_author_openscad_laser_geometry.md`
 - `playbooks/how_to_create_and_iterate_merit_badge_sheets.md`
+- `playbooks/how_to_bootstrap_a_fabrication_host.md`
 - `playbooks/how_to_add_and_validate_a_helper_tool.md`
 - `playbooks/how_to_use_boxes_for_laser_geometry.md`
 - `playbooks/how_to_use_cq_gears_for_laser_mechanisms.md`
 - `playbooks/how_to_use_bosl2_gear_geometry.md`
 - `playbooks/how_to_use_freecad_gears_for_inspection.md`
+- `playbooks/how_to_author_and_validate_laser_mechanisms.md`
 
 Use the relevant laser playbook before changing designs, profiles, build behavior, or G-code generation.
 
 ## Mechanism Validation
 
-Use `scripts/mechanism_validate.py` and `docs/mechanism-model.md` before treating helper-generated gear or mechanism geometry as buildable. Mechanism validation must pass before a future mechanism design copies the validator's `job_manifest_fragment` into a job manifest.
+Use `scripts/mechanism_validate.py`, `docs/mechanism-model.md`, `docs/mechanism-validation.md`, and `references/mechanism-validation-contract.md` before treating helper-generated gear or mechanism geometry as buildable. Mechanism validation must pass before a mechanism design records the validator's `job_manifest_fragment` in a job manifest.
 
 ## Helper References
 
 - `references/helper-tool-contract.md`
 - `references/geometry-backend-selection.md`
 - `references/helper-runtime-providers.md`
+- `references/mechanism-validation-contract.md`
 - `references/portable-helper-host-contract.md`
 - `references/helper-readiness-states.md`
 - `references/managed-bootstrap-command-contract.md`

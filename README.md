@@ -30,6 +30,8 @@ git submodule update --init --recursive
 
 Linux x86-64 is currently runtime-qualified. Windows, macOS, and Linux ARM64 bootstrap artifacts are pinned but still need clean-host qualification.
 
+See `docs/host-bootstrap.md` and `docs/toolchain-support-matrix.md` for setup details, support status, and remediation guidance.
+
 ## Development Shortcut
 
 If your development host already has Python 3.11 or newer, you can still run the build script directly. The default coin revisions also require OpenSCAD 2021.01 or newer.
