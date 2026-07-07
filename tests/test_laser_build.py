@@ -87,6 +87,98 @@ class LaserBuildTests(unittest.TestCase):
         self.assertEqual(lines[1:4], ["G21", "G90", "M5"])
         self.assertEqual(lines[-2:], ["M5", "; end"])
 
+    def test_operation_artifacts_include_material_and_pass_count(self):
+        material = copy.deepcopy(self.context["material"])
+        material["recipes"]["through_cut"]["passes"] = 3
+        layout = laser_build.compute_layout(
+            self.context["config"],
+            self.context["machine"],
+            quantity_override=1,
+        )
+        segments = laser_build.all_engraving_segments(self.context["config"], layout)
+        cut_artifact = laser_build.operation_artifact_name(2, "through_cut", material)
+        cut_gcode = laser_build.generate_operation_gcode(
+            "through_cut",
+            self.context["config"],
+            self.context["machine"],
+            material,
+            layout,
+            segments,
+        )
+        combined_gcode = laser_build.generate_gcode(
+            self.context["config"],
+            self.context["machine"],
+            material,
+            layout,
+            segments,
+        )
+
+        self.assertEqual(
+            cut_artifact,
+            "operations/002_through_cut__basswood_3mm__run_3_passes.gcode",
+        )
+        self.assertEqual(cut_gcode.count("; pass "), 3)
+        self.assertEqual(combined_gcode.count("; pass "), 4)
+        self.assertIn("; material=basswood_3mm thickness_mm=3.0", cut_gcode)
+        self.assertIn("power_percent=100", cut_gcode)
+
+    def test_job_plan_records_rerunnable_operation_artifacts(self):
+        material = copy.deepcopy(self.context["material"])
+        material["recipes"]["through_cut"]["passes"] = 3
+        context = copy.deepcopy(self.context)
+        context["material"] = material
+        layout = laser_build.compute_layout(
+            context["config"],
+            context["machine"],
+            quantity_override=1,
+        )
+        segments = laser_build.all_engraving_segments(context["config"], layout)
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            stage = Path(temporary_directory)
+            (stage / "operations").mkdir()
+            for order, operation in enumerate(laser_build.operation_order(), 1):
+                path = stage / laser_build.operation_artifact_name(order, operation, material)
+                path.write_text(
+                    laser_build.generate_operation_gcode(
+                        operation,
+                        context["config"],
+                        context["machine"],
+                        material,
+                        layout,
+                        segments,
+                    ),
+                    encoding="utf-8",
+                )
+            (stage / "job.gcode").write_text(
+                laser_build.generate_gcode(
+                    context["config"],
+                    context["machine"],
+                    material,
+                    layout,
+                    segments,
+                ),
+                encoding="utf-8",
+            )
+            plan = laser_build.job_plan(stage, context, layout)
+
+        cut_stage = plan["operation_stages"][1]
+        self.assertEqual(plan["module_ids"], ["blue_20w"])
+        self.assertEqual(plan["calibration_status"], "manufacturer_seed_unverified")
+        self.assertEqual(cut_stage["operation"], "through_cut")
+        self.assertEqual(cut_stage["passes_per_run"], 3)
+        self.assertEqual(cut_stage["pass_overrides"], [])
+        self.assertEqual(cut_stage["material_id"], "basswood_3mm")
+        self.assertEqual(cut_stage["thickness_mm"], 3.0)
+        self.assertEqual(cut_stage["rerun_effect"], "adds 3 more through_cut passes")
+        self.assertTrue(cut_stage["artifact"].endswith("__run_3_passes.gcode"))
+
+    def test_invalid_recipe_pass_count_is_rejected(self):
+        invalid_context = copy.deepcopy(self.context)
+        invalid_context["material"]["recipes"]["through_cut"]["passes"] = 0
+
+        with self.assertRaisesRegex(SystemExit, "passes for through_cut"):
+            laser_build.validate_context(invalid_context)
+
     def test_svg_uses_lower_left_coordinate_transform(self):
         layout = laser_build.compute_layout(
             self.context["config"],
@@ -351,13 +443,16 @@ class LaserBuildTests(unittest.TestCase):
             stage = Path(temporary_directory)
             for name in laser_build.ARTIFACT_NAMES:
                 (stage / name).write_bytes(f"test:{name}\n".encode())
+            (stage / "operations").mkdir()
+            (stage / "operations" / "001_vector_engrave__basswood_3mm__run_1_pass.gcode").write_text("M5\n")
             manifest = laser_build.build_manifest(stage, self.context)
             laser_build.write_json(stage / "build_manifest.json", manifest)
 
             laser_build.audit(stage)
             self.assertEqual(
                 {record["path"] for record in manifest["artifacts"]},
-                laser_build.ARTIFACT_NAMES,
+                laser_build.ARTIFACT_NAMES
+                | {"operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode"},
             )
 
     def test_mechanism_design_validates_and_records_manifest_fragment(self):

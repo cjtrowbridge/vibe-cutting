@@ -51,9 +51,12 @@ setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --audit-onl
 The normal build creates `output/shot_coins/` with:
 
 - `design.svg` and `preview.png`
-- `job.gcode`
-- `job_manifest.json` and `build_manifest.json`
+- `job.gcode` for the complete combined job
+- `operations/*.gcode` files for independently runnable operation stages
+- `job_plan.json`, `job_manifest.json`, and `build_manifest.json`
 - `operations.csv` and `material_setup.md`
+
+Operation-stage filenames include operation, material, thickness-bearing material ID, and pass count, such as `operations/002_through_cut__basswood_3mm__run_1_pass.gcode`. Rerunning an operation artifact repeats that artifact's full configured pass count.
 
 Use `--new-revision` to create a new immutable design config and matching artifact snapshot. See `docs/build-script-reference.md` for all supported options.
 

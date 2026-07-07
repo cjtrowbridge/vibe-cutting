@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-07-11-08-54 | plans/past/2026-07-07-10-52-37_add-pass-aware-operation-artifacts.md | Add Pass-Aware Operation Artifacts | Update the laser build pipeline to model recipe pass schedules, emit per-operation G-code artifacts with material/thickness/pass-count filenames, and record rerun semantics in job manifests.
 2026-07-06-21-17-49 | plans/past/2026-07-06-22-12-04_complete-helper-stack-rollout.md | Complete Helper Stack Rollout | Finish migration cleanup, documentation command verification, manifest/playbook audits, license-boundary review, roadmap reconciliation, and final phase evidence.
 2026-07-06-21-17-26 | plans/past/2026-07-06-22-03-12_add-cross-platform-verification.md | Add Cross-Platform Verification | Add CI scaffolding, evidence publication, and support-matrix documentation for Linux, Windows, and macOS bootstrap qualification without claiming fabrication readiness.
 2026-07-06-20-55-37 | plans/past/2026-07-06-20-51-05_test-portable-bootstrap-behavior.md | Test Portable Bootstrap Behavior | Run clean-root bootstrap, managed command, helper smoke, isolation, and complete suite verification for portable setup behavior.

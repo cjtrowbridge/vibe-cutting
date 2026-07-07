@@ -13,7 +13,7 @@ ANY TIME
 Build the current artifact set:
 
 ```bash
-python3 scripts/laser_build.py --design hug_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design hug_coins
 ```
 
 The 300 x 300 mm stock exceeds the Falcon A1 Pro's provisional 268 mm short-axis work area. The build constrains geometry to the 300 x 268 mm usable intersection and fits 81 coins with 2 mm edge margins and 1 mm coin spacing.
@@ -21,6 +21,8 @@ The 300 x 300 mm stock exceeds the Falcon A1 Pro's provisional 268 mm short-axis
 The text uses upright continuous-line vector glyphs and a 1 mm engraving inset. Generation fails if any engraving endpoint crosses that inset.
 
 The included 3 mm basswood recipes are unverified manufacturer seed values. Run calibration coupons before fabrication.
+
+The build emits pass-aware operation artifacts under `output/hug_coins/operations/`. Rerunning an operation artifact repeats the full pass count shown in its filename and `job_plan.json`.
 
 Revision `rev_0002` is the default normal-font trial. OpenSCAD shapes the pinned Liberation Sans Bold font, and the pipeline converts its filled contours into 0.18 mm horizontal engraving hatches before applying the same containment checks.
 

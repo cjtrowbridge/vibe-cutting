@@ -29,6 +29,18 @@ setup/bootstrap.sh run -- scripts/laser_build.py --design bwb_merit_badges
 
 Normal builds atomically replace `output/<design>/`. Revision builds create immutable `revisions/<design>/rev_000N/` directories. The script generates artifacts only and cannot stream to hardware.
 
+## Output Inventory
+
+- `job.gcode`: complete combined job in operation order.
+- `operations/*.gcode`: independently runnable operation-stage files.
+- `job_plan.json`: machine-readable operation order, material assumptions, recipe settings, pass counts, stage artifact hashes, and rerun semantics.
+- `job_manifest.json`: design, readiness, recipe, warning, and operation artifact summary.
+- `build_manifest.json`: exact artifact inventory with byte counts and hashes.
+- `operations.csv`: operator-readable operation table with artifact paths and passes per run.
+- `material_setup.md`: setup checklist and calibration warnings.
+
+Operation-stage filenames use `<order>_<operation>__<material_id>__run_<n>_pass(es).gcode`, for example `002_through_cut__basswood_3mm__run_1_pass.gcode`. Rerunning one of these files repeats its full configured pass count.
+
 ## Helper Tools
 
 ```bash

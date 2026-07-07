@@ -29,6 +29,7 @@ ARTIFACT_NAMES = {
     "design.svg",
     "preview.png",
     "job.gcode",
+    "job_plan.json",
     "job_manifest.json",
     "operations.csv",
     "material_setup.md",
@@ -183,6 +184,13 @@ def validate_context(context):
     require(material, ["id", "composition_known", "thickness_mm", "compatible_modules", "recipes"], "Material profile")
     if not material["composition_known"]:
         fail("Material composition must be known.")
+    for operation in ("vector_engrave", "through_cut"):
+        if operation not in material["recipes"]:
+            fail(f"Material recipe missing required operation: {operation}")
+        recipe = material["recipes"][operation]
+        require(recipe, ["speed_mm_per_min", "power_percent", "passes", "air_assist"], f"Recipe for {operation}")
+        if not isinstance(recipe["passes"], int) or recipe["passes"] <= 0:
+            fail(f"Recipe passes for {operation} must be a positive integer.")
     design_type = config.get("design_type", "coin_sheet")
     if config["edge_margin_mm"] < 0:
         fail("Sheet edge margin cannot be negative.")
@@ -1112,37 +1120,160 @@ def power_value(machine, percent):
     return round(scale["minimum"] + (scale["maximum"] - scale["minimum"]) * percent / 100)
 
 
-def generate_gcode(config, machine, material, layout, segments):
-    engrave = material["recipes"]["vector_engrave"]
-    cut = material["recipes"]["through_cut"]
-    engrave_power = power_value(machine, engrave["power_percent"])
-    cut_power = power_value(machine, cut["power_percent"])
-    lines = [
-        "; vibe-cutting deterministic GRBL artifact",
+def gcode_header(title):
+    return [
+        f"; {title}",
         "G21",
         "G90",
         "M5",
-        "; vector_engrave",
-        f"F{engrave['speed_mm_per_min']}",
     ]
+
+
+def gcode_footer():
+    return ["M5", "G0 X0.000 Y0.000", "M5", "; end"]
+
+
+def operation_order():
+    return ["vector_engrave", "through_cut"]
+
+
+def operation_body_lines(operation, config, machine, material, layout, segments):
+    recipe = material["recipes"][operation]
+    power = power_value(machine, recipe["power_percent"])
+    lines = [
+        f"; {operation}",
+        f"; material={material['id']} thickness_mm={material['thickness_mm']}",
+        f"; passes={recipe['passes']} speed_mm_per_min={recipe['speed_mm_per_min']} power_percent={recipe['power_percent']} air_assist={recipe['air_assist']}",
+    ]
+    for pass_index in range(1, recipe["passes"] + 1):
+        lines.extend(
+            [
+                f"; pass {pass_index} of {recipe['passes']}",
+                f"F{recipe['speed_mm_per_min']}",
+            ]
+        )
+        if operation == "vector_engrave":
+            lines.extend(vector_engrave_lines(segments, power))
+        elif operation == "through_cut":
+            lines.extend(through_cut_lines(config, layout, power))
+        else:
+            fail(f"Unsupported operation: {operation}")
+    return lines
+
+
+def vector_engrave_lines(segments, power):
+    lines = []
     for x1, y1, x2, y2 in segments:
         lines.extend(
             [
                 "M5",
                 f"G0 X{x1:.3f} Y{y1:.3f}",
-                f"M4 S{engrave_power}",
+                f"M4 S{power}",
                 f"G1 X{x2:.3f} Y{y2:.3f}",
                 "M5",
             ]
         )
-    lines.extend(["; through_cut", f"F{cut['speed_mm_per_min']}"])
+    return lines
+
+
+def through_cut_lines(config, layout, power):
+    lines = []
     for path in cut_paths(config, layout, circle_segments=96, corner_segments=8):
-        lines.extend(["M5", f"G0 X{path[0][0]:.3f} Y{path[0][1]:.3f}", f"M4 S{cut_power}"])
+        lines.extend(["M5", f"G0 X{path[0][0]:.3f} Y{path[0][1]:.3f}", f"M4 S{power}"])
         for point_x, point_y in path[1:]:
             lines.append(f"G1 X{point_x:.3f} Y{point_y:.3f}")
         lines.append("M5")
-    lines.extend(["M5", "G0 X0.000 Y0.000", "M5", "; end"])
+    return lines
+
+
+def generate_operation_gcode(operation, config, machine, material, layout, segments):
+    lines = gcode_header(f"vibe-cutting operation artifact: {operation}")
+    lines.extend(operation_body_lines(operation, config, machine, material, layout, segments))
+    lines.extend(gcode_footer())
     return "\n".join(lines) + "\n"
+
+
+def generate_gcode(config, machine, material, layout, segments):
+    lines = gcode_header("vibe-cutting deterministic GRBL artifact")
+    for operation in operation_order():
+        lines.extend(operation_body_lines(operation, config, machine, material, layout, segments))
+    lines.extend(gcode_footer())
+    return "\n".join(lines) + "\n"
+
+
+def slug(value):
+    text = str(value).lower()
+    text = re.sub(r"[^a-z0-9]+", "_", text)
+    return text.strip("_")
+
+
+def pass_label(count):
+    noun = "pass" if count == 1 else "passes"
+    return f"run_{count}_{noun}"
+
+
+def operation_artifact_name(order, operation, material):
+    recipe = material["recipes"][operation]
+    return (
+        "operations/"
+        f"{order:03d}_{slug(operation)}__{slug(material['id'])}__{pass_label(recipe['passes'])}.gcode"
+    )
+
+
+def operation_stage_records(stage, material):
+    records = []
+    for order, operation in enumerate(operation_order(), 1):
+        recipe = material["recipes"][operation]
+        relative_path = operation_artifact_name(order, operation, material)
+        path = stage / relative_path
+        records.append(
+            {
+                "order": order,
+                "operation": operation,
+                "artifact": relative_path,
+                "material_id": material["id"],
+                "material_name": material["name"],
+                "material_profile_status": material["profile_status"],
+                "thickness_mm": material["thickness_mm"],
+                "passes_per_run": recipe["passes"],
+                "pass_overrides": [],
+                "speed_mm_per_min": recipe["speed_mm_per_min"],
+                "power_percent": recipe["power_percent"],
+                "air_assist": recipe["air_assist"],
+                "rerunnable": True,
+                "rerun_effect": f"adds {recipe['passes']} more {operation} pass{'es' if recipe['passes'] != 1 else ''}",
+                "bytes": path.stat().st_size,
+                "sha256": sha256(path),
+            }
+        )
+    return records
+
+
+def job_plan(stage, context, layout):
+    stages = operation_stage_records(stage, context["material"])
+    return {
+        "schema_version": 1,
+        "design": context["project"]["id"],
+        "revision": context["config"]["revision"],
+        "machine_id": context["machine"]["id"],
+        "machine_name": context["machine"]["name"],
+        "machine_profile_status": context["machine"]["profile_status"],
+        "module_ids": context["material"]["compatible_modules"],
+        "material_id": context["material"]["id"],
+        "material_name": context["material"]["name"],
+        "material_profile_status": context["material"]["profile_status"],
+        "calibration_status": context["material"]["profile_status"],
+        "thickness_mm": context["material"]["thickness_mm"],
+        "operation_order": operation_order(),
+        "combined_artifact": {
+            "artifact": "job.gcode",
+            "bytes": (stage / "job.gcode").stat().st_size,
+            "sha256": sha256(stage / "job.gcode"),
+        },
+        "operation_stages": stages,
+        "rerun_policy": "Rerunning an operation artifact repeats that artifact's full passes_per_run count.",
+        "effective_work_area_mm": [layout["effective_width_mm"], layout["effective_height_mm"]],
+    }
 
 
 def set_pixel(image, width, height, x, y, color):
@@ -1209,7 +1340,7 @@ def generate_preview_png(config, layout, segments):
     )
 
 
-def job_manifest(context, layout, segment_count, mechanism_report=None):
+def job_manifest(context, layout, segment_count, mechanism_report=None, plan=None):
     config = context["config"]
     warnings = []
     if config["sheet_width_mm"] > layout["effective_width_mm"] or config["sheet_height_mm"] > layout["effective_height_mm"]:
@@ -1257,6 +1388,20 @@ def job_manifest(context, layout, segment_count, mechanism_report=None):
         "recipes": context["material"]["recipes"],
         "warnings": warnings,
     }
+    if plan is not None:
+        manifest["job_plan"] = "job_plan.json"
+        manifest["operation_artifacts"] = [
+            {
+                "operation": stage["operation"],
+                "artifact": stage["artifact"],
+                "passes_per_run": stage["passes_per_run"],
+                "material_id": stage["material_id"],
+                "thickness_mm": stage["thickness_mm"],
+                "rerun_effect": stage["rerun_effect"],
+                "sha256": stage["sha256"],
+            }
+            for stage in plan["operation_stages"]
+        ]
     if config.get("design_type", "coin_sheet") == "mechanism_sheet":
         if mechanism_report is None:
             mechanism_report = mechanism_validation_report(config)
@@ -1293,12 +1438,27 @@ def job_manifest(context, layout, segment_count, mechanism_report=None):
     return manifest
 
 
-def write_operations(path, material):
+def write_operations(path, material, plan=None):
+    stages_by_operation = {
+        stage["operation"]: stage
+        for stage in plan.get("operation_stages", [])
+    } if plan else {}
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["order", "operation", "speed_mm_per_min", "power_percent", "passes", "air_assist"])
-        for order, operation in enumerate(("vector_engrave", "through_cut"), 1):
+        writer.writerow(
+            [
+                "order",
+                "operation",
+                "speed_mm_per_min",
+                "power_percent",
+                "passes_per_run",
+                "air_assist",
+                "artifact",
+            ]
+        )
+        for order, operation in enumerate(operation_order(), 1):
             recipe = material["recipes"][operation]
+            stage = stages_by_operation.get(operation, {})
             writer.writerow(
                 [
                     order,
@@ -1307,6 +1467,7 @@ def write_operations(path, material):
                     recipe["power_percent"],
                     recipe["passes"],
                     recipe["air_assist"],
+                    stage.get("artifact", operation_artifact_name(order, operation, material)),
                 ]
             )
 
@@ -1324,6 +1485,8 @@ def write_setup(path, context, layout):
                 f"- Token quantity: {layout['quantity']}",
                 f"- Engraving backend: {context['config'].get('text_backend', 'native_stroke')}",
                 f"- Engraving font: {context['config'].get('font_name', 'built-in continuous-line vector font')}",
+                "- Operation artifacts in `operations/` can be run independently.",
+                "- Rerunning an operation artifact repeats its full configured pass count.",
                 "- Confirm ventilation, air assist, lens condition, focus, enclosure, emergency stop, and fire response equipment.",
                 "- Run a non-emitting frame before fabrication.",
                 "- Do not fabricate with these recipes until calibration coupons pass.",
@@ -1361,8 +1524,10 @@ def artifact_names(context):
 
 def build_manifest(stage, context):
     records = []
-    for name in sorted(artifact_names(context)):
-        path = stage / name
+    for path in sorted(candidate for candidate in stage.rglob("*") if candidate.is_file()):
+        name = str(path.relative_to(stage))
+        if name == "build_manifest.json":
+            continue
         records.append({"path": name, "bytes": path.stat().st_size, "sha256": sha256(path)})
     return {
         "schema_version": 1,
@@ -1378,7 +1543,7 @@ def audit(directory):
     manifest_path = directory / "build_manifest.json"
     manifest = load_json(manifest_path)
     expected = {"build_manifest.json"} | {record["path"] for record in manifest.get("artifacts", [])}
-    actual = {path.name for path in directory.iterdir() if path.is_file()}
+    actual = {str(path.relative_to(directory)) for path in directory.rglob("*") if path.is_file()}
     if actual != expected:
         fail(f"Artifact inventory mismatch in {directory}: expected {sorted(expected)}, found {sorted(actual)}")
     for record in manifest["artifacts"]:
@@ -1463,14 +1628,24 @@ def execute(args):
     stage = Path(tempfile.mkdtemp(prefix=f"{revision}_", dir=temp_parent))
     (stage / "design.svg").write_text(generate_svg(context["config"], layout, segments), encoding="utf-8")
     (stage / "preview.png").write_bytes(generate_preview_png(context["config"], layout, segments))
+    operations_dir = stage / "operations"
+    operations_dir.mkdir()
+    for order, operation in enumerate(operation_order(), 1):
+        operation_path = stage / operation_artifact_name(order, operation, context["material"])
+        operation_path.write_text(
+            generate_operation_gcode(operation, context["config"], context["machine"], context["material"], layout, segments),
+            encoding="utf-8",
+        )
     (stage / "job.gcode").write_text(
         generate_gcode(context["config"], context["machine"], context["material"], layout, segments),
         encoding="utf-8",
     )
+    plan = job_plan(stage, context, layout)
+    write_json(stage / "job_plan.json", plan)
     if mechanism_report is not None:
         write_json(stage / "mechanism_validation.json", mechanism_report)
-    write_json(stage / "job_manifest.json", job_manifest(context, layout, len(segments), mechanism_report))
-    write_operations(stage / "operations.csv", context["material"])
+    write_json(stage / "job_manifest.json", job_manifest(context, layout, len(segments), mechanism_report, plan))
+    write_operations(stage / "operations.csv", context["material"], plan)
     write_setup(stage / "material_setup.md", context, layout)
     write_json(stage / "build_manifest.json", build_manifest(stage, context))
     audit(stage)
