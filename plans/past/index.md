@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-20-19-41 | plans/past/2026-07-06-20-12-24_integrate-freecad-gears-inspection-provider.md | Integrate FreeCAD Gears Inspection Provider | Add FreeCAD Gears as a managed inspection-only helper provider with adapter metadata, setup driver, docs, tests, and acceptance evidence.
 2026-07-06-20-08-45 | plans/past/2026-07-06-20-02-16_integrate-bosl2-openscad-provider.md | Integrate BOSL2 OpenSCAD Provider | Add BOSL2 as a pinned OpenSCAD library provider for experimental planar gear comparison profiles without granting fabrication authority.
 2026-07-06-19-59-32 | plans/past/2026-07-06-19-48-06_integrate-cadquery-and-cq-gears-provider.md | Integrate CadQuery and CQ_Gears Provider | Add a bounded CadQuery/CQ_Gears provider for validated planar gear geometry, provenance, smoke tests, and documentation without granting fabrication authority.
 2026-07-06-19-45-51 | plans/past/2026-07-06-19-19-57_migrate-boxes-to-provider-helper.md | Migrate Boxes.py to Provider Helper | Convert Boxes.py from the legacy helper path to a locked provider adapter with typed YAML generation, managed setup, deterministic SVG validation, and legacy cleanup.

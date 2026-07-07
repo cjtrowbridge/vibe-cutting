@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FreeCAD Gears Inspection Request",
+  "type": "object",
+  "required": ["schema_version", "tool_id", "request_type", "gear_type", "parameters", "outputs"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "tool_id": {"const": "freecad_gears"},
+    "request_type": {"const": "inspection"},
+    "gear_type": {"enum": ["involute_spur"]},
+    "parameters": {
+      "type": "object",
+      "required": ["module", "teeth", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "module": {"type": "number", "exclusiveMinimum": 0},
+        "teeth": {"type": "integer", "minimum": 3},
+        "height": {"type": "number", "exclusiveMinimum": 0},
+        "pressure_angle": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 45},
+        "bore_diameter": {"type": "number", "minimum": 0}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["manifest"],
+      "additionalProperties": false,
+      "properties": {
+        "manifest": {"type": "string"},
+        "step": {"type": "string"}
+      }
+    }
+  }
+}

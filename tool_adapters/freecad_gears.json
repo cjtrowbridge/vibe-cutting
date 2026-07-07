@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "id": "freecad_gears",
+  "display_name": "FreeCAD Gears",
+  "tool_class": "callable_helper",
+  "source": {
+    "type": "git_submodule",
+    "path": "third_party/freecad-gears",
+    "upstream": "https://github.com/looooo/freecad.gears",
+    "pinned_revision": "d55e8e3d21208e052379a8451507fb4a727ae292",
+    "license": "GPL-3.0-or-later",
+    "license_file": "LICENSE"
+  },
+  "capabilities": [
+    "freecad_workbench",
+    "gear_inspection",
+    "headless_freecad",
+    "step_provenance",
+    "json_metrics"
+  ],
+  "routing": {
+    "use_for": [
+      "Headless inspection of FreeCAD Gears behavior against host mechanism assumptions",
+      "Generating non-authoritative STEP provenance for review",
+      "Checking whether a managed host can run FreeCADCmd without user-global FreeCAD state"
+    ],
+    "avoid_for": [
+      "Authoritative laser fabrication geometry",
+      "Generated G-code, material recipes, machine control, or fabrication approval",
+      "Lightweight planar gear generation where CQ_Gears or BOSL2 is sufficient"
+    ]
+  },
+  "provider": {
+    "kind": "pixi_environment",
+    "environment_path": ".tools/environments/freecad_gears",
+    "working_directory": ".",
+    "setup": {
+      "lock_file": "third_party/freecad-gears/pixi.lock",
+      "cache_path": ".tools/cache/helpers/freecad_gears",
+      "temp_path": ".tools/tmp/helpers/freecad_gears",
+      "log_path": ".tools/logs/helpers/freecad_gears",
+      "staging_path": ".tools/staging/helpers/freecad_gears",
+      "upstream_manifest": "third_party/freecad-gears/pixi.toml",
+      "isolated_freecad_home": ".tools/environments/freecad_gears/freecad-user"
+    },
+    "invocation": {
+      "driver": "setup/tools/freecad_gears.py",
+      "executable": "FreeCADCmd",
+      "executable_candidates": [
+        "FreeCADCmd",
+        "freecadcmd"
+      ],
+      "mode": "inspection_only"
+    },
+    "version": {
+      "freecad_minimum": "1.0.0",
+      "python_minimum": "3.8"
+    }
+  },
+  "outputs": {
+    "accepted_formats": [
+      "step",
+      "json",
+      "txt"
+    ],
+    "primary_format": "json",
+    "operation_colors": {},
+    "inventory": []
+  },
+  "safety": {
+    "controls_hardware": false,
+    "setup_may_use_network": true,
+    "may_modify_source": false,
+    "allowed_input_roots": [
+      ".tmp",
+      "designs"
+    ],
+    "allowed_output_roots": [
+      ".tmp",
+      "output",
+      "revisions"
+    ]
+  },
+  "readiness": {
+    "states": [
+      "registered",
+      "dependencies-ready",
+      "invocation-ready",
+      "output-validated"
+    ],
+    "fabrication_approved": false
+  }
+}

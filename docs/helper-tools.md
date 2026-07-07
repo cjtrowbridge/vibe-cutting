@@ -2,7 +2,7 @@
 
 Callable helper tools are separately maintained third-party repositories that extend design capabilities without becoming part of the host Python process. They remain pinned submodules and run through `scripts/helper_tool.py`.
 
-Provider-based adapters are the default helper model. Boxes.py is the first migrated provider helper.
+Provider-based adapters are the default helper model. Boxes.py, CadQuery + CQ_Gears, BOSL2, and FreeCAD Gears use provider manifests.
 
 ## Why This Layer Exists
 
@@ -59,3 +59,4 @@ See `playbooks/how_to_add_and_validate_a_helper_tool.md`.
 - Boxes.py: fitted panel structures and reproducible SVG source geometry.
 - CadQuery + CQ_Gears: planar spur gear, ring gear, rack, and gear-mesh source profiles for mechanism planning.
 - BOSL2: OpenSCAD comparison profiles for spur gears, ring gears, and racks.
+- FreeCAD Gears: inspection-only FreeCAD workbench checks and non-authoritative STEP provenance.

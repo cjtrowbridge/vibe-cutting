@@ -95,6 +95,8 @@ CadQuery + CQ_Gears provides planar spur gear, ring gear, rack, and simple gear-
 
 BOSL2 provides OpenSCAD comparison profiles for spur gears, ring gears, and racks through `tool_adapters/bosl2.json`. See `docs/tools/bosl2.md`.
 
+FreeCAD Gears provides inspection-only FreeCAD workbench checks and non-authoritative STEP provenance through `tool_adapters/freecad_gears.json`. See `docs/tools/freecad-gears.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

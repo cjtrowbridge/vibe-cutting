@@ -173,17 +173,17 @@ Each phase must define:
   - [-] 8.9 Compare BOSL2 and CQ_Gears pitch geometry without requiring byte-identical profiles.
   - [x] 8.10 Document BOSL2 as fallback/experimental geometry rather than the mechanism validator.
 
-- [ ] 9. Integrate FreeCAD Gears as an inspection backend.
-  - [ ] 9.1 Create a FreeCAD Gears adapter manifest referencing its submodule pin and GPL license.
-  - [ ] 9.2 Create a host-owned Pixi environment or validated use of the upstream Pixi lock.
-  - [ ] 9.3 Provision FreeCAD and FreeCAD Gears without requiring a preinstalled system application.
-  - [ ] 9.4 Use isolated FreeCAD user, cache, and configuration directories.
-  - [ ] 9.5 Create `setup/tools/freecad_gears.py` for setup and headless smoke testing.
-  - [ ] 9.6 Detect and verify `FreeCADCmd` inside the managed environment.
-  - [ ] 9.7 Generate one headless involute-gear inspection artifact.
-  - [ ] 9.8 Verify deterministic STEP/DXF or other approved comparison output.
-  - [ ] 9.9 Keep FreeCAD Gears at `output-validated` inspection status until repeatable headless export passes on supported platforms.
-  - [ ] 9.10 Prohibit FreeCAD-generated toolpaths from becoming authoritative G-code.
+- [x] 9. Integrate FreeCAD Gears as an inspection backend.
+  - [x] 9.1 Create a FreeCAD Gears adapter manifest referencing its submodule pin and GPL license.
+  - [x] 9.2 Create a host-owned Pixi environment or validated use of the upstream Pixi lock.
+  - [x] 9.3 Provision FreeCAD and FreeCAD Gears without requiring a preinstalled system application.
+  - [x] 9.4 Use isolated FreeCAD user, cache, and configuration directories.
+  - [x] 9.5 Create `setup/tools/freecad_gears.py` for setup and headless smoke testing.
+  - [x] 9.6 Detect and verify `FreeCADCmd` inside the managed environment.
+  - [x] 9.7 Generate one headless involute-gear inspection artifact.
+  - [x] 9.8 Verify deterministic STEP/DXF or other approved comparison output.
+  - [x] 9.9 Keep FreeCAD Gears at `output-validated` inspection status until repeatable headless export passes on supported platforms.
+  - [x] 9.10 Prohibit FreeCAD-generated toolpaths from becoming authoritative G-code.
 
 - [ ] 10. Build the host-owned laser mechanism model.
   - [ ] 10.1 Create schemas for gears, racks, cams, ratchets, rotors, linkages, axles, spacers, washers, registration features, and interfaces.
@@ -222,7 +222,7 @@ Each phase must define:
   - [ ] 12.6 Add or update `docs/tools/boxes.md`.
   - [ ] 12.7 Add `docs/tools/cq-gears.md`.
   - [ ] 12.8 Add `docs/tools/bosl2.md`.
-  - [ ] 12.9 Add `docs/tools/freecad-gears.md`.
+  - [x] 12.9 Add `docs/tools/freecad-gears.md`.
   - [ ] 12.10 Add `docs/mechanism-model.md`.
   - [ ] 12.11 Add `docs/mechanism-validation.md`.
   - [ ] 12.12 Add `references/helper-runtime-providers.md`.
@@ -234,7 +234,7 @@ Each phase must define:
   - [ ] 12.18 Update `playbooks/how_to_use_boxes_for_laser_geometry.md`.
   - [ ] 12.19 Add `playbooks/how_to_use_cq_gears_for_laser_mechanisms.md`.
   - [ ] 12.20 Add `playbooks/how_to_use_bosl2_gear_geometry.md`.
-  - [ ] 12.21 Add `playbooks/how_to_use_freecad_gears_for_inspection.md`.
+  - [x] 12.21 Add `playbooks/how_to_use_freecad_gears_for_inspection.md`.
   - [ ] 12.22 Add `playbooks/how_to_author_and_validate_laser_mechanisms.md`.
   - [ ] 12.23 Update all playbook and reference indexes.
 
