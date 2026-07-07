@@ -250,27 +250,27 @@ Each phase must define:
   - [x] 13.9 Record blocked capabilities and exact remediation.
   - [x] 13.10 Exclude secrets, tokens, usernames, and unrelated host data.
 
-- [ ] 14. Test portable bootstrap behavior.
-  - [ ] 14.1 Run bootstrap from an alternate empty `.tools` root on the development host.
-  - [ ] 14.2 Run a clean-host simulation that retains Git and the native shell but masks host Python, Pixi, Conda, OpenSCAD, FreeCAD, and helper executables.
-  - [ ] 14.3 Prove native bootstrap reaches the managed runtime without using system Python.
-  - [ ] 14.4 Prove bootstrap initializes every submodule using verified host Git.
-  - [ ] 14.5 Prove the managed `run` interface invokes `scripts/laser_build.py`, preserves arguments and exit codes, and never resolves host Python.
-  - [ ] 14.6 Prove `doctor` reports a missing or unsupported Git installation with exact remediation and performs no downloads.
-  - [ ] 14.7 Prove repeated setup is idempotent.
-  - [ ] 14.8 Simulate missing download tools and verify actionable failure.
-  - [ ] 14.9 Simulate checksum mismatch and verify refusal to execute.
-  - [ ] 14.10 Simulate interrupted environment creation and verify safe resume.
-  - [ ] 14.11 Simulate unsupported OS/architecture and verify explicit refusal.
-  - [ ] 14.12 Verify setup does not require root/administrator access for the supported path.
-  - [ ] 14.13 Verify no global Python, package, OpenSCAD, or FreeCAD state is modified.
-  - [ ] 14.14 Verify setup writes only to declared repository-local paths.
-  - [ ] 14.15 Verify all third-party submodules remain clean after success, failure, repair, and interruption tests.
-  - [ ] 14.16 Run Boxes.py deterministic smoke tests.
-  - [ ] 14.17 Run CQ_Gears deterministic and geometry smoke tests.
-  - [ ] 14.18 Run BOSL2/OpenSCAD deterministic and geometry smoke tests.
-  - [ ] 14.19 Run FreeCAD Gears headless inspection smoke tests where supported.
-  - [ ] 14.20 Run the complete host unit and integration test suites.
+- [x] 14. Test portable bootstrap behavior.
+  - [x] 14.1 Run bootstrap from an alternate empty `.tools` root on the development host.
+  - [x] 14.2 Run a clean-host simulation that retains Git and the native shell but masks host Python, Pixi, Conda, OpenSCAD, FreeCAD, and helper executables.
+  - [x] 14.3 Prove native bootstrap reaches the managed runtime without using system Python.
+  - [x] 14.4 Prove bootstrap initializes every submodule using verified host Git.
+  - [x] 14.5 Prove the managed `run` interface invokes `scripts/laser_build.py`, preserves arguments and exit codes, and never resolves host Python.
+  - [x] 14.6 Prove `doctor` reports a missing or unsupported Git installation with exact remediation and performs no downloads.
+  - [x] 14.7 Prove repeated setup is idempotent.
+  - [x] 14.8 Simulate missing download tools and verify actionable failure.
+  - [x] 14.9 Simulate checksum mismatch and verify refusal to execute.
+  - [x] 14.10 Simulate interrupted environment creation and verify safe resume.
+  - [x] 14.11 Simulate unsupported OS/architecture and verify explicit refusal.
+  - [x] 14.12 Verify setup does not require root/administrator access for the supported path.
+  - [x] 14.13 Verify no global Python, package, OpenSCAD, or FreeCAD state is modified.
+  - [x] 14.14 Verify setup writes only to declared repository-local paths.
+  - [x] 14.15 Verify all third-party submodules remain clean after success, failure, repair, and interruption tests.
+  - [x] 14.16 Run Boxes.py deterministic smoke tests.
+  - [x] 14.17 Run CQ_Gears deterministic and geometry smoke tests.
+  - [x] 14.18 Run BOSL2/OpenSCAD deterministic and geometry smoke tests.
+  - [x] 14.19 Run FreeCAD Gears headless inspection smoke tests where supported.
+  - [x] 14.20 Run the complete host unit and integration test suites.
 
 - [ ] 15. Add cross-platform verification.
   - [ ] 15.1 Add Linux bootstrap CI coverage.
