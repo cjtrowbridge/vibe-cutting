@@ -23,3 +23,12 @@
 - `.tools/reports/host-readiness/` records local bootstrap reports.
 - `scripts/host_readiness_report.py` writes `host-readiness-full.json` and `host-readiness-full.md`.
 - `tool_adapters/*.json` records source pins, provider kinds, safety boundaries, and readiness states.
+- `.github/workflows/cross-platform-bootstrap.yml` runs Linux, Windows, and macOS bootstrap verification and uploads host-readiness reports as CI artifacts.
+- `docs/ci-verification.md` defines the CI checks, cache policy, optional heavyweight helpers, and evidence caveats.
+
+## CI Evidence Policy
+
+- A platform is only treated as CI-verified after a successful workflow run uploads its host-readiness artifact.
+- CI cache contents are keyed by platform, checksums, and lock files, then revalidated by bootstrap before use.
+- FreeCAD and other heavyweight helper checks are opt-in and non-blocking by default.
+- CI readiness never implies fabrication approval; machine/material validation remains design-specific and operator-controlled.

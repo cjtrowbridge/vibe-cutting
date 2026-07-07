@@ -272,13 +272,13 @@ Each phase must define:
   - [x] 14.19 Run FreeCAD Gears headless inspection smoke tests where supported.
   - [x] 14.20 Run the complete host unit and integration test suites.
 
-- [ ] 15. Add cross-platform verification.
-  - [ ] 15.1 Add Linux bootstrap CI coverage.
-  - [ ] 15.2 Add Windows PowerShell bootstrap CI coverage.
-  - [ ] 15.3 Add macOS bootstrap CI coverage.
-  - [ ] 15.4 Cache only checksum-validated downloads and lock-addressed environments.
-  - [ ] 15.5 Keep heavyweight FreeCAD tests optional when runner limits prevent full execution.
-  - [ ] 15.6 Publish support-matrix evidence from CI without claiming untested fabrication readiness.
+- [x] 15. Add cross-platform verification.
+  - [x] 15.1 Add Linux bootstrap CI coverage.
+  - [x] 15.2 Add Windows PowerShell bootstrap CI coverage.
+  - [x] 15.3 Add macOS bootstrap CI coverage.
+  - [x] 15.4 Cache only checksum-validated downloads and lock-addressed environments.
+  - [x] 15.5 Keep heavyweight FreeCAD tests optional when runner limits prevent full execution.
+  - [x] 15.6 Publish support-matrix evidence from CI without claiming untested fabrication readiness.
 
 - [ ] 16. Complete migration and rollout.
   - [ ] 16.1 Remove obsolete Python-first setup instructions.
