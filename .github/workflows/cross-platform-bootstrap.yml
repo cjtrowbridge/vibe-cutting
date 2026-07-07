@@ -20,45 +20,11 @@ permissions:
   contents: read
 
 jobs:
-  bootstrap:
-    name: Bootstrap ${{ matrix.label }}
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: Linux x86-64
-            runner: ubuntu-latest
-            shell: bash
-            bootstrap: setup/bootstrap.sh
-            setup_command: setup/bootstrap.sh --allow-downloads setup
-            doctor_command: setup/bootstrap.sh doctor
-            verify_command: setup/bootstrap.sh verify
-            run_prefix: setup/bootstrap.sh run --
-            report_command: setup/bootstrap.sh report
-          - label: Windows x86-64
-            runner: windows-latest
-            shell: pwsh
-            bootstrap: setup/bootstrap.ps1
-            setup_command: ./setup/bootstrap.ps1 -AllowDownloads setup
-            doctor_command: ./setup/bootstrap.ps1 doctor
-            verify_command: ./setup/bootstrap.ps1 verify
-            run_prefix: ./setup/bootstrap.ps1 run --
-            report_command: ./setup/bootstrap.ps1 report
-          - label: macOS
-            runner: macos-latest
-            shell: bash
-            bootstrap: setup/bootstrap.sh
-            setup_command: setup/bootstrap.sh --allow-downloads setup
-            doctor_command: setup/bootstrap.sh doctor
-            verify_command: setup/bootstrap.sh verify
-            run_prefix: setup/bootstrap.sh run --
-            report_command: setup/bootstrap.sh report
-
+  linux:
+    name: Bootstrap Linux x86-64
+    runs-on: ubuntu-latest
     env:
       VIBE_CUTTING_TOOLS_ROOT: ${{ github.workspace }}/.tools
-      RUN_HEAVYWEIGHT_HELPERS: ${{ github.event.inputs.run_heavyweight_helpers || 'false' }}
-
     steps:
       - name: Check out repository and submodules
         uses: actions/checkout@v4
@@ -77,41 +43,159 @@ jobs:
             bootstrap-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Doctor before setup
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.doctor_command }}
+        run: setup/bootstrap.sh doctor
 
       - name: Bootstrap locked base runtime
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.setup_command }}
+        run: setup/bootstrap.sh --allow-downloads setup
 
       - name: Verify bootstrap state
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.verify_command }}
+        run: setup/bootstrap.sh verify
 
       - name: Prove managed script execution
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.run_prefix }} scripts/laser_build.py --help
+        run: setup/bootstrap.sh run -- scripts/laser_build.py --help
 
       - name: Validate helper manifests
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.run_prefix }} scripts/helper_tool.py validate
+        run: setup/bootstrap.sh run -- scripts/helper_tool.py validate
 
       - name: Generate host-readiness report
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.run_prefix }} scripts/host_readiness_report.py --output-root .tools/reports/host-readiness
+        run: setup/bootstrap.sh run -- scripts/host_readiness_report.py --output-root .tools/reports/host-readiness
 
       - name: Print latest bootstrap report path
-        shell: ${{ matrix.shell }}
-        run: ${{ matrix.report_command }}
+        run: setup/bootstrap.sh report
 
       - name: Optional heavyweight helper smoke tests
         if: ${{ github.event.inputs.run_heavyweight_helpers == 'true' }}
         continue-on-error: true
-        shell: ${{ matrix.shell }}
         run: |
-          ${{ matrix.run_prefix }} scripts/helper_tool.py setup freecad_gears
-          ${{ matrix.run_prefix }} scripts/helper_tool.py check freecad_gears
-          ${{ matrix.run_prefix }} setup/tools/freecad_gears.py smoke --manifest tool_adapters/freecad_gears.json
+          setup/bootstrap.sh run -- scripts/helper_tool.py setup freecad_gears
+          setup/bootstrap.sh run -- scripts/helper_tool.py check freecad_gears
+          setup/bootstrap.sh run -- setup/tools/freecad_gears.py smoke --manifest tool_adapters/freecad_gears.json
+
+      - name: Upload host-readiness evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: host-readiness-${{ runner.os }}-${{ runner.arch }}
+          path: .tools/reports/host-readiness
+          if-no-files-found: warn
+
+  windows:
+    name: Bootstrap Windows x86-64
+    runs-on: windows-latest
+    env:
+      VIBE_CUTTING_TOOLS_ROOT: ${{ github.workspace }}\.tools
+    steps:
+      - name: Check out repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Restore checksum-validated tool caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            .tools\cache
+            .tools\pixi-home
+            .tools\environments
+          key: bootstrap-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('setup/pixi.lock', 'setup/checksums/*.sha256', 'setup/tools/*requirements.lock', 'third_party/freecad-gears/pixi.lock') }}
+          restore-keys: |
+            bootstrap-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Doctor before setup
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 doctor
+
+      - name: Bootstrap locked base runtime
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 -AllowDownloads setup
+
+      - name: Verify bootstrap state
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 verify
+
+      - name: Prove managed script execution
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 run -- scripts/laser_build.py --help
+
+      - name: Validate helper manifests
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 run -- scripts/helper_tool.py validate
+
+      - name: Generate host-readiness report
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 run -- scripts/host_readiness_report.py --output-root .tools/reports/host-readiness
+
+      - name: Print latest bootstrap report path
+        shell: pwsh
+        run: .\setup\bootstrap.ps1 report
+
+      - name: Optional heavyweight helper smoke tests
+        if: ${{ github.event.inputs.run_heavyweight_helpers == 'true' }}
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          .\setup\bootstrap.ps1 run -- scripts/helper_tool.py setup freecad_gears
+          .\setup\bootstrap.ps1 run -- scripts/helper_tool.py check freecad_gears
+          .\setup\bootstrap.ps1 run -- setup/tools/freecad_gears.py smoke --manifest tool_adapters/freecad_gears.json
+
+      - name: Upload host-readiness evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: host-readiness-${{ runner.os }}-${{ runner.arch }}
+          path: .tools\reports\host-readiness
+          if-no-files-found: warn
+
+  macos:
+    name: Bootstrap macOS
+    runs-on: macos-latest
+    env:
+      VIBE_CUTTING_TOOLS_ROOT: ${{ github.workspace }}/.tools
+    steps:
+      - name: Check out repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Restore checksum-validated tool caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            .tools/cache
+            .tools/pixi-home
+            .tools/environments
+          key: bootstrap-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('setup/pixi.lock', 'setup/checksums/*.sha256', 'setup/tools/*requirements.lock', 'third_party/freecad-gears/pixi.lock') }}
+          restore-keys: |
+            bootstrap-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Doctor before setup
+        run: setup/bootstrap.sh doctor
+
+      - name: Bootstrap locked base runtime
+        run: setup/bootstrap.sh --allow-downloads setup
+
+      - name: Verify bootstrap state
+        run: setup/bootstrap.sh verify
+
+      - name: Prove managed script execution
+        run: setup/bootstrap.sh run -- scripts/laser_build.py --help
+
+      - name: Validate helper manifests
+        run: setup/bootstrap.sh run -- scripts/helper_tool.py validate
+
+      - name: Generate host-readiness report
+        run: setup/bootstrap.sh run -- scripts/host_readiness_report.py --output-root .tools/reports/host-readiness
+
+      - name: Print latest bootstrap report path
+        run: setup/bootstrap.sh report
+
+      - name: Optional heavyweight helper smoke tests
+        if: ${{ github.event.inputs.run_heavyweight_helpers == 'true' }}
+        continue-on-error: true
+        run: |
+          setup/bootstrap.sh run -- scripts/helper_tool.py setup freecad_gears
+          setup/bootstrap.sh run -- scripts/helper_tool.py check freecad_gears
+          setup/bootstrap.sh run -- setup/tools/freecad_gears.py smoke --manifest tool_adapters/freecad_gears.json
 
       - name: Upload host-readiness evidence
         uses: actions/upload-artifact@v4
