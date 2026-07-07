@@ -165,8 +165,12 @@ switch ($Command) {
     "report" { if (-not (Verify-Manager $Platform)) { Fail "managed Pixi is unavailable; run setup first" }; Run-StageTwo (@("report") + $CommandArguments) }
     "run" {
         if (-not (Verify-Manager $Platform)) { Fail "managed Pixi is unavailable; run setup first" }
-        if (-not $CommandArguments -or $CommandArguments[0] -ne "--") { Fail "run requires -- before the repository command" }
-        $Delegated = if ($CommandArguments.Count -gt 1) { $CommandArguments[1..($CommandArguments.Count - 1)] } else { @() }
+        if (-not $CommandArguments) { Fail "run requires a repository command" }
+        $Delegated = if ($CommandArguments[0] -eq "--") {
+            if ($CommandArguments.Count -gt 1) { $CommandArguments[1..($CommandArguments.Count - 1)] } else { @() }
+        } else {
+            $CommandArguments
+        }
         Run-StageTwo (@("run", "--") + $Delegated)
     }
     { $_ -in @("help", "-h", "--help") } { Show-Usage }
