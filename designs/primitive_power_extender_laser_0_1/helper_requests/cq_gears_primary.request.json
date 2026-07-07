@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "tool_id": "cq_gears",
+  "request_type": "planar_profile",
+  "gear_type": "meshing_pair",
+  "parameters": {
+    "module": 2.0,
+    "pinion_teeth": 20,
+    "ring_teeth": 20,
+    "width": 3.0,
+    "bore": 5.2,
+    "backlash": 0.08
+  },
+  "outputs": {
+    "svg": ".tmp/primitive_power_extender/cq_gears_primary.svg",
+    "manifest": ".tmp/primitive_power_extender/cq_gears_primary.manifest.json"
+  }
+}

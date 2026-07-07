@@ -202,16 +202,16 @@ Each phase must define:
   - [x] 10.14 Archive raw helper geometry with normalized host operations.
   - [x] 10.15 Record every mechanism validation result in the job manifest.
 
-- [ ] 11. Prototype the first laser-native mechanism.
-  - [ ] 11.1 Create `primitive_power_extender_laser_0_1`.
-  - [ ] 11.2 Define one input rotor and one output rotor.
-  - [ ] 11.3 Define fixed 1:1 ratio and phase transfer.
-  - [ ] 11.4 Define laminated layers, axles, spacers, registration, and service fasteners.
-  - [ ] 11.5 Generate primary profiles with CQ_Gears.
-  - [ ] 11.6 Generate a BOSL2 comparison profile.
-  - [ ] 11.7 Validate ratio, phase, clearance, collisions, bounds, and operation ordering.
-  - [ ] 11.8 Generate SVG, PNG preview, operations, setup documentation, manifests, and calibration-only G-code through vibe-cutting.
-  - [ ] 11.9 Add deterministic revision and audit tests.
+- [x] 11. Prototype the first laser-native mechanism.
+  - [x] 11.1 Create `primitive_power_extender_laser_0_1`.
+  - [x] 11.2 Define one input rotor and one output rotor.
+  - [x] 11.3 Define fixed 1:1 ratio and phase transfer.
+  - [x] 11.4 Define laminated layers, axles, spacers, registration, and service fasteners.
+  - [x] 11.5 Generate primary profiles with CQ_Gears.
+  - [x] 11.6 Generate a BOSL2 comparison profile.
+  - [x] 11.7 Validate ratio, phase, clearance, collisions, bounds, and operation ordering.
+  - [x] 11.8 Generate SVG, PNG preview, operations, setup documentation, manifests, and calibration-only G-code through vibe-cutting.
+  - [x] 11.9 Add deterministic revision and audit tests.
 
 - [ ] 12. Add agent governance and human documentation.
   - [ ] 12.1 Update `AGENTS.md` with bootstrap-first startup and helper-routing rules.

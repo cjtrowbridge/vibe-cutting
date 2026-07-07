@@ -44,6 +44,10 @@ The report includes `job_manifest_fragment` with:
 
 Build integrations should copy this fragment into job manifests once a design uses the mechanism model.
 
+## First Prototype
+
+`designs/primitive_power_extender_laser_0_1/` is the first mechanism-sheet design. It uses the mechanism validator during `scripts/laser_build.py`, writes `mechanism_validation.json` alongside the normal laser artifacts, and records the validation fragment in `job_manifest.json`.
+
 ## Boundary
 
 This validator does not generate geometry, toolpaths, or process recipes. It checks the host mechanism contract after helper or native geometry has been declared and before the laser artifact pipeline treats the design as buildable.

@@ -99,6 +99,12 @@ FreeCAD Gears provides inspection-only FreeCAD workbench checks and non-authorit
 
 Host-owned mechanism models validate laser-cut assemblies across parts, gear meshes, stackups, phases, channels, clearances, helper provenance, and overburn risks. See `docs/mechanism-model.md`.
 
+The first mechanism prototype is `primitive_power_extender_laser_0_1`, a two-gear 1:1 calibration-only power-transfer sheet. Build it with:
+
+```bash
+python3 scripts/laser_build.py --design primitive_power_extender_laser_0_1
+```
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

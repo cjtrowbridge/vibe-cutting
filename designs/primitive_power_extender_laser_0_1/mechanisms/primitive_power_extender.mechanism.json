@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "mechanism_id": "primitive_power_extender_laser_0_1",
+  "constraints": {
+    "mesh_tolerance_mm": 0.1,
+    "ratio_tolerance": 0.001,
+    "phase_tolerance_deg": 0.5,
+    "min_backlash_mm": 0.05,
+    "min_bore_clearance_mm": 0.1,
+    "min_tooth_root_mm": 0.8,
+    "min_web_mm": 1.2,
+    "min_rotating_clearance_mm": 0.5
+  },
+  "parts": [
+    {
+      "id": "input_rotor",
+      "kind": "gear",
+      "layer": "drive",
+      "center": [95.0, 134.0],
+      "module_mm": 2.0,
+      "teeth": 20,
+      "pitch_diameter_mm": 40.0,
+      "outer_diameter_mm": 44.0,
+      "root_diameter_mm": 35.0,
+      "bore_diameter_mm": 5.2,
+      "axle": "input_axle"
+    },
+    {
+      "id": "output_rotor",
+      "kind": "gear",
+      "layer": "drive",
+      "center": [135.0, 134.0],
+      "module_mm": 2.0,
+      "teeth": 20,
+      "pitch_diameter_mm": 40.0,
+      "outer_diameter_mm": 44.0,
+      "root_diameter_mm": 35.0,
+      "bore_diameter_mm": 5.2,
+      "axle": "output_axle"
+    },
+    {
+      "id": "input_axle",
+      "kind": "axle",
+      "layer": "drive",
+      "center": [95.0, 134.0],
+      "radius_mm": 2.5,
+      "axle_diameter_mm": 5.0
+    },
+    {
+      "id": "output_axle",
+      "kind": "axle",
+      "layer": "drive",
+      "center": [135.0, 134.0],
+      "radius_mm": 2.5,
+      "axle_diameter_mm": 5.0
+    },
+    {
+      "id": "spacer_left",
+      "kind": "spacer",
+      "layer": "spacer",
+      "center": [75.0, 104.0],
+      "radius_mm": 4.0
+    },
+    {
+      "id": "spacer_right",
+      "kind": "spacer",
+      "layer": "spacer",
+      "center": [155.0, 104.0],
+      "radius_mm": 4.0
+    },
+    {
+      "id": "reg_lower_left",
+      "kind": "registration_feature",
+      "layer": "drive",
+      "center": [65.0, 94.0],
+      "radius_mm": 1.5
+    },
+    {
+      "id": "reg_lower_right",
+      "kind": "registration_feature",
+      "layer": "drive",
+      "center": [165.0, 94.0],
+      "radius_mm": 1.5
+    },
+    {
+      "id": "reg_upper_left",
+      "kind": "registration_feature",
+      "layer": "drive",
+      "center": [65.0, 174.0],
+      "radius_mm": 1.5
+    },
+    {
+      "id": "reg_upper_right",
+      "kind": "registration_feature",
+      "layer": "drive",
+      "center": [165.0, 174.0],
+      "radius_mm": 1.5
+    },
+    {
+      "id": "power_input_interface",
+      "kind": "interface",
+      "layer": "drive",
+      "center": [95.0, 162.0],
+      "radius_mm": 2.0,
+      "channel": "power_main",
+      "key": "round"
+    },
+    {
+      "id": "power_output_interface",
+      "kind": "interface",
+      "layer": "drive",
+      "center": [135.0, 162.0],
+      "radius_mm": 2.0,
+      "channel": "power_main",
+      "key": "round"
+    }
+  ],
+  "stackup": {
+    "layers": [
+      {
+        "id": "drive",
+        "material": "basswood_3mm",
+        "thickness_mm": 3.0,
+        "service": false,
+        "registration_ids": ["reg_lower_left", "reg_lower_right", "reg_upper_left", "reg_upper_right"]
+      },
+      {
+        "id": "spacer",
+        "material": "basswood_3mm",
+        "thickness_mm": 3.0,
+        "service": true,
+        "registration_ids": ["reg_lower_left", "reg_lower_right", "reg_upper_left", "reg_upper_right"]
+      },
+      {
+        "id": "cover",
+        "material": "basswood_3mm",
+        "thickness_mm": 3.0,
+        "service": true,
+        "registration_ids": ["reg_lower_left", "reg_lower_right", "reg_upper_left", "reg_upper_right"]
+      }
+    ],
+    "fasteners": [
+      {
+        "id": "m3_service_fasteners",
+        "diameter_mm": 3.0,
+        "layers": ["drive", "spacer", "cover"]
+      }
+    ],
+    "bearings": [],
+    "bushings": []
+  },
+  "meshes": [
+    {
+      "id": "input_to_output",
+      "driver": "input_rotor",
+      "driven": "output_rotor",
+      "center_distance_mm": 40.0,
+      "ratio": -1.0,
+      "backlash_mm": 0.08,
+      "phase_transfer_deg": 180.0
+    }
+  ],
+  "phases": [
+    {"part": "input_rotor", "phase_deg": 0.0},
+    {"part": "output_rotor", "phase_deg": 180.0}
+  ],
+  "channels": [
+    {
+      "id": "power_main",
+      "kind": "power",
+      "key": "round"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "power_input",
+      "part": "power_input_interface",
+      "channel": "power_main",
+      "key": "round"
+    },
+    {
+      "id": "power_output",
+      "part": "power_output_interface",
+      "channel": "power_main",
+      "key": "round"
+    }
+  ],
+  "operations": [
+    {
+      "id": "input_rotor_cut",
+      "operation": "cut",
+      "source_path": "mechanism/input_rotor_profile"
+    },
+    {
+      "id": "output_rotor_cut",
+      "operation": "cut",
+      "source_path": "mechanism/output_rotor_profile"
+    },
+    {
+      "id": "registration_cuts",
+      "operation": "cut",
+      "source_path": "mechanism/registration_features"
+    },
+    {
+      "id": "part_labels",
+      "operation": "engrave",
+      "source_path": "mechanism/labels"
+    }
+  ],
+  "helper_geometry": [
+    {
+      "tool_id": "cq_gears",
+      "request_sha256": "a697671b52139af3bf78ee730ed772ec6b4abcea17d908084213b76402e49820",
+      "artifact": ".tmp/primitive_power_extender/cq_gears_primary.svg",
+      "source_revision": "e73874cf17a25447a99b1e7c22a4d5af38560e9c"
+    },
+    {
+      "tool_id": "bosl2",
+      "request_sha256": "a7c2129c8196f59c086ffb5ca7edb36d80d6d3d2a92ee1f08d30b7dbb3356976",
+      "artifact": ".tmp/primitive_power_extender/bosl2_comparison.svg",
+      "source_revision": "fbcdfdd511b6abfde93c43c8f85c2bd24ee7a02d"
+    }
+  ]
+}

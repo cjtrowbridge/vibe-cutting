@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-20-34-40 | plans/past/2026-07-06-20-28-42_prototype-first-laser-native-mechanism.md | Prototype First Laser-Native Mechanism | Create the primitive power extender mechanism design, validate it through the host mechanism model, generate laser artifacts, and record acceptance evidence.
 2026-07-06-20-25-40 | plans/past/2026-07-06-20-21-09_build-host-owned-mechanism-model.md | Build Host-Owned Mechanism Model | Add laser-native mechanism schemas, validation code, docs, tests, and acceptance evidence for gears, interfaces, stackups, and safety checks.
 2026-07-06-20-19-41 | plans/past/2026-07-06-20-12-24_integrate-freecad-gears-inspection-provider.md | Integrate FreeCAD Gears Inspection Provider | Add FreeCAD Gears as a managed inspection-only helper provider with adapter metadata, setup driver, docs, tests, and acceptance evidence.
 2026-07-06-20-08-45 | plans/past/2026-07-06-20-02-16_integrate-bosl2-openscad-provider.md | Integrate BOSL2 OpenSCAD Provider | Add BOSL2 as a pinned OpenSCAD library provider for experimental planar gear comparison profiles without granting fabrication authority.

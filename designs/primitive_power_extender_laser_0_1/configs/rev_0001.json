@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "revision": "rev_0001",
+  "design_type": "mechanism_sheet",
+  "mechanism_label": "Primitive Power Extender",
+  "mechanism_file": "mechanisms/primitive_power_extender.mechanism.json",
+  "sheet_width_mm": 300.0,
+  "sheet_height_mm": 300.0,
+  "edge_margin_mm": 5.0,
+  "engraving_inset_mm": 1.5,
+  "layout": "absolute_mechanism",
+  "quantity": "mechanism"
+}

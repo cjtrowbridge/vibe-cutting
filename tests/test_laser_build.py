@@ -360,6 +360,23 @@ class LaserBuildTests(unittest.TestCase):
                 laser_build.ARTIFACT_NAMES,
             )
 
+    def test_mechanism_design_validates_and_records_manifest_fragment(self):
+        context = laser_build.resolve_design("primitive_power_extender_laser_0_1")
+        laser_build.validate_context(context)
+        layout = laser_build.compute_layout(context["config"], context["machine"])
+        report = laser_build.mechanism_validation_report(context["config"])
+        segments = laser_build.all_engraving_segments(context["config"], layout)
+        manifest = laser_build.job_manifest(context, layout, len(segments), report)
+        cut_paths = laser_build.cut_paths(context["config"], layout)
+
+        self.assertTrue(report["passed"])
+        self.assertEqual(manifest["design_type"], "mechanism_sheet")
+        self.assertEqual(manifest["mechanism"]["mechanism_id"], "primitive_power_extender_laser_0_1")
+        self.assertTrue(manifest["mechanism"]["mechanism_validation_passed"])
+        self.assertEqual(manifest["mechanism"]["validation_report"], "mechanism_validation.json")
+        self.assertGreater(len(segments), 0)
+        self.assertGreaterEqual(len(cut_paths), 8)
+
 
 if __name__ == "__main__":
     unittest.main()

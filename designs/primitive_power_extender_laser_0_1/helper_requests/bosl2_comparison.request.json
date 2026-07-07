@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "tool_id": "bosl2",
+  "request_type": "openscad_svg",
+  "gear_type": "spur",
+  "parameters": {
+    "module": 2.0,
+    "teeth": 20,
+    "shaft_diam": 5.2,
+    "pressure_angle": 20.0
+  },
+  "outputs": {
+    "svg": ".tmp/primitive_power_extender/bosl2_comparison.svg",
+    "manifest": ".tmp/primitive_power_extender/bosl2_comparison.manifest.json"
+  }
+}

@@ -9,13 +9,20 @@ import re
 import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 import xml.etree.ElementTree as ElementTree
 import zlib
 from pathlib import Path
+import importlib.util
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+MECHANISM_VALIDATE_SOURCE = REPO_ROOT / "scripts" / "mechanism_validate.py"
+MECHANISM_VALIDATE_SPEC = importlib.util.spec_from_file_location("mechanism_validate", MECHANISM_VALIDATE_SOURCE)
+mechanism_validate = importlib.util.module_from_spec(MECHANISM_VALIDATE_SPEC)
+sys.modules["mechanism_validate"] = mechanism_validate
+MECHANISM_VALIDATE_SPEC.loader.exec_module(mechanism_validate)
 OPENSCAD_TEXT_SOURCE = REPO_ROOT / "openscad" / "text_geometry.scad"
 OPENSCAD_CONTOUR_CACHE = {}
 ARTIFACT_NAMES = {
@@ -61,6 +68,15 @@ def load_json(path):
     if not isinstance(data, dict):
         fail(f"JSON root must be an object: {path}")
     return data
+
+
+def repo_relative_path(path, label):
+    resolved = path.resolve()
+    try:
+        resolved.relative_to(REPO_ROOT)
+    except ValueError:
+        fail(f"{label} must remain inside the repository: {path}")
+    return resolved
 
 
 def write_json(path, data):
@@ -119,12 +135,14 @@ def resolve_design(design_name, config_arg=None):
         config_path = (REPO_ROOT / config_path).resolve()
     machine_path = (design_root / project["machine_profile"]).resolve()
     material_path = (design_root / project["material_profile"]).resolve()
+    config = load_json(config_path)
+    config["_design_root"] = str(design_root.relative_to(REPO_ROOT))
     return {
         "root": design_root,
         "project_path": project_path,
         "project": project,
         "config_path": config_path,
-        "config": load_json(config_path),
+        "config": config,
         "machine_path": machine_path,
         "machine": load_json(machine_path),
         "material_path": material_path,
@@ -240,10 +258,37 @@ def validate_context(context):
             "title_font_sha256",
             "Title font",
         )
+    elif design_type == "mechanism_sheet":
+        require(
+            config,
+            [
+                "mechanism_file",
+                "mechanism_label",
+                "sheet_width_mm",
+                "sheet_height_mm",
+                "edge_margin_mm",
+                "layout",
+                "quantity",
+                "engraving_inset_mm",
+            ],
+            "Mechanism config",
+        )
+        if config["layout"] != "absolute_mechanism":
+            fail(f"Unsupported mechanism layout: {config['layout']}")
+        mechanism_path = repo_relative_path((context["root"] / config["mechanism_file"]), "Mechanism file")
+        mechanism_report = mechanism_validate.validation_report(
+            mechanism_validate.load_json(mechanism_path),
+            mechanism_path.relative_to(REPO_ROOT),
+        )
+        if not mechanism_report["passed"]:
+            failed = ", ".join(check["name"] for check in mechanism_report["checks"] if not check["passed"])
+            fail(f"Mechanism validation failed: {failed}")
     else:
         fail(f"Unsupported design type: {design_type}")
     text_backend = config.get("text_backend", "native_stroke")
-    if text_backend == "native_stroke":
+    if design_type == "mechanism_sheet":
+        pass
+    elif text_backend == "native_stroke":
         unsupported = sorted({char for line in config["text_lines"] for char in line.upper()} - set(FONT))
         if unsupported:
             fail(f"Unsupported engraving characters: {''.join(unsupported)}")
@@ -434,6 +479,25 @@ def compute_merit_badge_layout(config, machine, quantity_override=None):
 
 
 def compute_layout(config, machine, quantity_override=None):
+    if config.get("design_type", "coin_sheet") == "mechanism_sheet":
+        effective_width = min(float(config["sheet_width_mm"]), float(machine["work_area_mm"]["width"]))
+        effective_height = min(float(config["sheet_height_mm"]), float(machine["work_area_mm"]["height"]))
+        mechanism = load_json(REPO_ROOT / config["_design_root"] / config["mechanism_file"]) if "_design_root" in config else None
+        quantity = len(mechanism.get("parts", [])) if mechanism else int(config.get("quantity", 1))
+        return {
+            "centers": [],
+            "placements": [],
+            "maximum_quantity": quantity,
+            "quantity": quantity,
+            "rows": 1,
+            "columns": 1,
+            "pitch_x_mm": 0,
+            "pitch_y_mm": 0,
+            "effective_width_mm": effective_width,
+            "effective_height_mm": effective_height,
+            "envelope_width_mm": effective_width - 2 * float(config["edge_margin_mm"]),
+            "envelope_height_mm": effective_height - 2 * float(config["edge_margin_mm"]),
+        }
     if config.get("design_type", "coin_sheet") == "merit_badge_set":
         return compute_merit_badge_layout(config, machine, quantity_override)
     return compute_coin_layout(config, machine, quantity_override)
@@ -830,7 +894,46 @@ def assert_segments_within_rounded_rectangle(segments, center, width, height, ra
                 )
 
 
+def mechanism_path(config):
+    return REPO_ROOT / config["_design_root"] / config["mechanism_file"]
+
+
+def mechanism_model(config):
+    return load_json(mechanism_path(config))
+
+
+def mechanism_validation_report(config):
+    path = mechanism_path(config)
+    return mechanism_validate.validation_report(
+        mechanism_validate.load_json(path),
+        path.relative_to(REPO_ROOT),
+    )
+
+
+def mechanism_part_label_segments(part):
+    preferred = {
+        "input_rotor": "IN",
+        "output_rotor": "OUT",
+    }.get(part["id"], part["kind"])
+    label = "".join(character for character in preferred.replace("_", " ").upper() if character in FONT)
+    if not label.strip():
+        return []
+    diameter = float(part.get("outer_diameter_mm", part.get("radius_mm", 6) * 2))
+    return text_segments(tuple(part["center"]), diameter, [label[:12]], 1.5)
+
+
+def mechanism_engraving_segments(config, layout):
+    model = mechanism_model(config)
+    segments = []
+    for part in model["parts"]:
+        if part["kind"] in {"gear", "rotor", "cam", "ratchet"}:
+            segments.extend(mechanism_part_label_segments(part))
+    return segments
+
+
 def all_engraving_segments(config, layout, relative_segments=None):
+    if config.get("design_type", "coin_sheet") == "mechanism_sheet":
+        return mechanism_engraving_segments(config, layout)
     if config.get("design_type", "coin_sheet") == "merit_badge_set":
         segments = []
         badge_geometry = {}
@@ -918,6 +1021,35 @@ def rounded_rectangle_path(center, width, height, radius, corner_segments):
     return points
 
 
+def gear_profile_path(part):
+    teeth = int(part.get("teeth", 24))
+    outer_radius = float(part.get("outer_diameter_mm", float(part.get("module_mm", 2)) * (teeth + 2))) / 2
+    root_radius = float(part.get("root_diameter_mm", max(outer_radius - 2.5 * float(part.get("module_mm", 1)), outer_radius * 0.8))) / 2
+    center_x, center_y = part["center"]
+    points = []
+    for index in range(teeth * 2 + 1):
+        radius = outer_radius if index % 2 == 0 else root_radius
+        angle = 2 * math.pi * index / (teeth * 2)
+        points.append((center_x + radius * math.cos(angle), center_y + radius * math.sin(angle)))
+    return points
+
+
+def mechanism_cut_paths(config):
+    model = mechanism_model(config)
+    paths = []
+    for part in model["parts"]:
+        kind = part["kind"]
+        if kind == "gear":
+            paths.append(gear_profile_path(part))
+        elif kind in {"rotor", "cam", "ratchet", "axle", "spacer", "washer", "registration_feature"}:
+            radius = float(part.get("radius_mm", part.get("outer_diameter_mm", 3) / 2))
+            paths.append(circle_path(tuple(part["center"]), radius, 96))
+        bore = float(part.get("bore_diameter_mm", 0))
+        if bore > 0:
+            paths.append(circle_path(tuple(part["center"]), bore / 2, 64))
+    return paths
+
+
 def cut_paths(config, layout, circle_segments=96, corner_segments=8):
     if config.get("design_type", "coin_sheet") == "merit_badge_set":
         paths = [
@@ -930,6 +1062,8 @@ def cut_paths(config, layout, circle_segments=96, corner_segments=8):
             )
             for placement in layout["placements"]
         ]
+    elif config.get("design_type", "coin_sheet") == "mechanism_sheet":
+        paths = mechanism_cut_paths(config)
     else:
         radius = float(config["coin_diameter_mm"]) / 2
         paths = [circle_path(center, radius, circle_segments) for center in layout["centers"]]
@@ -1075,7 +1209,7 @@ def generate_preview_png(config, layout, segments):
     )
 
 
-def job_manifest(context, layout, segment_count):
+def job_manifest(context, layout, segment_count, mechanism_report=None):
     config = context["config"]
     warnings = []
     if config["sheet_width_mm"] > layout["effective_width_mm"] or config["sheet_height_mm"] > layout["effective_height_mm"]:
@@ -1123,7 +1257,14 @@ def job_manifest(context, layout, segment_count):
         "recipes": context["material"]["recipes"],
         "warnings": warnings,
     }
-    if config.get("design_type", "coin_sheet") == "merit_badge_set":
+    if config.get("design_type", "coin_sheet") == "mechanism_sheet":
+        if mechanism_report is None:
+            mechanism_report = mechanism_validation_report(config)
+        manifest["mechanism"] = mechanism_report["job_manifest_fragment"]
+        manifest["mechanism"]["validation_report"] = "mechanism_validation.json"
+        manifest["mechanism_label"] = config["mechanism_label"]
+        manifest["engraving"]["backend"] = "native_stroke_labels"
+    elif config.get("design_type", "coin_sheet") == "merit_badge_set":
         manifest["set_name"] = config["set_name"]
         manifest["token"] = {
             "shape": "rounded_rectangle",
@@ -1206,12 +1347,21 @@ def source_records(context):
         paths.append((REPO_ROOT / context["config"]["font_file"]).resolve())
         if context["config"].get("design_type") == "merit_badge_set":
             paths.append((REPO_ROOT / context["config"]["title_font_file"]).resolve())
+    if context["config"].get("design_type") == "mechanism_sheet":
+        paths.append(mechanism_path(context["config"]))
     return [{"path": str(path.relative_to(REPO_ROOT)), "sha256": sha256(path)} for path in paths]
+
+
+def artifact_names(context):
+    names = set(ARTIFACT_NAMES)
+    if context["config"].get("design_type") == "mechanism_sheet":
+        names.add("mechanism_validation.json")
+    return names
 
 
 def build_manifest(stage, context):
     records = []
-    for name in sorted(ARTIFACT_NAMES):
+    for name in sorted(artifact_names(context)):
         path = stage / name
         records.append({"path": name, "bytes": path.stat().st_size, "sha256": sha256(path)})
     return {
@@ -1271,6 +1421,7 @@ def next_revision(context):
     revision = f"rev_{maximum + 1:04d}"
     config_path = configs_dir / f"{revision}.json"
     payload = dict(context["config"])
+    payload.pop("_design_root", None)
     payload["revision"] = revision
     write_json(config_path, payload)
     context["config_path"] = config_path
@@ -1295,6 +1446,9 @@ def execute(args):
         return
     relative_segments = None
     segments = None
+    mechanism_report = None
+    if context["config"].get("design_type") == "mechanism_sheet":
+        mechanism_report = mechanism_validation_report(context["config"])
     if context["config"].get("design_type") == "merit_badge_set":
         segments = all_engraving_segments(context["config"], layout)
     elif context["config"].get("text_backend") == "openscad_font":
@@ -1313,7 +1467,9 @@ def execute(args):
         generate_gcode(context["config"], context["machine"], context["material"], layout, segments),
         encoding="utf-8",
     )
-    write_json(stage / "job_manifest.json", job_manifest(context, layout, len(segments)))
+    if mechanism_report is not None:
+        write_json(stage / "mechanism_validation.json", mechanism_report)
+    write_json(stage / "job_manifest.json", job_manifest(context, layout, len(segments), mechanism_report))
     write_operations(stage / "operations.csv", context["material"])
     write_setup(stage / "material_setup.md", context, layout)
     write_json(stage / "build_manifest.json", build_manifest(stage, context))
