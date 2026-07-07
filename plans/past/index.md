@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-19-19-29 | plans/past/2026-07-06-19-08-31_build-generalized-helper-adapter-platform.md | Build Generalized Helper Adapter Platform | Implement Phase 2 provider-discriminated helper adapter contracts, setup-provider scaffolding, typed request/result schemas, provenance, and common validation without migrating Boxes.py yet.
 2026-07-06-14-51-14 | plans/past/2026-07-06-10-44-27_build-native-bootstrap-and-managed-base-runtime.md | Build Native Bootstrap and Managed Base Runtime | Implement Phase 1 native bootstrap launchers, pinned manager acquisition, managed Python execution, host Git verification, submodule checks, and clean-host tests.
 2026-07-06-10-42-46 | plans/past/2026-07-06-10-29-35_define-portable-helper-bootstrap-contracts.md | Define Portable Helper Bootstrap Contracts | Complete Phase 0 by fixing host prerequisites, bootstrap boundaries, readiness states, managed command invocation, and gated child-plan acceptance rules.
 2026-07-06-10-27-07 | plans/past/2026-07-06-08-17-15_create-helper-tool-adapter-system.md | Create Helper Tool Adapter System | Create a reusable helper-tool foundation, add Boxes.py support, and pin the initial mechanical-geometry helper repositories for later integration.

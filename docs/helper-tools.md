@@ -2,6 +2,8 @@
 
 Callable helper tools are separately maintained third-party repositories that extend design capabilities without becoming part of the host Python process. They remain pinned submodules and run through `scripts/helper_tool.py`.
 
+Phase 2 adds provider-based adapter scaffolding for future helpers. The existing Boxes.py manifest is still the schema-version `1` legacy path until Phase 3 migrates it.
+
 ## Why This Layer Exists
 
 Laser design spans several specialized domains: fitted structures, geometry projection, font shaping, nesting, image tracing, and more. A capability registry lets the project adopt focused upstream tools without forcing every feature into `scripts/laser_build.py` or coupling the core to one library.
@@ -9,7 +11,9 @@ Laser design spans several specialized domains: fitted structures, geometry proj
 ## Commands
 
 ```bash
+setup/bootstrap.sh run -- scripts/helper_tool.py validate
 python3 scripts/helper_tool.py list
+python3 scripts/helper_tool.py validate
 python3 scripts/helper_tool.py describe boxes
 python3 scripts/helper_tool.py check boxes
 python3 scripts/helper_tool.py setup boxes
@@ -17,6 +21,19 @@ python3 scripts/helper_tool.py run boxes -- --list
 ```
 
 `setup` installs the pinned local submodule and its dependencies beneath `.tmp/helper-tools/<id>/`. It may download dependencies. The environment is disposable, records resolved Python/package provenance, and is invalidated when the source pin or adapter manifest changes.
+
+## Provider Adapter Model
+
+Schema-version `2` helper adapters declare a runtime provider:
+
+- `pixi_environment` for managed Conda-style environments.
+- `openscad_library` for OpenSCAD libraries or executable bindings.
+- `system_application` for locally installed applications with manual remediation.
+- `manual_operator` for human-operated reference tools.
+
+Provider adapters declare allowed input roots, output roots, exact output inventories, readiness states, setup metadata, invocation metadata, and provenance fields. Phase 2 validates and reports these contracts but does not install heavyweight helper environments.
+
+Readiness states are `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`. Phase 2 adapters must not claim fabrication approval.
 
 ## Trust Boundary
 
@@ -29,9 +46,10 @@ Helper tools cannot control hardware through this interface. They run only when 
 Each tool needs:
 
 - A submodule under `third_party/`.
-- A manifest under `tool_adapters/`.
+- A manifest under `tool_adapters/`; use schema-version `2` for new provider-based helpers.
 - A pinned revision and license record.
 - Capability and routing guidance.
+- A provider kind and readiness-state contract.
 - Accepted output contracts.
 - Tests and tool-specific documentation.
 

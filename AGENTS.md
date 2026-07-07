@@ -67,7 +67,7 @@ python3 scripts/helper_tool.py setup boxes
 
 ## Helper-Tool Routing
 
-Before authoring a design, use `references/geometry-backend-selection.md` and select the smallest appropriate backend:
+Before authoring a design, use `references/geometry-backend-selection.md` and `references/helper-runtime-providers.md`, then select the smallest appropriate backend:
 
 - Use native Python geometry for simple flat shapes, repeated objects, and supported native designs.
 - Use the OpenSCAD adapter for pinned-font shaping, CSG, or projected assemblies.
@@ -75,6 +75,8 @@ Before authoring a design, use `references/geometry-backend-selection.md` and se
 - Combine helper structural geometry with native or OpenSCAD engraving only at the host operation-model boundary.
 
 Callable helpers generate untrusted source geometry. The host pipeline always retains ownership of operation mapping, machine/material recipes, bounds, ordering, previews, manifests, G-code, artifact installation, and readiness claims. Never use helper-generated G-code as the authoritative machine artifact without a separately approved adapter and validation plan.
+
+Provider-based helper adapters use schema-version `2` and declare one of `pixi_environment`, `openscad_library`, `system_application`, or `manual_operator`. Schema-version `1` adapters, including `boxes`, remain supported only as transitional legacy helpers until their migration phase. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate` before relying on helper routing.
 
 ## Laser Playbooks
 
@@ -93,6 +95,7 @@ Use the relevant laser playbook before changing designs, profiles, build behavio
 
 - `references/helper-tool-contract.md`
 - `references/geometry-backend-selection.md`
+- `references/helper-runtime-providers.md`
 - `references/portable-helper-host-contract.md`
 - `references/helper-readiness-states.md`
 - `references/managed-bootstrap-command-contract.md`

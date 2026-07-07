@@ -12,12 +12,24 @@ import sys
 import tempfile
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from setup.providers import ProviderError, validate_provider_manifest as validate_provider_config
+
 ADAPTER_DIR = REPO_ROOT / "tool_adapters"
 INSTALL_MARKER = "install.json"
 TOOL_ID_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
 REVISION_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+READINESS_STATES = {
+    "registered",
+    "dependencies-ready",
+    "invocation-ready",
+    "output-validated",
+    "pipeline-integrated",
+    "fabrication-approved",
+}
 
 
 class ToolError(RuntimeError):
@@ -57,7 +69,7 @@ def require_mapping(data, keys, label):
         fail(f"{label} is missing required fields: {', '.join(missing)}")
 
 
-def validate_manifest(data, path):
+def validate_common_manifest(data, path, required_extra):
     require_mapping(
         data,
         [
@@ -68,14 +80,12 @@ def validate_manifest(data, path):
             "source",
             "capabilities",
             "routing",
-            "runtime",
             "outputs",
             "safety",
+            *required_extra,
         ],
         f"Adapter {path}",
     )
-    if data["schema_version"] != 1:
-        fail(f"Unsupported helper-tool schema version in {path}: {data['schema_version']}")
     tool_id = data["id"]
     if not isinstance(tool_id, str) or not TOOL_ID_PATTERN.fullmatch(tool_id):
         fail(f"Invalid helper-tool id in {path}: {tool_id!r}")
@@ -104,31 +114,6 @@ def validate_manifest(data, path):
         f"License path for {tool_id}",
     )
 
-    runtime = data["runtime"]
-    require_mapping(
-        runtime,
-        [
-            "kind",
-            "python_minimum",
-            "module",
-            "install_source",
-            "environment_path",
-            "working_directory",
-        ],
-        f"Runtime for {tool_id}",
-    )
-    if runtime["kind"] != "python_module":
-        fail(f"Unsupported runtime kind for {tool_id}: {runtime['kind']}")
-    if runtime["install_source"] != source["path"]:
-        fail(f"Install source must match the submodule path for {tool_id}.")
-    environment_path = safe_repo_path(runtime["environment_path"], f"Environment path for {tool_id}")
-    expected_environment_root = (REPO_ROOT / ".tmp" / "helper-tools").resolve()
-    try:
-        environment_path.relative_to(expected_environment_root)
-    except ValueError:
-        fail(f"Environment path for {tool_id} must be under .tmp/helper-tools.")
-    working_directory = safe_repo_path(runtime["working_directory"], f"Working directory for {tool_id}")
-
     outputs = data["outputs"]
     require_mapping(outputs, ["accepted_formats", "primary_format", "operation_colors"], f"Outputs for {tool_id}")
     if outputs["primary_format"] not in outputs["accepted_formats"]:
@@ -150,9 +135,98 @@ def validate_manifest(data, path):
     data["_adapter_path"] = path
     data["_source_path"] = source_path
     data["_license_path"] = license_path
-    data["_environment_path"] = environment_path
-    data["_working_directory"] = working_directory
     return data
+
+
+def validate_legacy_manifest(data, path):
+    tool = validate_common_manifest(data, path, ["runtime"])
+    tool_id = tool["id"]
+
+    runtime = tool["runtime"]
+    require_mapping(
+        runtime,
+        [
+            "kind",
+            "python_minimum",
+            "module",
+            "install_source",
+            "environment_path",
+            "working_directory",
+        ],
+        f"Runtime for {tool_id}",
+    )
+    if runtime["kind"] != "python_module":
+        fail(f"Unsupported runtime kind for {tool_id}: {runtime['kind']}")
+    if runtime["install_source"] != tool["source"]["path"]:
+        fail(f"Install source must match the submodule path for {tool_id}.")
+    environment_path = safe_repo_path(runtime["environment_path"], f"Environment path for {tool_id}")
+    expected_environment_root = (REPO_ROOT / ".tmp" / "helper-tools").resolve()
+    try:
+        environment_path.relative_to(expected_environment_root)
+    except ValueError:
+        fail(f"Environment path for {tool_id} must be under .tmp/helper-tools.")
+    working_directory = safe_repo_path(runtime["working_directory"], f"Working directory for {tool_id}")
+
+    tool["_environment_path"] = environment_path
+    tool["_working_directory"] = working_directory
+    tool["_adapter_model"] = "legacy_python_module"
+    return tool
+
+
+def validate_provider_adapter(data, path):
+    tool = validate_common_manifest(data, path, ["provider", "readiness"])
+    tool_id = tool["id"]
+    provider = tool["provider"]
+    require_mapping(
+        provider,
+        ["kind", "environment_path", "working_directory", "setup", "invocation"],
+        f"Provider for {tool_id}",
+    )
+    if not isinstance(provider["setup"], dict):
+        fail(f"Provider setup for {tool_id} must be an object.")
+    if not isinstance(provider["invocation"], dict):
+        fail(f"Provider invocation for {tool_id} must be an object.")
+    if "allowed_input_roots" not in tool["safety"]:
+        fail(f"Safety contract for {tool_id} is missing required fields: allowed_input_roots")
+    for input_root in tool["safety"]["allowed_input_roots"]:
+        safe_repo_path(input_root, f"Allowed input root for {tool_id}")
+    outputs = tool["outputs"]
+    if "inventory" not in outputs or not isinstance(outputs["inventory"], list):
+        fail(f"Outputs for {tool_id} must declare an inventory list.")
+    for item in outputs["inventory"]:
+        require_mapping(item, ["path", "format", "required"], f"Output inventory item for {tool_id}")
+        if item["format"] not in outputs["accepted_formats"]:
+            fail(f"Output inventory format for {tool_id} is not accepted: {item['format']}")
+    readiness = tool["readiness"]
+    require_mapping(readiness, ["states", "fabrication_approved"], f"Readiness for {tool_id}")
+    states = readiness["states"]
+    if not isinstance(states, list) or not states:
+        fail(f"Readiness states for {tool_id} must be a non-empty list.")
+    unknown_states = [state for state in states if state not in READINESS_STATES]
+    if unknown_states:
+        fail(f"Unsupported readiness states for {tool_id}: {', '.join(unknown_states)}")
+    if "registered" not in states:
+        fail(f"Readiness states for {tool_id} must include registered.")
+    if readiness["fabrication_approved"]:
+        fail(f"Provider adapter {tool_id} may not claim fabrication approval in Phase 2.")
+    try:
+        report = validate_provider_config(REPO_ROOT, tool)
+    except ProviderError as error:
+        fail(f"Provider validation failed for {tool_id}: {error}")
+    tool["_provider_report"] = report
+    tool["_environment_path"] = safe_repo_path(provider["environment_path"], f"Environment path for {tool_id}")
+    tool["_working_directory"] = safe_repo_path(provider["working_directory"], f"Working directory for {tool_id}")
+    tool["_adapter_model"] = "provider"
+    return tool
+
+
+def validate_manifest(data, path):
+    schema_version = data.get("schema_version")
+    if schema_version == 1:
+        return validate_legacy_manifest(data, path)
+    if schema_version == 2:
+        return validate_provider_adapter(data, path)
+    fail(f"Unsupported helper-tool schema version in {path}: {schema_version}")
 
 
 def discover_tools():
@@ -230,6 +304,8 @@ def install_marker(tool):
 
 
 def inspect_tool(tool):
+    if tool.get("_adapter_model") == "provider":
+        return inspect_provider_tool(tool)
     source_path = tool["_source_path"]
     revision = source_revision(tool) if source_path.is_dir() else None
     expected_revision = tool["source"]["pinned_revision"]
@@ -287,11 +363,153 @@ def inspect_tool(tool):
     return state
 
 
+def inspect_provider_tool(tool):
+    source_path = tool["_source_path"]
+    revision = source_revision(tool) if source_path.is_dir() else None
+    expected_revision = tool["source"]["pinned_revision"]
+    states = tool["readiness"]["states"]
+    provider_report = tool["_provider_report"]
+    state = {
+        "id": tool["id"],
+        "display_name": tool["display_name"],
+        "adapter_model": "provider",
+        "provider_kind": tool["provider"]["kind"],
+        "source_path": str(tool["source"]["path"]),
+        "source_present": source_path.is_dir(),
+        "source_revision": revision,
+        "expected_revision": expected_revision,
+        "pin_matches": revision == expected_revision,
+        "source_clean": source_is_clean(tool) if source_path.is_dir() else False,
+        "license_present": tool["_license_path"].is_file(),
+        "environment_path": str(tool["provider"]["environment_path"]),
+        "readiness_states": states,
+        "fabrication_approved": False,
+        "provider_report": provider_report,
+        "ready": False,
+    }
+    state["registered"] = all(
+        [
+            state["source_present"],
+            state["pin_matches"],
+            state["source_clean"],
+            state["license_present"],
+            "registered" in states,
+        ]
+    )
+    state["ready"] = state["registered"] and "invocation-ready" in states
+    return state
+
+
 def public_manifest(tool):
     return {key: value for key, value in tool.items() if not key.startswith("_")}
 
 
+def helper_request_hash(request):
+    payload = json.dumps(request, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def path_is_within_roots(path, roots):
+    resolved = path.resolve()
+    for root in roots:
+        try:
+            resolved.relative_to(root.resolve())
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+def validate_helper_request(tool, request):
+    require_mapping(request, ["schema_version", "tool_id", "request_type", "inputs", "outputs"], "Helper request")
+    if request["schema_version"] != 1:
+        fail(f"Unsupported helper request schema version: {request['schema_version']}")
+    if request["tool_id"] != tool["id"]:
+        fail(f"Helper request tool_id does not match adapter: {request['tool_id']} != {tool['id']}")
+    if not TOOL_ID_PATTERN.fullmatch(request["request_type"]):
+        fail(f"Invalid helper request type: {request['request_type']}")
+    if not isinstance(request["inputs"], list) or not isinstance(request["outputs"], list):
+        fail("Helper request inputs and outputs must be lists.")
+    input_roots = tool["safety"].get("allowed_input_roots", [tool["source"]["path"]])
+    allowed_input_roots = [safe_repo_path(root, f"Allowed input root for {tool['id']}") for root in input_roots]
+    allowed_output_roots = [
+        safe_repo_path(root, f"Allowed output root for {tool['id']}") for root in tool["safety"]["allowed_output_roots"]
+    ]
+    for value in request["inputs"]:
+        path = safe_repo_path(value, f"Request input for {tool['id']}")
+        if not path_is_within_roots(path, allowed_input_roots):
+            fail(f"Request input for {tool['id']} is outside allowed input roots: {value}")
+    for value in request["outputs"]:
+        path = safe_repo_path(value, f"Request output for {tool['id']}")
+        if not path_is_within_roots(path, allowed_output_roots):
+            fail(f"Request output for {tool['id']} is outside allowed output roots: {value}")
+    return {
+        "tool_id": tool["id"],
+        "request_hash": helper_request_hash(request),
+        "input_count": len(request["inputs"]),
+        "output_count": len(request["outputs"]),
+    }
+
+
+def validate_output_inventory(tool, inventory):
+    if not isinstance(inventory, list):
+        fail("Helper output inventory must be a list.")
+    allowed_output_roots = [
+        safe_repo_path(root, f"Allowed output root for {tool['id']}") for root in tool["safety"]["allowed_output_roots"]
+    ]
+    accepted_formats = set(tool["outputs"]["accepted_formats"])
+    normalized = []
+    for item in inventory:
+        require_mapping(item, ["path", "format", "sha256"], f"Output inventory item for {tool['id']}")
+        if item["format"] not in accepted_formats:
+            fail(f"Output format for {tool['id']} is not accepted: {item['format']}")
+        if not re.fullmatch(r"[0-9a-f]{64}", item["sha256"]):
+            fail(f"Output hash for {tool['id']} is not a SHA-256 digest: {item['path']}")
+        path = safe_repo_path(item["path"], f"Output path for {tool['id']}")
+        if not path_is_within_roots(path, allowed_output_roots):
+            fail(f"Output path for {tool['id']} is outside allowed roots: {item['path']}")
+        normalized.append({**item, "path": str(path.relative_to(REPO_ROOT))})
+    expected = tool["outputs"].get("inventory")
+    if expected is not None:
+        required = {item["path"] for item in expected if item.get("required")}
+        present = {item["path"] for item in normalized}
+        missing = sorted(required - present)
+        if missing:
+            fail(f"Output inventory for {tool['id']} is missing required outputs: {', '.join(missing)}")
+    return normalized
+
+
+def snapshot_authoritative_outputs(paths):
+    snapshot = {}
+    for path in paths:
+        resolved = safe_repo_path(path, "Authoritative output path")
+        snapshot[str(resolved.relative_to(REPO_ROOT))] = resolved.read_bytes() if resolved.exists() else None
+    return snapshot
+
+
+def restore_authoritative_outputs(snapshot):
+    for relative, content in snapshot.items():
+        path = safe_repo_path(relative, "Authoritative output path")
+        if content is None:
+            if path.exists():
+                path.unlink()
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+
+
+def run_with_output_preservation(output_paths, operation):
+    snapshot = snapshot_authoritative_outputs(output_paths)
+    try:
+        return operation()
+    except Exception:
+        restore_authoritative_outputs(snapshot)
+        raise
+
+
 def setup_tool(tool):
+    if tool.get("_adapter_model") == "provider":
+        fail(f"Provider-managed setup for {tool['id']} is scaffolded but not migrated in this phase.")
     state = inspect_tool(tool)
     for key, message in [
         ("source_present", "source submodule is missing"),
@@ -369,6 +587,8 @@ def setup_tool(tool):
 
 
 def run_tool(tool, arguments):
+    if tool.get("_adapter_model") == "provider":
+        fail(f"Provider-managed invocation for {tool['id']} is scaffolded but not migrated in this phase.")
     state = inspect_tool(tool)
     if not state["ready"]:
         fail(f"Helper tool {tool['id']} is not ready. Run: python3 scripts/helper_tool.py setup {tool['id']}")
@@ -397,10 +617,13 @@ def parse_args():
     parser.add_argument("--verbose", action="store_true")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("list", help="List registered helper tools.")
+    subparsers.add_parser("validate", help="Validate all helper-tool adapter manifests.")
     describe_parser = subparsers.add_parser("describe", help="Print a helper-tool manifest.")
     describe_parser.add_argument("tool")
     check_parser = subparsers.add_parser("check", help="Inspect helper-tool readiness.")
     check_parser.add_argument("tool")
+    report_parser = subparsers.add_parser("report", help="Print helper-tool readiness report.")
+    report_parser.add_argument("tool", nargs="?")
     setup_parser = subparsers.add_parser("setup", help="Create an isolated environment and install dependencies.")
     setup_parser.add_argument("tool")
     run_parser = subparsers.add_parser("run", help="Invoke a ready helper tool.")
@@ -423,10 +646,34 @@ def main():
                     "id": tool["id"],
                     "display_name": tool["display_name"],
                     "capabilities": tool["capabilities"],
+                    "adapter_model": tool.get("_adapter_model", "legacy_python_module"),
+                    "provider_kind": tool.get("provider", {}).get("kind"),
                     "ready": inspect_tool(tool)["ready"],
                 }
                 for tool in tools.values()
             ]
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            return 0
+        if args.command == "validate":
+            tools = discover_tools()
+            payload = {
+                "adapter_count": len(tools),
+                "adapters": [
+                    {
+                        "id": tool["id"],
+                        "schema_version": tool["schema_version"],
+                        "adapter_model": tool.get("_adapter_model", "legacy_python_module"),
+                        "provider_kind": tool.get("provider", {}).get("kind"),
+                    }
+                    for tool in tools.values()
+                ],
+            }
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            return 0
+        if args.command == "report":
+            tools = discover_tools()
+            selected = tools.values() if args.tool is None else [get_tool(args.tool)]
+            payload = [inspect_tool(tool) for tool in selected]
             print(json.dumps(payload, indent=2, sort_keys=True))
             return 0
         tool = get_tool(args.tool)

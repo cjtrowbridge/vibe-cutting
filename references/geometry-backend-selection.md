@@ -18,12 +18,14 @@ Help agents select the smallest appropriate geometry source before authoring or 
 ## Selection Procedure
 
 1. Describe the required geometry and semantic operations.
-2. Run `python3 scripts/helper_tool.py list` to inspect available helper capabilities.
+2. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate` when the portable bootstrap is available, then inspect helper capabilities with `scripts/helper_tool.py list`.
 3. Prefer an existing native backend when it completely expresses the design.
 4. Prefer a helper when its declared capability directly matches difficult fabrication geometry.
 5. Use OpenSCAD when the design depends on CSG, projection, or unsupported custom parametric relationships.
 6. Combine backends only at the host operation-model boundary.
 7. Record the selected backend and rejected alternatives in the active plan.
+
+For provider-based helpers, also review `references/helper-runtime-providers.md` and require at least `registered` readiness before planning setup or invocation. Do not treat a provider as fabrication-approved unless a later phase records physical process evidence.
 
 ## Non-Negotiable Boundary
 

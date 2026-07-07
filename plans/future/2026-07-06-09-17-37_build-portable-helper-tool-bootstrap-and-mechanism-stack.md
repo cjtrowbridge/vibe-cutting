@@ -104,33 +104,33 @@ Each phase must define:
   - [x] 3.8 Record the verified host Git path and version in the host-readiness report.
   - [x] 3.9 Prove `run` can invoke `scripts/laser_build.py --help` with managed Python while host Python is unavailable.
 
-- [ ] 4. Generalize the helper adapter model.
-  - [ ] 4.1 Replace the Python-only helper schema with provider-discriminated adapter schemas.
-  - [ ] 4.2 Support `pixi_environment`, `openscad_library`, `system_application`, and `manual_operator` providers.
-  - [ ] 4.3 Define one common adapter identity, capability, routing, source, license, platform, safety, and readiness contract.
-  - [ ] 4.4 Add provider-specific setup, invocation, version, and environment fields.
-  - [ ] 4.5 Add typed helper request and helper result schemas.
-  - [ ] 4.6 Add environment-fingerprint and provenance schemas.
-  - [ ] 4.7 Replace arbitrary argument forwarding with typed tool-specific request drivers.
-  - [ ] 4.8 Enforce repository-relative input and output paths.
-  - [ ] 4.9 Enforce declared output formats and exact output inventories.
-  - [ ] 4.10 Record source pins, lock hashes, runtime versions, resolved packages, request hashes, and output hashes.
-  - [ ] 4.11 Detect source-submodule mutation after every setup and invocation.
-  - [ ] 4.12 Preserve previous authoritative outputs on every helper failure.
-  - [ ] 4.13 Keep `scripts/helper_tool.py` as the operational dispatcher after setup has provisioned its runtime.
-  - [ ] 4.14 Move all provisioning providers and setup-specific tool drivers under `setup/providers/` and `setup/tools/`.
+- [x] 4. Generalize the helper adapter model.
+  - [x] 4.1 Replace the Python-only helper schema with provider-discriminated adapter schemas.
+  - [x] 4.2 Support `pixi_environment`, `openscad_library`, `system_application`, and `manual_operator` providers.
+  - [x] 4.3 Define one common adapter identity, capability, routing, source, license, platform, safety, and readiness contract.
+  - [x] 4.4 Add provider-specific setup, invocation, version, and environment fields.
+  - [x] 4.5 Add typed helper request and helper result schemas.
+  - [x] 4.6 Add environment-fingerprint and provenance schemas.
+  - [x] 4.7 Replace arbitrary argument forwarding with typed tool-specific request drivers.
+  - [x] 4.8 Enforce repository-relative input and output paths.
+  - [x] 4.9 Enforce declared output formats and exact output inventories.
+  - [x] 4.10 Record source pins, lock hashes, runtime versions, resolved packages, request hashes, and output hashes.
+  - [x] 4.11 Detect source-submodule mutation after every setup and invocation.
+  - [x] 4.12 Preserve previous authoritative outputs on every helper failure.
+  - [x] 4.13 Keep `scripts/helper_tool.py` as the operational dispatcher after setup has provisioned its runtime.
+  - [x] 4.14 Move all provisioning providers and setup-specific tool drivers under `setup/providers/` and `setup/tools/`.
 
-- [ ] 5. Implement common setup providers.
-  - [ ] 5.1 Create `setup/providers/pixi.py`.
-  - [ ] 5.2 Create `setup/providers/openscad.py`.
-  - [ ] 5.3 Create `setup/providers/system_application.py`.
-  - [ ] 5.4 Implement platform and architecture compatibility checks.
-  - [ ] 5.5 Implement environment creation into fingerprinted `.tools/environments/<tool>/` directories.
-  - [ ] 5.6 Implement lock-change and source-pin invalidation.
-  - [ ] 5.7 Implement isolated cache and temporary-directory handling.
-  - [ ] 5.8 Implement install logs and failure evidence without recording credentials or secrets.
-  - [ ] 5.9 Implement provider-level smoke-test hooks.
-  - [ ] 5.10 Implement provider-level cleanup of incomplete staged environments.
+- [x] 5. Implement common setup providers.
+  - [x] 5.1 Create `setup/providers/pixi.py`.
+  - [x] 5.2 Create `setup/providers/openscad.py`.
+  - [x] 5.3 Create `setup/providers/system_application.py`.
+  - [x] 5.4 Implement platform and architecture compatibility checks.
+  - [x] 5.5 Implement environment creation into fingerprinted `.tools/environments/<tool>/` directories.
+  - [x] 5.6 Implement lock-change and source-pin invalidation.
+  - [x] 5.7 Implement isolated cache and temporary-directory handling.
+  - [x] 5.8 Implement install logs and failure evidence without recording credentials or secrets.
+  - [x] 5.9 Implement provider-level smoke-test hooks.
+  - [x] 5.10 Implement provider-level cleanup of incomplete staged environments.
 
 - [ ] 6. Migrate and harden the Boxes.py integration.
   - [ ] 6.1 Convert `tool_adapters/boxes.json` to the generalized schema.

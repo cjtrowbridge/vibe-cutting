@@ -23,21 +23,25 @@ A repository may have only the explicitly documented roles. Adding a callable-he
 
 ## Required Adapter Manifest
 
-Every callable helper has one `tool_adapters/<id>.json` file validated against `schemas/helper_tool.schema.json`. It must declare:
+Every callable helper has one `tool_adapters/<id>.json` file. Schema-version `1` manifests are legacy Python-module helpers validated against `schemas/helper_tool.schema.json`. Schema-version `2` manifests are provider-based helpers validated against `schemas/helper_adapter.schema.json`. New helpers should use schema-version `2` unless an active plan explicitly accepts a legacy transition.
+
+Every manifest must declare:
 
 - Stable ID and display name.
 - Source submodule path, upstream URL, pinned revision, license, and license file.
 - Capabilities and positive/negative routing guidance.
-- Runtime kind, minimum version, entrypoint, isolated environment path, and working directory.
+- Runtime provider or legacy runtime kind, setup metadata, invocation metadata, environment path, and working directory.
 - Accepted output formats and any semantic operation mapping.
+- Exact output inventory requirements when using provider schema-version `2`.
 - Hardware, network, source-modification, and output-root boundaries.
+- Provider schema-version `2` input-root boundaries.
 
 ## Invocation Contract
 
 Agents must:
 
 1. Select tools by declared capability.
-2. Run `setup/bootstrap.* run -- scripts/helper_tool.py check <id>` after portable bootstrap exists; use the direct Python command only as the documented transitional development workflow.
+2. Run `setup/bootstrap.* run -- scripts/helper_tool.py validate` and `setup/bootstrap.* run -- scripts/helper_tool.py check <id>` after portable bootstrap exists; use direct Python commands only as the documented transitional development workflow.
 3. Request approval before `setup` when the manifest says setup may use the network.
 4. Invoke the tool only through the managed helper dispatcher.
 5. Write outputs only beneath the manifest’s allowed output roots.
@@ -52,9 +56,20 @@ Agents must not:
 - Allow a helper to select machine recipes, bypass host bounds checks, generate authoritative G-code, or control hardware unless a separately approved role explicitly permits it.
 - Silently fall back to a different helper or backend.
 
+## Provider Contract
+
+Provider schema-version `2` supports:
+
+- `pixi_environment`
+- `openscad_library`
+- `system_application`
+- `manual_operator`
+
+See `references/helper-runtime-providers.md` for routing and readiness semantics. Phase 2 provider scaffolding validates manifests, paths, readiness states, output inventories, request roots, and preservation behavior; later phases migrate individual helpers into real provider environments.
+
 ## Environment Contract
 
-The current `scripts/helper_tool.py setup <id>` implementation installs beneath `.tmp/helper-tools/<id>/`; Phase 3 replaces this transitional model. The portable target installs fingerprinted environments beneath `.tools/environments/<id>/`. Either environment is accepted only when:
+The current legacy `scripts/helper_tool.py setup <id>` implementation installs beneath `.tmp/helper-tools/<id>/`; Phase 3 replaces this transitional model for Boxes.py. The portable target installs fingerprinted environments beneath `.tools/environments/<id>/`. Either environment is accepted only when:
 
 - The source submodule exists and is clean.
 - Its checked-out commit matches the manifest pin.

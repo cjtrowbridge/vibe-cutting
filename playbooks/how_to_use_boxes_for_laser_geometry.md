@@ -6,6 +6,8 @@
 
 Use the pinned Boxes.py callable helper for fitted structural laser geometry while preserving host ownership of operations, validation, artifacts, and G-code.
 
+Boxes.py currently uses the schema-version `1` legacy helper path. Do not rewrite Boxes.py usage to provider schema-version `2` until the Phase 3 migration plan is active.
+
 ## Use Boxes.py When
 
 - The design is a box, tray, shelf, enclosure, rack, wall-storage object, fixture, gear assembly, or similar fitted panel construction.
@@ -17,6 +19,7 @@ Do not use it for simple tokens, ordinary repeated shapes, raster engraving, mac
 ## Discovery
 
 ```bash
+setup/bootstrap.sh run -- scripts/helper_tool.py validate
 python3 scripts/helper_tool.py check boxes
 python3 scripts/helper_tool.py run boxes -- --list
 python3 scripts/helper_tool.py run boxes -- RegularBox --help

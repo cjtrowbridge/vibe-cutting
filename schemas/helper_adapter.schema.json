@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Provider-Based Callable Helper Adapter",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "display_name",
+    "tool_class",
+    "source",
+    "capabilities",
+    "routing",
+    "provider",
+    "outputs",
+    "safety",
+    "readiness"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_class": {
+      "const": "callable_helper"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "routing": {
+      "$ref": "#/$defs/routing"
+    },
+    "provider": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/pixi_environment"
+        },
+        {
+          "$ref": "#/$defs/openscad_library"
+        },
+        {
+          "$ref": "#/$defs/system_application"
+        },
+        {
+          "$ref": "#/$defs/manual_operator"
+        }
+      ]
+    },
+    "outputs": {
+      "$ref": "#/$defs/outputs"
+    },
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+    "readiness": {
+      "$ref": "#/$defs/readiness"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "repo_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "required": ["type", "path", "upstream", "pinned_revision", "license", "license_file"],
+      "properties": {
+        "type": {
+          "const": "git_submodule"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^third_party/"
+        },
+        "upstream": {
+          "type": "string",
+          "format": "uri"
+        },
+        "pinned_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "license_file": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "routing": {
+      "type": "object",
+      "required": ["use_for", "avoid_for"],
+      "properties": {
+        "use_for": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "avoid_for": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "provider_base": {
+      "type": "object",
+      "required": ["kind", "environment_path", "working_directory", "setup", "invocation"],
+      "properties": {
+        "kind": {
+          "enum": ["pixi_environment", "openscad_library", "system_application", "manual_operator"]
+        },
+        "environment_path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "working_directory": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "setup": {
+          "type": "object"
+        },
+        "invocation": {
+          "type": "object"
+        },
+        "version": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pixi_environment": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/provider_base"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "pixi_environment"
+            }
+          }
+        }
+      ]
+    },
+    "openscad_library": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/provider_base"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "openscad_library"
+            }
+          }
+        }
+      ]
+    },
+    "system_application": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/provider_base"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "system_application"
+            }
+          }
+        }
+      ]
+    },
+    "manual_operator": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/provider_base"
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "manual_operator"
+            }
+          }
+        }
+      ]
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["accepted_formats", "primary_format", "operation_colors", "inventory"],
+      "properties": {
+        "accepted_formats": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "primary_format": {
+          "type": "string"
+        },
+        "operation_colors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "format", "required"],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "format": {
+                "type": "string"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "safety": {
+      "type": "object",
+      "required": [
+        "controls_hardware",
+        "setup_may_use_network",
+        "may_modify_source",
+        "allowed_input_roots",
+        "allowed_output_roots"
+      ],
+      "properties": {
+        "controls_hardware": {
+          "const": false
+        },
+        "setup_may_use_network": {
+          "type": "boolean"
+        },
+        "may_modify_source": {
+          "const": false
+        },
+        "allowed_input_roots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_output_roots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["states", "fabrication_approved"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "registered",
+              "dependencies-ready",
+              "invocation-ready",
+              "output-validated",
+              "pipeline-integrated",
+              "fabrication-approved"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "fabrication_approved": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
