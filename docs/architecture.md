@@ -1,14 +1,20 @@
 # Architecture
 
-`scripts/laser_build.py` is the single user-facing build entrypoint. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
+`scripts/laser_build.py` is the single design-build entrypoint. On a prepared development host it can be run directly with Python 3.11+, and on a portable clean host it should be invoked through `setup/bootstrap.sh run -- scripts/laser_build.py ...` or `setup/bootstrap.ps1 run -- scripts/laser_build.py ...`. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
 
 The script never connects to a machine. LaserGRBL is used separately to preview and stream generated G-code.
 
 Third-party repositories have explicit roles. `vibe-modeling` and LaserGRBL are read-only behavioral references. Boxes.py is a callable helper invoked in a separate process through `scripts/helper_tool.py`; it is never imported into the host process and its output remains untrusted until host validation.
 
+## Bootstrap Boundary
+
+`setup/bootstrap.sh` and `setup/bootstrap.ps1` are native launchers for hosts that have Git but may not have Python or CAD/CAM tools. They verify the host platform and Git version, download only pinned checksum-verified Pixi artifacts after an explicit approval flag, create a locked repository-local Python runtime, initialize submodules through host Git, and write readiness reports beneath `.tools/`.
+
+The managed `run` command dispatches approved repository Python scripts through the locked runtime rather than the host Python installation. Phase 1 qualifies this path on Linux x86-64; other pinned platforms remain pending clean-host qualification.
+
 ## Helper-Tool Boundary
 
-`tool_adapters/*.json` declares each callable helper’s source pin, license, capabilities, invocation, accepted outputs, and safety boundaries. `scripts/helper_tool.py` verifies the clean submodule pin and installs dependencies into a disposable `.tmp/helper-tools/<id>/` target before invocation.
+`tool_adapters/*.json` declares each callable helper’s source pin, license, capabilities, invocation, accepted outputs, and safety boundaries. `scripts/helper_tool.py` currently verifies the clean submodule pin and installs dependencies into a disposable `.tmp/helper-tools/<id>/` target before invocation. That direct Python helper path is transitional until later provider phases migrate helpers behind the managed bootstrap.
 
 The dependency direction is:
 

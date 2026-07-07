@@ -1,6 +1,20 @@
 # Build Script Reference
 
-The core build script requires Python 3.11 or newer and no third-party Python packages. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer. Helper-backed geometry uses separately installed `.tmp` environments managed by `scripts/helper_tool.py`.
+The core build script requires Python 3.11 or newer and no third-party Python packages. On portable hosts, use the managed bootstrap so the repository supplies that Python runtime locally:
+
+```bash
+setup/bootstrap.sh --allow-downloads setup
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins
+```
+
+On Windows:
+
+```powershell
+.\setup\bootstrap.ps1 -AllowDownloads setup
+.\setup\bootstrap.ps1 run -- scripts/laser_build.py --design shot_coins
+```
+
+Development hosts with Python 3.11+ may still run the script directly. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer. Helper-backed geometry currently uses separately installed `.tmp` environments managed by `scripts/helper_tool.py`; this remains transitional until helper providers move behind managed setup phases.
 
 ```bash
 python3 scripts/laser_build.py --design shot_coins

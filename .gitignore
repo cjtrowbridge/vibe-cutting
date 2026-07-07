@@ -1,5 +1,6 @@
 .tmp/
 .tools/
+setup/.pixi/
 reports/host-readiness/
 output/
 revisions/

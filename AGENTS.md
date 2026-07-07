@@ -40,16 +40,20 @@ Before implementing or changing bootstrap behavior, read:
 - `references/managed-bootstrap-command-contract.md`
 - `docs/decisions/0001-portable-helper-bootstrap-and-provider-model.md`
 
-The target managed invocation is:
+Use the managed bootstrap for portable host setup and repository Python commands:
 
 ```text
+./setup/bootstrap.sh doctor
+./setup/bootstrap.sh --allow-downloads setup
 ./setup/bootstrap.sh run -- <repo-command>
+.\setup\bootstrap.ps1 doctor
+.\setup\bootstrap.ps1 -AllowDownloads setup
 .\setup\bootstrap.ps1 run -- <repo-command>
 ```
 
-Until Phase 1 implements those launchers, `python3 scripts/helper_tool.py` remains a transitional development-host command and must not be described as clean-host portable.
+`setup/bootstrap.sh` is runtime-qualified on the development Linux x86-64 host. `setup/bootstrap.ps1` and non-x86-64 platforms are pinned but still require clean-host qualification before being treated as fully validated.
 
-Execute the helper-stack roadmap through one bounded child plan per phase. Use `templates/helper-stack-phase-plan.md`, produce an acceptance report from `templates/helper-stack-phase-acceptance-report.md`, archive the accepted child plan, and obtain approval before promoting the next phase.
+Execute the helper-stack roadmap through one bounded child plan per phase. Use `templates/helper-stack-phase-plan.md`, produce an acceptance report from `templates/helper-stack-phase-acceptance-report.md`, archive the accepted child plan, and continue only under user-approved phase authority.
 
 Inspect and prepare callable helper tools:
 
@@ -59,7 +63,7 @@ python3 scripts/helper_tool.py check boxes
 python3 scripts/helper_tool.py setup boxes
 ```
 
-Helper setup may download dependencies. Obtain approval before running it when network access is not already authorized.
+`python3 scripts/helper_tool.py` remains a transitional development-host command until later provider phases move helper setup behind the managed bootstrap. Helper setup may download dependencies. Obtain approval before running it when network access is not already authorized.
 
 ## Helper-Tool Routing
 

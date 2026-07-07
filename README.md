@@ -4,9 +4,35 @@ A configuration-driven pipeline for designing, previewing, validating, and revis
 
 The current vector MVP uses one Python build entrypoint. Native stroke-font designs remain dependency-free; the default coin revisions use OpenSCAD to shape a pinned Liberation Sans Regular font. Specialized third-party helpers can be invoked as separate pinned tools for geometry the native backend does not provide. The pipeline generates fabrication artifacts but never connects to or controls a laser.
 
-## Quick Start
+## Portable Quick Start
 
-Requires Python 3.11 or newer. The default coin revisions also require OpenSCAD 2021.01 or newer.
+The portable setup path assumes only Git plus a native shell or PowerShell. It downloads a pinned Pixi binary only after an explicit approval flag, then creates a repository-local managed Python runtime under `.tools/`.
+
+Linux and macOS:
+
+```bash
+git submodule update --init --recursive
+setup/bootstrap.sh doctor
+setup/bootstrap.sh --allow-downloads setup
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --validate-only
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --audit-only
+```
+
+Windows PowerShell:
+
+```powershell
+git submodule update --init --recursive
+.\setup\bootstrap.ps1 doctor
+.\setup\bootstrap.ps1 -AllowDownloads setup
+.\setup\bootstrap.ps1 run -- scripts/laser_build.py --design shot_coins --validate-only
+```
+
+Linux x86-64 is currently runtime-qualified. Windows, macOS, and Linux ARM64 bootstrap artifacts are pinned but still need clean-host qualification.
+
+## Development Shortcut
+
+If your development host already has Python 3.11 or newer, you can still run the build script directly. The default coin revisions also require OpenSCAD 2021.01 or newer.
 
 Initialize all pinned tools and references after cloning:
 
@@ -51,7 +77,7 @@ Copy an existing merit-badge design and replace its `badges` list to create anot
 
 ## Helper Tools
 
-Callable helper tools remain separate third-party repositories and run in subprocesses through a common host interface:
+Callable helper tools remain separate third-party repositories and run in subprocesses through a common host interface. This direct Python interface is transitional until later bootstrap phases migrate helper providers behind the managed setup system:
 
 ```bash
 python3 scripts/helper_tool.py list
@@ -60,7 +86,7 @@ python3 scripts/helper_tool.py setup boxes
 python3 scripts/helper_tool.py run boxes -- --list
 ```
 
-`setup` may download Python dependencies into `.tmp/helper-tools/`; it does not install into the host project or modify the submodule.
+`setup` may download Python dependencies into `.tmp/helper-tools/`; it does not install global packages or modify the submodule.
 
 Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures. Its SVG is an input to the host pipeline—not authoritative G-code. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
 
@@ -74,7 +100,7 @@ The 0.18 mm normal-font hatch spacing is also unverified. Calibrate filled engra
 
 ## Architecture
 
-The native vector backend remains the dependency-free fallback. The OpenSCAD font adapter exports pinned-font contours, normalizes them into the framework coordinate system, and converts filled glyphs into deterministic engraving hatches. Callable helpers such as Boxes.py supply specialized source geometry through pinned subprocess adapters. LaserGRBL is the preferred open application for independently previewing and streaming the generated GRBL G-code.
+The native vector backend remains the dependency-free fallback. The portable bootstrap provides the clean-host path to the managed Python runtime used by repo scripts. The OpenSCAD font adapter exports pinned-font contours, normalizes them into the framework coordinate system, and converts filled glyphs into deterministic engraving hatches. Callable helpers such as Boxes.py supply specialized source geometry through pinned subprocess adapters. LaserGRBL is the preferred open application for independently previewing and streaming the generated GRBL G-code.
 
 The bundled Liberation Sans Regular and Bold files remain separately licensed under SIL OFL 1.1; see `assets/fonts/liberation-sans/`.
 

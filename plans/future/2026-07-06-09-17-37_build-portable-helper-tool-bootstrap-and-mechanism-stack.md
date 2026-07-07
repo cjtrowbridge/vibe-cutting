@@ -74,35 +74,35 @@ Each phase must define:
   - [x] 1.11 Define Git as a verified host prerequisite and document minimum supported versions.
   - [x] 1.12 Define the managed `run` command contract for repository Python scripts and other repo-local commands.
 
-- [ ] 2. Create the `setup/` bootstrap surface.
-  - [ ] 2.1 Create `setup/README.md` with Linux/macOS and Windows bootstrap commands.
-  - [ ] 2.2 Create `setup/bootstrap.sh` using portable POSIX shell syntax.
-  - [ ] 2.3 Create `setup/bootstrap.ps1` using Windows PowerShell-compatible syntax.
-  - [ ] 2.4 Create `setup/toolchain-manifest.json` for pinned bootstrap binaries and platform artifacts.
-  - [ ] 2.5 Create `setup/checksums/` records for every downloaded bootstrap artifact.
-  - [ ] 2.6 Create `setup/pixi.toml` for the managed base environment.
-  - [ ] 2.7 Generate and commit `setup/pixi.lock` for every supported platform.
-  - [ ] 2.8 Create `setup/bootstrap_host.py` as the managed stage-two orchestrator.
-  - [ ] 2.9 Implement `doctor`, `setup`, `verify`, `repair`, `report`, and `run` subcommands.
-  - [ ] 2.10 Make the native launchers locate or download the pinned environment manager.
-  - [ ] 2.11 Verify downloaded artifacts before extraction or execution.
-  - [ ] 2.12 Make bootstrap operations idempotent and resumable after interruption.
-  - [ ] 2.13 Prevent setup from writing inside third-party submodules.
-  - [ ] 2.14 Prevent setup from writing outside the repository unless a separately approved remediation requires it.
-  - [ ] 2.15 Produce actionable remediation instead of silently invoking privileged system package managers.
-  - [ ] 2.16 Make `run` dispatch Python scripts through the pinned managed Python runtime without consulting host Python.
-  - [ ] 2.17 Preserve command arguments, exit status, standard output, standard error, and interrupt behavior through `run`.
+- [x] 2. Create the `setup/` bootstrap surface.
+  - [x] 2.1 Create `setup/README.md` with Linux/macOS and Windows bootstrap commands.
+  - [x] 2.2 Create `setup/bootstrap.sh` using portable POSIX shell syntax.
+  - [x] 2.3 Create `setup/bootstrap.ps1` using Windows PowerShell-compatible syntax.
+  - [x] 2.4 Create `setup/toolchain-manifest.json` for pinned bootstrap binaries and platform artifacts.
+  - [x] 2.5 Create `setup/checksums/` records for every downloaded bootstrap artifact.
+  - [x] 2.6 Create `setup/pixi.toml` for the managed base environment.
+  - [x] 2.7 Generate and commit `setup/pixi.lock` for every supported platform.
+  - [x] 2.8 Create `setup/bootstrap_host.py` as the managed stage-two orchestrator.
+  - [x] 2.9 Implement `doctor`, `setup`, `verify`, `repair`, `report`, and `run` subcommands.
+  - [x] 2.10 Make the native launchers locate or download the pinned environment manager.
+  - [x] 2.11 Verify downloaded artifacts before extraction or execution.
+  - [x] 2.12 Make bootstrap operations idempotent and resumable after interruption.
+  - [x] 2.13 Prevent setup from writing inside third-party submodules.
+  - [x] 2.14 Prevent setup from writing outside the repository unless a separately approved remediation requires it.
+  - [x] 2.15 Produce actionable remediation instead of silently invoking privileged system package managers.
+  - [x] 2.16 Make `run` dispatch Python scripts through the pinned managed Python runtime without consulting host Python.
+  - [x] 2.17 Preserve command arguments, exit status, standard output, standard error, and interrupt behavior through `run`.
 
-- [ ] 3. Provision the managed base environment.
-  - [ ] 3.1 Verify host Git exists and satisfies the documented minimum version.
-  - [ ] 3.2 Provision a pinned Python runtime for bootstrap orchestration and host tests.
-  - [ ] 3.3 Provision JSON, archive, checksum, and process-inspection utilities required by setup.
-  - [ ] 3.4 Initialize and update all submodules recursively through the verified host Git executable.
-  - [ ] 3.5 Verify each submodule path and gitlink revision against `.gitmodules` and adapter manifests.
-  - [ ] 3.6 Detect dirty, missing, uninitialized, or mismatched submodules and fail closed.
-  - [ ] 3.7 Record base-environment versions and lock hashes in the host-readiness report.
-  - [ ] 3.8 Record the verified host Git path and version in the host-readiness report.
-  - [ ] 3.9 Prove `run` can invoke `scripts/laser_build.py --help` with managed Python while host Python is unavailable.
+- [x] 3. Provision the managed base environment.
+  - [x] 3.1 Verify host Git exists and satisfies the documented minimum version.
+  - [x] 3.2 Provision a pinned Python runtime for bootstrap orchestration and host tests.
+  - [x] 3.3 Provision JSON, archive, checksum, and process-inspection utilities required by setup.
+  - [x] 3.4 Initialize and update all submodules recursively through the verified host Git executable.
+  - [x] 3.5 Verify each submodule path and gitlink revision against `.gitmodules` and adapter manifests.
+  - [x] 3.6 Detect dirty, missing, uninitialized, or mismatched submodules and fail closed.
+  - [x] 3.7 Record base-environment versions and lock hashes in the host-readiness report.
+  - [x] 3.8 Record the verified host Git path and version in the host-readiness report.
+  - [x] 3.9 Prove `run` can invoke `scripts/laser_build.py --help` with managed Python while host Python is unavailable.
 
 - [ ] 4. Generalize the helper adapter model.
   - [ ] 4.1 Replace the Python-only helper schema with provider-discriminated adapter schemas.
