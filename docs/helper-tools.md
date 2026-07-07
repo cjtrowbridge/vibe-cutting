@@ -58,3 +58,4 @@ See `playbooks/how_to_add_and_validate_a_helper_tool.md`.
 
 - Boxes.py: fitted panel structures and reproducible SVG source geometry.
 - CadQuery + CQ_Gears: planar spur gear, ring gear, rack, and gear-mesh source profiles for mechanism planning.
+- BOSL2: OpenSCAD comparison profiles for spur gears, ring gears, and racks.

@@ -410,6 +410,8 @@ def inspect_provider_tool(tool):
         import_ready = result.returncode == 0
         if not import_ready:
             import_error = result.stderr.strip() or result.stdout.strip()
+    elif marker_matches:
+        import_ready = True
     state = {
         "id": tool["id"],
         "display_name": tool["display_name"],

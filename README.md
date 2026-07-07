@@ -93,6 +93,8 @@ Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints
 
 CadQuery + CQ_Gears provides planar spur gear, ring gear, rack, and simple gear-mesh source profiles through `tool_adapters/cq_gears.json`. Its outputs are provenance/source geometry until host mechanism validation imports them. See `docs/tools/cq-gears.md`.
 
+BOSL2 provides OpenSCAD comparison profiles for spur gears, ring gears, and racks through `tool_adapters/bosl2.json`. See `docs/tools/bosl2.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

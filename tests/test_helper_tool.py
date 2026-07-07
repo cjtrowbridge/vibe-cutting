@@ -232,8 +232,9 @@ class HelperToolTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload["adapters"][0]["adapter_model"], "provider")
-        self.assertEqual(payload["adapters"][0]["provider_kind"], "pixi_environment")
+        adapters = {adapter["id"]: adapter for adapter in payload["adapters"]}
+        self.assertEqual(adapters["boxes"]["adapter_model"], "provider")
+        self.assertEqual(adapters["boxes"]["provider_kind"], "pixi_environment")
 
 
 if __name__ == "__main__":

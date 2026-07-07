@@ -13,6 +13,7 @@ Help agents select the smallest appropriate geometry source before authoring or 
 | Geometry projected from a 3D assembly or expressed naturally with CSG | OpenSCAD geometry adapter | Parametric 3D-to-2D projection |
 | Fitted panel assemblies, boxes, trays, shelves, finger joints, dovetails, living hinges, or supported structural parts | Boxes.py callable helper | Mature material-aware fabrication primitives |
 | Planar spur gears, ring gears, racks, or simple gear-mesh source profiles | CQ_Gears provider | Involute gear geometry with measurable mechanism parameters |
+| OpenSCAD comparison profiles for gears and racks | BOSL2 provider | Independent OpenSCAD source profile for comparison/fallback checks |
 | Custom engraving on helper-generated structural parts | Combined helper and native/OpenSCAD operations | Keep structural geometry and decorative operations independently validated |
 | Raster engraving or image tracing | No currently accepted backend | Remains roadmap work |
 

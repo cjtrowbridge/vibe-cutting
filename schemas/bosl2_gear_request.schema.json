@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BOSL2 OpenSCAD Gear Request",
+  "type": "object",
+  "required": ["schema_version", "tool_id", "request_type", "gear_type", "parameters", "outputs"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool_id": {
+      "const": "bosl2"
+    },
+    "request_type": {
+      "const": "openscad_svg"
+    },
+    "gear_type": {
+      "enum": ["spur", "ring", "rack"]
+    },
+    "parameters": {
+      "type": "object",
+      "required": ["module"],
+      "properties": {
+        "module": {"type": "number", "exclusiveMinimum": 0},
+        "teeth": {"type": "integer", "minimum": 4},
+        "pressure_angle": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 90},
+        "shaft_diam": {"type": "number", "minimum": 0},
+        "backing": {"type": "number", "exclusiveMinimum": 0},
+        "bottom": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["svg", "manifest"],
+      "properties": {
+        "svg": {"type": "string"},
+        "manifest": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -161,17 +161,17 @@ Each phase must define:
   - [x] 7.13 Add deterministic golden fixtures for a spur gear, ring gear, rack, and meshing pair.
   - [x] 7.14 Add geometry checks for pitch diameter, root diameter, outside diameter, center distance, tooth count, bore, and profile closure.
 
-- [ ] 8. Integrate BOSL2 as an OpenSCAD library provider.
-  - [ ] 8.1 Convert the BOSL2 submodule pin and version into an adapter manifest.
-  - [ ] 8.2 Verify OpenSCAD acquisition or discovery on each supported platform.
-  - [ ] 8.3 Configure `OPENSCADPATH` per invocation without changing user-global configuration.
-  - [ ] 8.4 Create `setup/tools/bosl2.py` for dependency and include-path validation.
-  - [ ] 8.5 Create a pinned host OpenSCAD adapter source for `BOSL2/gears.scad`.
-  - [ ] 8.6 Create typed BOSL2 gear request schemas aligned with the supported planar subset.
-  - [ ] 8.7 Export deterministic SVG profiles through the existing OpenSCAD boundary.
-  - [ ] 8.8 Add golden spur-gear, ring-gear, and rack fixtures.
-  - [ ] 8.9 Compare BOSL2 and CQ_Gears pitch geometry without requiring byte-identical profiles.
-  - [ ] 8.10 Document BOSL2 as fallback/experimental geometry rather than the mechanism validator.
+- [x] 8. Integrate BOSL2 as an OpenSCAD library provider.
+  - [x] 8.1 Convert the BOSL2 submodule pin and version into an adapter manifest.
+  - [x] 8.2 Verify OpenSCAD acquisition or discovery on each supported platform.
+  - [x] 8.3 Configure `OPENSCADPATH` per invocation without changing user-global configuration.
+  - [x] 8.4 Create `setup/tools/bosl2.py` for dependency and include-path validation.
+  - [x] 8.5 Create a pinned host OpenSCAD adapter source for `BOSL2/gears.scad`.
+  - [x] 8.6 Create typed BOSL2 gear request schemas aligned with the supported planar subset.
+  - [x] 8.7 Export deterministic SVG profiles through the existing OpenSCAD boundary.
+  - [x] 8.8 Add golden spur-gear, ring-gear, and rack fixtures.
+  - [-] 8.9 Compare BOSL2 and CQ_Gears pitch geometry without requiring byte-identical profiles.
+  - [x] 8.10 Document BOSL2 as fallback/experimental geometry rather than the mechanism validator.
 
 - [ ] 9. Integrate FreeCAD Gears as an inspection backend.
   - [ ] 9.1 Create a FreeCAD Gears adapter manifest referencing its submodule pin and GPL license.
