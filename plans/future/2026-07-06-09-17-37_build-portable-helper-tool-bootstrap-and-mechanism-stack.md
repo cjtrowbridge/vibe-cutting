@@ -185,22 +185,22 @@ Each phase must define:
   - [x] 9.9 Keep FreeCAD Gears at `output-validated` inspection status until repeatable headless export passes on supported platforms.
   - [x] 9.10 Prohibit FreeCAD-generated toolpaths from becoming authoritative G-code.
 
-- [ ] 10. Build the host-owned laser mechanism model.
-  - [ ] 10.1 Create schemas for gears, racks, cams, ratchets, rotors, linkages, axles, spacers, washers, registration features, and interfaces.
-  - [ ] 10.2 Create a mechanism-graph schema for parts, meshes, ratios, phase relationships, channels, and stack layers.
-  - [ ] 10.3 Create a stackup schema for sheet thicknesses, spacers, fasteners, bearings, bushings, and service layers.
-  - [ ] 10.4 Implement gear mesh-distance validation.
-  - [ ] 10.5 Implement declared-ratio validation.
-  - [ ] 10.6 Implement phase-relationship validation.
-  - [ ] 10.7 Implement minimum-backlash validation.
-  - [ ] 10.8 Implement bore, axle, bearing, and bushing clearance validation.
-  - [ ] 10.9 Implement minimum tooth-root and web-thickness validation.
-  - [ ] 10.10 Implement plan-view rotating-part collision checks.
-  - [ ] 10.11 Implement stack-layer and registration-hole completeness checks.
-  - [ ] 10.12 Implement power-channel and logic-channel keying checks.
-  - [ ] 10.13 Implement duplicate-path and shared-edge overburn checks.
-  - [ ] 10.14 Archive raw helper geometry with normalized host operations.
-  - [ ] 10.15 Record every mechanism validation result in the job manifest.
+- [x] 10. Build the host-owned laser mechanism model.
+  - [x] 10.1 Create schemas for gears, racks, cams, ratchets, rotors, linkages, axles, spacers, washers, registration features, and interfaces.
+  - [x] 10.2 Create a mechanism-graph schema for parts, meshes, ratios, phase relationships, channels, and stack layers.
+  - [x] 10.3 Create a stackup schema for sheet thicknesses, spacers, fasteners, bearings, bushings, and service layers.
+  - [x] 10.4 Implement gear mesh-distance validation.
+  - [x] 10.5 Implement declared-ratio validation.
+  - [x] 10.6 Implement phase-relationship validation.
+  - [x] 10.7 Implement minimum-backlash validation.
+  - [x] 10.8 Implement bore, axle, bearing, and bushing clearance validation.
+  - [x] 10.9 Implement minimum tooth-root and web-thickness validation.
+  - [x] 10.10 Implement plan-view rotating-part collision checks.
+  - [x] 10.11 Implement stack-layer and registration-hole completeness checks.
+  - [x] 10.12 Implement power-channel and logic-channel keying checks.
+  - [x] 10.13 Implement duplicate-path and shared-edge overburn checks.
+  - [x] 10.14 Archive raw helper geometry with normalized host operations.
+  - [x] 10.15 Record every mechanism validation result in the job manifest.
 
 - [ ] 11. Prototype the first laser-native mechanism.
   - [ ] 11.1 Create `primitive_power_extender_laser_0_1`.

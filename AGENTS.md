@@ -98,6 +98,10 @@ Provider-based helper adapters use schema-version `2` and declare one of `pixi_e
 
 Use the relevant laser playbook before changing designs, profiles, build behavior, or G-code generation.
 
+## Mechanism Validation
+
+Use `scripts/mechanism_validate.py` and `docs/mechanism-model.md` before treating helper-generated gear or mechanism geometry as buildable. Mechanism validation must pass before a future mechanism design copies the validator's `job_manifest_fragment` into a job manifest.
+
 ## Helper References
 
 - `references/helper-tool-contract.md`

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Laser Mechanism Stackup",
+  "type": "object",
+  "required": ["layers"],
+  "additionalProperties": false,
+  "properties": {
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "material", "thickness_mm", "registration_ids"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "material": {"type": "string"},
+          "thickness_mm": {"type": "number", "exclusiveMinimum": 0},
+          "service": {"type": "boolean"},
+          "registration_ids": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "fasteners": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "diameter_mm", "layers"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "diameter_mm": {"type": "number", "exclusiveMinimum": 0},
+          "layers": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "bearings": {"type": "array", "items": {"type": "object"}},
+    "bushings": {"type": "array", "items": {"type": "object"}}
+  }
+}

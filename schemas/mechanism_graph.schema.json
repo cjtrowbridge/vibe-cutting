@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Laser Mechanism Graph",
+  "type": "object",
+  "required": ["schema_version", "mechanism_id", "parts", "stackup"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "mechanism_id": {"type": "string"},
+    "parts": {"type": "array", "items": {"$ref": "mechanism_part.schema.json"}},
+    "stackup": {"$ref": "mechanism_stackup.schema.json"},
+    "meshes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "driver", "driven", "center_distance_mm", "ratio", "backlash_mm"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "driver": {"type": "string"},
+          "driven": {"type": "string"},
+          "center_distance_mm": {"type": "number", "exclusiveMinimum": 0},
+          "ratio": {"type": "number"},
+          "backlash_mm": {"type": "number", "minimum": 0},
+          "phase_transfer_deg": {"type": "number"}
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["part", "phase_deg"],
+        "additionalProperties": false,
+        "properties": {
+          "part": {"type": "string"},
+          "phase_deg": {"type": "number"}
+        }
+      }
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "key"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "kind": {"enum": ["power", "logic"]},
+          "key": {"type": "string"}
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "part", "channel", "key"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "part": {"type": "string"},
+          "channel": {"type": "string"},
+          "key": {"type": "string"}
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "operation", "source_path"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "operation": {"enum": ["cut", "engrave", "score"]},
+          "source_path": {"type": "string"}
+        }
+      }
+    },
+    "helper_geometry": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tool_id", "request_sha256", "artifact"],
+        "additionalProperties": false,
+        "properties": {
+          "tool_id": {"type": "string"},
+          "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "artifact": {"type": "string"},
+          "source_revision": {"type": "string"}
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mesh_tolerance_mm": {"type": "number", "minimum": 0},
+        "ratio_tolerance": {"type": "number", "minimum": 0},
+        "phase_tolerance_deg": {"type": "number", "minimum": 0},
+        "min_backlash_mm": {"type": "number", "minimum": 0},
+        "min_bore_clearance_mm": {"type": "number", "minimum": 0},
+        "min_tooth_root_mm": {"type": "number", "minimum": 0},
+        "min_web_mm": {"type": "number", "minimum": 0},
+        "min_rotating_clearance_mm": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Laser Mechanism Part",
+  "type": "object",
+  "required": ["id", "kind", "layer", "center"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$"},
+    "kind": {
+      "enum": [
+        "gear",
+        "rack",
+        "cam",
+        "ratchet",
+        "rotor",
+        "linkage",
+        "axle",
+        "spacer",
+        "washer",
+        "registration_feature",
+        "interface"
+      ]
+    },
+    "layer": {"type": "string"},
+    "center": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "radius_mm": {"type": "number", "minimum": 0},
+    "outer_diameter_mm": {"type": "number", "exclusiveMinimum": 0},
+    "root_diameter_mm": {"type": "number", "exclusiveMinimum": 0},
+    "pitch_diameter_mm": {"type": "number", "exclusiveMinimum": 0},
+    "module_mm": {"type": "number", "exclusiveMinimum": 0},
+    "teeth": {"type": "integer", "minimum": 3},
+    "bore_diameter_mm": {"type": "number", "minimum": 0},
+    "axle_diameter_mm": {"type": "number", "minimum": 0},
+    "channel": {"type": "string"},
+    "key": {"type": "string"}
+  }
+}

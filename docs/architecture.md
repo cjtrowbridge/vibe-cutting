@@ -30,6 +30,10 @@ design intent -> callable helper -> source geometry
 
 Helpers cannot own machine/material recipes, bounds acceptance, operation ordering, authoritative manifests, G-code, readiness claims, or hardware control.
 
+## Mechanism Model Boundary
+
+`scripts/mechanism_validate.py` validates host-owned laser mechanism graphs before mechanism designs are promoted into build jobs. The model covers parts, gear meshes, declared ratios, phase transfer, stack layers, axle/bore clearance, tooth-root and web thickness estimates, rotating-part collision checks, channel keying, duplicate-cut overburn risk, and helper-geometry provenance. Its report includes a `job_manifest_fragment` for later build integration, but it does not generate geometry or toolpaths.
+
 ## Coordinate Contract
 
 - Canonical units are millimeters.

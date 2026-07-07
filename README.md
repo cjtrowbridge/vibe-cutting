@@ -97,6 +97,8 @@ BOSL2 provides OpenSCAD comparison profiles for spur gears, ring gears, and rack
 
 FreeCAD Gears provides inspection-only FreeCAD workbench checks and non-authoritative STEP provenance through `tool_adapters/freecad_gears.json`. See `docs/tools/freecad-gears.md`.
 
+Host-owned mechanism models validate laser-cut assemblies across parts, gear meshes, stackups, phases, channels, clearances, helper provenance, and overburn risks. See `docs/mechanism-model.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.
