@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-20-48-50 | plans/past/2026-07-06-20-40-41_create-host-readiness-reports.md | Create Host Readiness Reports | Add schema, template, generator, tests, docs, and acceptance evidence for full host-readiness reports.
 2026-07-06-20-38-59 | plans/past/2026-07-06-20-36-39_add-governance-and-human-documentation.md | Add Governance and Human Documentation | Complete helper-stack governance, host bootstrap documentation, mechanism validation contracts, and missing playbooks.
 2026-07-06-20-34-40 | plans/past/2026-07-06-20-28-42_prototype-first-laser-native-mechanism.md | Prototype First Laser-Native Mechanism | Create the primitive power extender mechanism design, validate it through the host mechanism model, generate laser artifacts, and record acceptance evidence.
 2026-07-06-20-25-40 | plans/past/2026-07-06-20-21-09_build-host-owned-mechanism-model.md | Build Host-Owned Mechanism Model | Add laser-native mechanism schemas, validation code, docs, tests, and acceptance evidence for gears, interfaces, stackups, and safety checks.

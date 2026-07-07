@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Host Readiness Report",
+  "type": "object",
+  "required": ["schema_version", "bootstrap_state", "platform", "git", "environment_manager", "python", "locks", "submodules", "helper_tools", "smoke_tests", "blocked_capabilities"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": 1},
+    "bootstrap_state": {"type": "string"},
+    "platform": {"type": "object"},
+    "git": {"type": "object"},
+    "environment_manager": {"type": "object"},
+    "python": {"type": "object"},
+    "locks": {"type": "object"},
+    "submodules": {"type": "array"},
+    "helper_tools": {"type": "array"},
+    "smoke_tests": {"type": "array"},
+    "blocked_capabilities": {"type": "array"}
+  }
+}

@@ -44,6 +44,7 @@ setup/bootstrap.sh run -- scripts/helper_tool.py check freecad_gears
 ## Troubleshooting
 
 - Run `doctor` before downloads to confirm platform and Git status.
-- Run `report` after setup to write host-readiness evidence.
+- Run `report` after setup to write base host-readiness evidence.
+- Run `setup/bootstrap.sh run -- scripts/host_readiness_report.py --output-root .tools/reports/host-readiness` to write the full helper/tool readiness report.
 - Run `repair` when staged setup was interrupted.
 - If setup asks for approval, do not bypass it with global installs; rerun with the explicit allow-downloads flag after reviewing the source.

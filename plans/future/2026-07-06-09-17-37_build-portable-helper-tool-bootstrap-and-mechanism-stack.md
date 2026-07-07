@@ -238,17 +238,17 @@ Each phase must define:
   - [x] 12.22 Add `playbooks/how_to_author_and_validate_laser_mechanisms.md`.
   - [x] 12.23 Update all playbook and reference indexes.
 
-- [ ] 13. Create host-readiness reports.
-  - [ ] 13.1 Define a machine-readable host-readiness JSON schema.
-  - [ ] 13.2 Define a human-readable host-readiness Markdown template.
-  - [ ] 13.3 Record OS, architecture, bootstrap state, and supported-platform classification.
-  - [ ] 13.4 Record environment-manager binary version and checksum.
-  - [ ] 13.5 Record base and tool lock hashes.
-  - [ ] 13.6 Record submodule pins and cleanliness.
-  - [ ] 13.7 Record runtime, executable, and resolved dependency versions.
-  - [ ] 13.8 Record smoke-test and deterministic-output results.
-  - [ ] 13.9 Record blocked capabilities and exact remediation.
-  - [ ] 13.10 Exclude secrets, tokens, usernames, and unrelated host data.
+- [x] 13. Create host-readiness reports.
+  - [x] 13.1 Define a machine-readable host-readiness JSON schema.
+  - [x] 13.2 Define a human-readable host-readiness Markdown template.
+  - [x] 13.3 Record OS, architecture, bootstrap state, and supported-platform classification.
+  - [x] 13.4 Record environment-manager binary version and checksum.
+  - [x] 13.5 Record base and tool lock hashes.
+  - [x] 13.6 Record submodule pins and cleanliness.
+  - [x] 13.7 Record runtime, executable, and resolved dependency versions.
+  - [x] 13.8 Record smoke-test and deterministic-output results.
+  - [x] 13.9 Record blocked capabilities and exact remediation.
+  - [x] 13.10 Exclude secrets, tokens, usernames, and unrelated host data.
 
 - [ ] 14. Test portable bootstrap behavior.
   - [ ] 14.1 Run bootstrap from an alternate empty `.tools` root on the development host.

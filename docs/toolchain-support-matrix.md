@@ -21,4 +21,5 @@
 
 - `docs/acceptance/` records phase acceptance reports.
 - `.tools/reports/host-readiness/` records local bootstrap reports.
+- `scripts/host_readiness_report.py` writes `host-readiness-full.json` and `host-readiness-full.md`.
 - `tool_adapters/*.json` records source pins, provider kinds, safety boundaries, and readiness states.
