@@ -39,7 +39,8 @@ function Verify-Git {
     $Git = Get-Command git -ErrorAction SilentlyContinue
     if (-not $Git) { Fail "Git $MinimumGitVersion or newer is required" }
     $VersionText = (& git --version) -replace '^git version\s+', ''
-    try { $Version = [version]($VersionText -replace '[^0-9.].*$', '') } catch { Fail "unable to parse Git version: $VersionText" }
+    $NormalizedVersionText = (($VersionText -replace '[^0-9.].*$', '').TrimEnd('.'))
+    try { $Version = [version]$NormalizedVersionText } catch { Fail "unable to parse Git version: $VersionText" }
     if ($Version -lt $MinimumGitVersion) { Fail "Git $Version is too old; Git $MinimumGitVersion or newer is required" }
     return $Version.ToString()
 }
