@@ -91,6 +91,8 @@ setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
 
 Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures through the provider helper path. Its SVG is an input to the host pipeline—not authoritative G-code. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
 
+CadQuery + CQ_Gears provides planar spur gear, ring gear, rack, and simple gear-mesh source profiles through `tool_adapters/cq_gears.json`. Its outputs are provenance/source geometry until host mechanism validation imports them. See `docs/tools/cq-gears.md`.
+
 ## Safety
 
 The included Falcon A1 Pro profile is provisional, and the basswood recipes are unverified manufacturer seed values. Generated jobs are calibration-only until machine limits, material settings, ventilation, focus, framing, and emergency procedures are physically verified.

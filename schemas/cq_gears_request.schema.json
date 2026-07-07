@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CQ_Gears Planar Request",
+  "type": "object",
+  "required": ["schema_version", "tool_id", "request_type", "gear_type", "parameters", "outputs"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool_id": {
+      "const": "cq_gears"
+    },
+    "request_type": {
+      "const": "planar_profile"
+    },
+    "gear_type": {
+      "enum": ["spur", "ring", "rack", "meshing_pair"]
+    },
+    "parameters": {
+      "type": "object",
+      "required": ["module"],
+      "properties": {
+        "module": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "teeth": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "ring_teeth": {
+          "type": "integer",
+          "minimum": 8
+        },
+        "pinion_teeth": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "length": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "bore": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pressure_angle": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 45
+        },
+        "backlash": {
+          "type": "number",
+          "minimum": 0
+        },
+        "clearance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "addendum_coeff": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dedendum_coeff": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "rim_width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "rack_height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["svg", "manifest"],
+      "properties": {
+        "svg": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string"
+        },
+        "manifest": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

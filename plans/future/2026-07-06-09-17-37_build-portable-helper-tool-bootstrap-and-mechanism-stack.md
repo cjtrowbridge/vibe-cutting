@@ -145,21 +145,21 @@ Each phase must define:
   - [x] 6.10 Add setup, readiness, deterministic-output, path-safety, mutation, and malformed-output tests.
   - [x] 6.11 Remove the superseded `.tmp/helper-tools/boxes` setup model after migration validation.
 
-- [ ] 7. Integrate CadQuery and CQ_Gears as one tool stack.
-  - [ ] 7.1 Verify compatible CadQuery, CQ_Gears, Python, OCP, and platform versions.
-  - [ ] 7.2 Select and document the supported Python version, using Python 3.12 as the initial compatibility candidate.
-  - [ ] 7.3 Create one locked Pixi environment from the local CadQuery and CQ_Gears submodules.
-  - [ ] 7.4 Prevent package resolution from replacing the pinned local CadQuery or CQ_Gears sources.
-  - [ ] 7.5 Create a combined `cq_gears` adapter manifest referencing both submodule pins.
-  - [ ] 7.6 Create typed schemas for spur gears, ring gears, racks, and planetary reference assemblies.
-  - [ ] 7.7 Define module, tooth count, pressure angle, width, bore, addendum, dedendum, and backlash fields.
-  - [ ] 7.8 Create `setup/tools/cq_gears.py` for setup and smoke testing.
-  - [ ] 7.9 Create an operational CQ_Gears generation driver.
-  - [ ] 7.10 Export raw STEP geometry for provenance and engineering inspection.
-  - [ ] 7.11 Extract or project normalized two-dimensional profiles for laser operations.
-  - [ ] 7.12 Reject helical, herringbone, bevel, worm, or other non-planar fabrication requests until separately validated.
-  - [ ] 7.13 Add deterministic golden fixtures for a spur gear, ring gear, rack, and meshing pair.
-  - [ ] 7.14 Add geometry checks for pitch diameter, root diameter, outside diameter, center distance, tooth count, bore, and profile closure.
+- [x] 7. Integrate CadQuery and CQ_Gears as one tool stack.
+  - [x] 7.1 Verify compatible CadQuery, CQ_Gears, Python, OCP, and platform versions.
+  - [x] 7.2 Select and document the supported Python version, using Python 3.12 as the initial compatibility candidate.
+  - [x] 7.3 Create one locked Pixi environment from the local CadQuery and CQ_Gears submodules.
+  - [x] 7.4 Prevent package resolution from replacing the pinned local CadQuery or CQ_Gears sources.
+  - [x] 7.5 Create a combined `cq_gears` adapter manifest referencing both submodule pins.
+  - [x] 7.6 Create typed schemas for spur gears, ring gears, racks, and planetary reference assemblies.
+  - [x] 7.7 Define module, tooth count, pressure angle, width, bore, addendum, dedendum, and backlash fields.
+  - [x] 7.8 Create `setup/tools/cq_gears.py` for setup and smoke testing.
+  - [x] 7.9 Create an operational CQ_Gears generation driver.
+  - [-] 7.10 Export raw STEP geometry for provenance and engineering inspection.
+  - [x] 7.11 Extract or project normalized two-dimensional profiles for laser operations.
+  - [x] 7.12 Reject helical, herringbone, bevel, worm, or other non-planar fabrication requests until separately validated.
+  - [x] 7.13 Add deterministic golden fixtures for a spur gear, ring gear, rack, and meshing pair.
+  - [x] 7.14 Add geometry checks for pitch diameter, root diameter, outside diameter, center distance, tooth count, bore, and profile closure.
 
 - [ ] 8. Integrate BOSL2 as an OpenSCAD library provider.
   - [ ] 8.1 Convert the BOSL2 submodule pin and version into an adapter manifest.

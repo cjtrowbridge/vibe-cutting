@@ -30,7 +30,7 @@ Schema-version `2` helper adapters declare a runtime provider:
 - `system_application` for locally installed applications with manual remediation.
 - `manual_operator` for human-operated reference tools.
 
-Provider adapters declare allowed input roots, output roots, exact output inventories, readiness states, setup metadata, invocation metadata, and provenance fields. Phase 2 validates and reports these contracts but does not install heavyweight helper environments.
+Provider adapters declare allowed input roots, output roots, exact output inventories, readiness states, setup metadata, invocation metadata, and provenance fields.
 
 Readiness states are `registered`, `dependencies-ready`, `invocation-ready`, `output-validated`, `pipeline-integrated`, and `fabrication-approved`. Phase 2 adapters must not claim fabrication approval.
 
@@ -53,3 +53,8 @@ Each tool needs:
 - Tests and tool-specific documentation.
 
 See `playbooks/how_to_add_and_validate_a_helper_tool.md`.
+
+## Current Provider Helpers
+
+- Boxes.py: fitted panel structures and reproducible SVG source geometry.
+- CadQuery + CQ_Gears: planar spur gear, ring gear, rack, and gear-mesh source profiles for mechanism planning.

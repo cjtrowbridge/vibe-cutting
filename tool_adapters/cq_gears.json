@@ -1,0 +1,101 @@
+{
+  "schema_version": 2,
+  "id": "cq_gears",
+  "display_name": "CadQuery + CQ_Gears",
+  "tool_class": "callable_helper",
+  "source": {
+    "type": "git_submodule",
+    "path": "third_party/cq_gears",
+    "upstream": "https://github.com/meadiode/cq_gears",
+    "pinned_revision": "e73874cf17a25447a99b1e7c22a4d5af38560e9c",
+    "license": "Apache-2.0",
+    "license_file": "LICENSE"
+  },
+  "capabilities": [
+    "spur_gears",
+    "ring_gears",
+    "rack_gears",
+    "gear_meshes",
+    "planar_mechanism_geometry",
+    "svg_geometry",
+    "step_provenance"
+  ],
+  "routing": {
+    "use_for": [
+      "Planar spur gears, ring gears, racks, and simple meshing-pair mechanism profiles",
+      "Mechanism prototype geometry that needs involute tooth profiles",
+      "Engineering provenance where a STEP source artifact is useful for inspection"
+    ],
+    "avoid_for": [
+      "Helical, herringbone, bevel, worm, crossed-helical, or other non-planar gears",
+      "Authoritative G-code, material recipes, machine control, or fabrication approval",
+      "Simple tokens, boxes, trays, shelves, or structural panel assemblies"
+    ]
+  },
+  "provider": {
+    "kind": "pixi_environment",
+    "environment_path": ".tools/environments/cq_gears",
+    "working_directory": ".",
+    "setup": {
+      "lock_file": "setup/tools/cq-gears-requirements.lock",
+      "cache_path": ".tools/cache/helpers/cq_gears",
+      "temp_path": ".tools/tmp/helpers/cq_gears",
+      "log_path": ".tools/logs/helpers/cq_gears",
+      "staging_path": ".tools/staging/helpers/cq_gears",
+      "secondary_sources": [
+        {
+          "path": "third_party/cadquery",
+          "pinned_revision": "f69500e54640a3da8fcee9d063a5a1f996d63263",
+          "license": "Apache-2.0",
+          "license_file": "LICENSE"
+        }
+      ]
+    },
+    "invocation": {
+      "driver": "setup/tools/cq_gears.py",
+      "module": "cq_gears",
+      "mode": "planar_profile"
+    },
+    "version": {
+      "python_minimum": "3.11",
+      "cadquery": "2.9.0dev",
+      "cq_gears": "0.62"
+    }
+  },
+  "outputs": {
+    "accepted_formats": [
+      "svg",
+      "step",
+      "json"
+    ],
+    "primary_format": "svg",
+    "operation_colors": {
+      "rgb(0,0,0)": "source_profile",
+      "rgb(255,0,0)": "construction_reference"
+    },
+    "inventory": []
+  },
+  "safety": {
+    "controls_hardware": false,
+    "setup_may_use_network": true,
+    "may_modify_source": false,
+    "allowed_input_roots": [
+      ".tmp",
+      "designs"
+    ],
+    "allowed_output_roots": [
+      ".tmp",
+      "output",
+      "revisions"
+    ]
+  },
+  "readiness": {
+    "states": [
+      "registered",
+      "dependencies-ready",
+      "invocation-ready",
+      "output-validated"
+    ],
+    "fabrication_approved": false
+  }
+}

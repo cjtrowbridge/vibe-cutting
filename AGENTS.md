@@ -73,6 +73,7 @@ Before authoring a design, use `references/geometry-backend-selection.md` and `r
 - Use native Python geometry for simple flat shapes, repeated objects, and supported native designs.
 - Use the OpenSCAD adapter for pinned-font shaping, CSG, or projected assemblies.
 - Use Boxes.py for fitted panel assemblies, boxes, trays, shelves, enclosures, racks, finger joints, dovetails, living hinges, gears, and other capabilities declared in `tool_adapters/boxes.json`.
+- Use CQ_Gears for planar spur gears, ring gears, racks, and simple gear-mesh source profiles declared in `tool_adapters/cq_gears.json`.
 - Combine helper structural geometry with native or OpenSCAD engraving only at the host operation-model boundary.
 
 Callable helpers generate untrusted source geometry. The host pipeline always retains ownership of operation mapping, machine/material recipes, bounds, ordering, previews, manifests, G-code, artifact installation, and readiness claims. Never use helper-generated G-code as the authoritative machine artifact without a separately approved adapter and validation plan.
@@ -89,6 +90,7 @@ Provider-based helper adapters use schema-version `2` and declare one of `pixi_e
 - `playbooks/how_to_create_and_iterate_merit_badge_sheets.md`
 - `playbooks/how_to_add_and_validate_a_helper_tool.md`
 - `playbooks/how_to_use_boxes_for_laser_geometry.md`
+- `playbooks/how_to_use_cq_gears_for_laser_mechanisms.md`
 
 Use the relevant laser playbook before changing designs, profiles, build behavior, or G-code generation.
 
