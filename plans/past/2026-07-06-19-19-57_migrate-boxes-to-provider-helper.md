@@ -12,7 +12,7 @@ Key: `[ ]` pending task, `[x]` completed task, `[?]` needs validation, `[-]` clo
 
 ## Parent and Phase
 
-- Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+- Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 - Phase: `3 — Boxes.py migration`
 - Parent checklist scope: `6.1` through `6.11`
 

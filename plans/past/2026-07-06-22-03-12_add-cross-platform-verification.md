@@ -12,7 +12,7 @@ Key: `[ ]` pending task, `[x]` completed task, `[?]` needs validation, `[-]` clo
 
 ## Parent and Phase
 
-- Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+- Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 - Phase: `9 — Cross-platform qualification and rollout`
 - Parent checklist scope: `15.1` through `15.6`
 

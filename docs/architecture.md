@@ -1,6 +1,6 @@
 # Architecture
 
-`scripts/laser_build.py` is the single design-build entrypoint. On a prepared development host it can be run directly with Python 3.11+, and on a portable clean host it should be invoked through `setup/bootstrap.sh run -- scripts/laser_build.py ...` or `setup/bootstrap.ps1 run -- scripts/laser_build.py ...`. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
+`scripts/laser_build.py` is the single design-build entrypoint and should be invoked through `setup/bootstrap.sh run -- scripts/laser_build.py ...` or `setup/bootstrap.ps1 run -- scripts/laser_build.py ...` so the repo controls its runtime on every host. The current dependency-free vector backend loads a design configuration, machine profile, and material profile; creates deterministic geometry and layout; validates bounds and recipes; generates SVG, PNG preview, GRBL G-code, setup documents, and manifests; stages the complete artifact set; then atomically installs `output/<design>/` or an immutable revision.
 
 The script never connects to a machine. LaserGRBL is used separately to preview and stream generated G-code.
 
@@ -14,7 +14,7 @@ The managed `run` command dispatches approved repository Python scripts through 
 
 ## Helper-Tool Boundary
 
-`tool_adapters/*.json` declares each callable helper’s source pin, license, capabilities, invocation, accepted outputs, and safety boundaries. `scripts/helper_tool.py` currently verifies the clean submodule pin and installs dependencies into a disposable `.tmp/helper-tools/<id>/` target before invocation. That direct Python helper path is transitional until later provider phases migrate helpers behind the managed bootstrap.
+`tool_adapters/*.json` declares each callable helper’s source pin, license, capabilities, invocation, accepted outputs, and safety boundaries. `scripts/helper_tool.py` runs through the managed bootstrap, verifies clean submodule pins, provisions provider environments beneath `.tools/`, and rejects helper output until the host pipeline validates it.
 
 The dependency direction is:
 

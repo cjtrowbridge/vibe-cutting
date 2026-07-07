@@ -4,7 +4,7 @@ Date: 2026-07-06
 
 Plan: `plans/current/2026-07-06-10-44-27_build-native-bootstrap-and-managed-base-runtime.md`
 
-Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 
 Decision: accepted with documented platform limitations.
 

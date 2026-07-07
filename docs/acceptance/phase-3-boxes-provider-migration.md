@@ -4,7 +4,7 @@ Date: 2026-07-06
 
 Plan: `plans/current/2026-07-06-19-19-57_migrate-boxes-to-provider-helper.md`
 
-Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 
 Decision: accepted with platform limitations.
 

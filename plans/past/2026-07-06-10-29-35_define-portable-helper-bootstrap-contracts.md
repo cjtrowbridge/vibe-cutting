@@ -12,7 +12,7 @@ Key: `[ ]` pending task, `[x]` completed task, `[?]` needs validation, `[-]` clo
 
 ## Phase Boundary
 
-This child plan implements only Phase 0 of `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`. It defines contracts and templates; it does not create bootstrap executables, download an environment manager, install dependencies, modify third-party submodules, or provision `.tools/`.
+This child plan implements only Phase 0 of `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`. It defines contracts and templates; it does not create bootstrap executables, download an environment manager, install dependencies, modify third-party submodules, or provision `.tools/`.
 
 - [x] 1. Define the supported host contract.
   - [x] 1.1 Create `references/portable-helper-host-contract.md`.

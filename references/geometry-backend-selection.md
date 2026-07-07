@@ -21,7 +21,7 @@ Help agents select the smallest appropriate geometry source before authoring or 
 ## Selection Procedure
 
 1. Describe the required geometry and semantic operations.
-2. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate` when the portable bootstrap is available, then inspect helper capabilities with `scripts/helper_tool.py list`.
+2. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate`, then inspect helper capabilities with `setup/bootstrap.sh run -- scripts/helper_tool.py list`.
 3. Prefer an existing native backend when it completely expresses the design.
 4. Prefer a helper when its declared capability directly matches difficult fabrication geometry.
 5. Use OpenSCAD when the design depends on CSG, projection, or unsupported custom parametric relationships.

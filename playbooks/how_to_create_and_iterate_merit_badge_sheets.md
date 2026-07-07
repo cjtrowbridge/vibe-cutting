@@ -13,7 +13,7 @@ Create a reusable mixed-type token sheet with a title and wrapped description on
 3. Start a new numbered config revision.
 4. Set `set_name` and replace the `badges` list with stable ids, titles, and descriptions.
 5. Keep supplied wording verbatim unless the user approves editorial changes.
-6. Build with `python3 scripts/laser_build.py --design <name> --validate-only`.
+6. Build with `setup/bootstrap.sh run -- scripts/laser_build.py --design <name> --validate-only`.
 7. Generate a one-token inspection config under `.tmp/inspection/` for the longest title and description.
 8. Inspect title weight, body size, wrapping, line separation, rounded-edge clearance, and hatch density.
 9. Change token dimensions or typography only in a new config revision.

@@ -664,7 +664,7 @@ def run_tool(tool, arguments):
         return result.returncode
     state = inspect_tool(tool)
     if not state["ready"]:
-        fail(f"Helper tool {tool['id']} is not ready. Run: python3 scripts/helper_tool.py setup {tool['id']}")
+        fail(f"Helper tool {tool['id']} is not ready. Run: setup/bootstrap.sh run -- scripts/helper_tool.py setup {tool['id']}")
     if arguments and arguments[0] == "--":
         arguments = arguments[1:]
     command = [

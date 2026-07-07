@@ -4,7 +4,7 @@ Date: 2026-07-06
 
 Plan: `plans/current/2026-07-06-20-02-16_integrate-bosl2-openscad-provider.md`
 
-Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 
 Decision: accepted with platform and comparison-only limitations.
 

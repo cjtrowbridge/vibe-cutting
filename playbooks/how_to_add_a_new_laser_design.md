@@ -9,7 +9,7 @@ Create a parameterized design consumed by `scripts/laser_build.py`.
 ## Procedure
 
 1. Review `references/geometry-backend-selection.md` and record the selected backend in the active plan.
-2. Run `python3 scripts/helper_tool.py list` when a callable helper may match the required capability.
+2. Run `setup/bootstrap.sh run -- scripts/helper_tool.py list` when a callable helper may match the required capability.
 3. Use `playbooks/how_to_use_boxes_for_laser_geometry.md` for fitted panel assemblies, boxes, trays, shelves, joints, living hinges, and other declared Boxes.py capabilities.
 4. Create `designs/<name>/project.json`.
 5. Create `designs/<name>/configs/rev_0001.json`.

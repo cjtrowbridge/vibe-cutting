@@ -11,7 +11,7 @@ This contract is used with:
 - `references/managed-bootstrap-command-contract.md` for portable managed invocation.
 - `references/mechanism-validation-contract.md` when helper geometry affects a mechanism.
 
-The existing `python3 scripts/helper_tool.py` workflow is transitional. After Phase 1, agents invoke it through the managed `run` interface and must not depend on host Python.
+Agents invoke `scripts/helper_tool.py` through the managed `run` interface and must not depend on host Python.
 
 ## Tool Classes
 
@@ -42,7 +42,7 @@ Every manifest must declare:
 Agents must:
 
 1. Select tools by declared capability.
-2. Run `setup/bootstrap.* run -- scripts/helper_tool.py validate` and `setup/bootstrap.* run -- scripts/helper_tool.py check <id>` after portable bootstrap exists; use direct Python commands only as the documented transitional development workflow.
+2. Run `setup/bootstrap.* run -- scripts/helper_tool.py validate` and `setup/bootstrap.* run -- scripts/helper_tool.py check <id>`.
 3. Request approval before `setup` when the manifest says setup may use the network.
 4. Invoke the tool only through the managed helper dispatcher.
 5. Write outputs only beneath the manifest’s allowed output roots.
@@ -71,7 +71,7 @@ See `references/helper-runtime-providers.md` for routing and readiness semantics
 
 ## Environment Contract
 
-Provider helpers install fingerprinted environments beneath `.tools/environments/<id>/`. Legacy schema-version `1` helpers may still install beneath `.tmp/helper-tools/<id>/` only when an active migration plan explicitly permits that temporary path. Either environment is accepted only when:
+Provider helpers install fingerprinted environments beneath `.tools/environments/<id>/`. An environment is accepted only when:
 
 - The source submodule exists and is clean.
 - Its checked-out commit matches the manifest pin.

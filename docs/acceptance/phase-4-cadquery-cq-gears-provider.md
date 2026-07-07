@@ -4,7 +4,7 @@ Date: 2026-07-06
 
 Plan: `plans/current/2026-07-06-19-48-06_integrate-cadquery-and-cq-gears-provider.md`
 
-Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 
 Decision: accepted with platform and fabrication limitations.
 

@@ -32,9 +32,9 @@ Linux x86-64 is currently runtime-qualified. Windows, macOS, and Linux ARM64 boo
 
 See `docs/host-bootstrap.md` and `docs/toolchain-support-matrix.md` for setup details, support status, and remediation guidance.
 
-## Development Shortcut
+## Development Commands
 
-If your development host already has Python 3.11 or newer, you can still run the build script directly. The default coin revisions also require OpenSCAD 2021.01 or newer.
+Use the managed bootstrap commands for normal development so a freshly cloned repo behaves the same way on every supported host. The default coin revisions also require OpenSCAD 2021.01 or newer.
 
 Initialize all pinned tools and references after cloning:
 
@@ -43,9 +43,9 @@ git submodule update --init --recursive
 ```
 
 ```bash
-python3 scripts/laser_build.py --design shot_coins --validate-only
-python3 scripts/laser_build.py --design shot_coins
-python3 scripts/laser_build.py --design shot_coins --audit-only
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --validate-only
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --audit-only
 ```
 
 The normal build creates `output/shot_coins/` with:
@@ -64,32 +64,32 @@ Use `--new-revision` to create a new immutable design config and matching artifa
 `hug_coins` revision `rev_0003` uses the same geometry, font, material, machine, layout, and containment rules while substituting “hug” for “shot”:
 
 ```bash
-python3 scripts/laser_build.py --design hug_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design hug_coins
 ```
 
 Three reusable merit-badge sets use 72 x 42 mm rounded tokens, measured title/body wrapping, and deterministic 24-slot allocation:
 
 ```bash
-python3 scripts/laser_build.py --design bwb_merit_badges
-python3 scripts/laser_build.py --design queer_sex_party_merit_badges
-python3 scripts/laser_build.py --design community_garden_merit_badges
+setup/bootstrap.sh run -- scripts/laser_build.py --design bwb_merit_badges
+setup/bootstrap.sh run -- scripts/laser_build.py --design queer_sex_party_merit_badges
+setup/bootstrap.sh run -- scripts/laser_build.py --design community_garden_merit_badges
 ```
 
 Copy an existing merit-badge design and replace its `badges` list to create another set. See `docs/designs/merit-badge-sheets.md`.
 
 ## Helper Tools
 
-Callable helper tools remain separate third-party repositories and run in subprocesses through a common host interface. This direct Python interface is transitional until later bootstrap phases migrate helper providers behind the managed setup system:
+Callable helper tools remain separate third-party repositories and run in subprocesses through a common managed host interface:
 
 ```bash
-python3 scripts/helper_tool.py list
-python3 scripts/helper_tool.py validate
+setup/bootstrap.sh run -- scripts/helper_tool.py list
+setup/bootstrap.sh run -- scripts/helper_tool.py validate
 setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
 setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
 setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
 ```
 
-`setup` may download Python dependencies into `.tmp/helper-tools/`; it does not install global packages or modify the submodule.
+`setup` may download pinned dependencies into `.tools/`; it does not install global packages or modify the submodule.
 
 Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures through the provider helper path. Its SVG is an input to the host pipeline—not authoritative G-code. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
 
@@ -104,7 +104,7 @@ Host-owned mechanism models validate laser-cut assemblies across parts, gear mes
 The first mechanism prototype is `primitive_power_extender_laser_0_1`, a two-gear 1:1 calibration-only power-transfer sheet. Build it with:
 
 ```bash
-python3 scripts/laser_build.py --design primitive_power_extender_laser_0_1
+setup/bootstrap.sh run -- scripts/laser_build.py --design primitive_power_extender_laser_0_1
 ```
 
 ## Safety

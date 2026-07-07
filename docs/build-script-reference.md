@@ -1,6 +1,6 @@
 # Build Script Reference
 
-The core build script requires Python 3.11 or newer and no third-party Python packages. On portable hosts, use the managed bootstrap so the repository supplies that Python runtime locally:
+The core build script runs through the managed bootstrap so the repository supplies its Python runtime locally:
 
 ```bash
 setup/bootstrap.sh --allow-downloads setup
@@ -14,17 +14,17 @@ On Windows:
 .\setup\bootstrap.ps1 run -- scripts/laser_build.py --design shot_coins
 ```
 
-Development hosts with Python 3.11+ may still run the script directly. Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer. Helper-backed geometry currently uses separately installed `.tmp` environments managed by `scripts/helper_tool.py`; this remains transitional until helper providers move behind managed setup phases.
+Designs using `text_backend: openscad_font` additionally require OpenSCAD 2021.01 or newer. Helper-backed geometry uses provider environments beneath `.tools/` and should be invoked through `setup/bootstrap.* run -- ...`.
 
 ```bash
-python3 scripts/laser_build.py --design shot_coins
-python3 scripts/laser_build.py --design shot_coins --dry-run
-python3 scripts/laser_build.py --design shot_coins --validate-only
-python3 scripts/laser_build.py --design shot_coins --audit-only
-python3 scripts/laser_build.py --design shot_coins --quantity 40
-python3 scripts/laser_build.py --design shot_coins --new-revision
-python3 scripts/laser_build.py --design hug_coins
-python3 scripts/laser_build.py --design bwb_merit_badges
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --dry-run
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --validate-only
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --audit-only
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --quantity 40
+setup/bootstrap.sh run -- scripts/laser_build.py --design shot_coins --new-revision
+setup/bootstrap.sh run -- scripts/laser_build.py --design hug_coins
+setup/bootstrap.sh run -- scripts/laser_build.py --design bwb_merit_badges
 ```
 
 Normal builds atomically replace `output/<design>/`. Revision builds create immutable `revisions/<design>/rev_000N/` directories. The script generates artifacts only and cannot stream to hardware.

@@ -2,7 +2,7 @@
 plan_id: 2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack
 title: Build Portable Helper-Tool Bootstrap and Mechanism Stack
 summary: Build zero-Python host bootstrap tooling, polymorphic helper adapters, and validated Boxes.py, CadQuery/CQ_Gears, BOSL2, and FreeCAD Gears integrations.
-status: future
+status: past
 created_at: 2026-07-06-09-17-37
 ---
 
@@ -280,20 +280,20 @@ Each phase must define:
   - [x] 15.5 Keep heavyweight FreeCAD tests optional when runner limits prevent full execution.
   - [x] 15.6 Publish support-matrix evidence from CI without claiming untested fabrication readiness.
 
-- [ ] 16. Complete migration and rollout.
-  - [ ] 16.1 Remove obsolete Python-first setup instructions.
-  - [ ] 16.2 Remove or migrate disposable helper environments created under `.tmp/helper-tools/`.
-  - [ ] 16.3 Verify every setup command in documentation from a clean bootstrap root.
-  - [ ] 16.4 Verify every helper manifest against its schema.
-  - [ ] 16.5 Verify every playbook references existing scripts, schemas, docs, and templates.
-  - [ ] 16.6 Review third-party license notices and distribution boundaries.
-  - [ ] 16.7 Review all diffs and nested submodule states.
-  - [ ] 16.8 Update the active implementation plan and roadmap to match delivered scope.
-  - [ ] 16.9 Record completed checkpoints in the journal.
-  - [ ] 16.10 Archive completed bounded implementation plans and refresh plan indexes.
-  - [ ] 16.11 Commit and push each approved completed checkpoint.
-  - [ ] 16.12 Verify every phase has an archived child plan and accepted evidence report.
-  - [ ] 16.13 Verify no downstream phase was accepted using an upstream capability below its required readiness state.
+- [x] 16. Complete migration and rollout.
+  - [x] 16.1 Remove obsolete Python-first setup instructions.
+  - [x] 16.2 Remove or migrate disposable helper environments created under `.tmp/helper-tools/`.
+  - [x] 16.3 Verify every setup command in documentation from a clean bootstrap root.
+  - [x] 16.4 Verify every helper manifest against its schema.
+  - [x] 16.5 Verify every playbook references existing scripts, schemas, docs, and templates.
+  - [x] 16.6 Review third-party license notices and distribution boundaries.
+  - [x] 16.7 Review all diffs and nested submodule states.
+  - [x] 16.8 Update the active implementation plan and roadmap to match delivered scope.
+  - [x] 16.9 Record completed checkpoints in the journal.
+  - [x] 16.10 Archive completed bounded implementation plans and refresh plan indexes.
+  - [x] 16.11 Commit and push each approved completed checkpoint.
+  - [x] 16.12 Verify every phase has an archived child plan and accepted evidence report.
+  - [x] 16.13 Verify no downstream phase was accepted using an upstream capability below its required readiness state.
 
 ## Verification Objective
 

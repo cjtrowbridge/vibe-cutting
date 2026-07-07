@@ -12,12 +12,6 @@ The mechanism model is the host-owned contract for laser-cut mechanical assembli
 ## Command
 
 ```bash
-python3 scripts/mechanism_validate.py designs/example/mechanism.json --output output/example/mechanism-validation.json
-```
-
-On clean hosts, prefer the managed runtime:
-
-```bash
 setup/bootstrap.sh run -- scripts/mechanism_validate.py designs/example/mechanism.json --output output/example/mechanism-validation.json
 ```
 

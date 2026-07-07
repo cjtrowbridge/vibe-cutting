@@ -2,7 +2,7 @@
 
 ## Identity
 
-- Parent roadmap: `plans/future/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
+- Parent roadmap: `plans/past/2026-07-06-09-17-37_build-portable-helper-tool-bootstrap-and-mechanism-stack.md`
 - Child plan: `plans/current/2026-07-06-10-29-35_define-portable-helper-bootstrap-contracts.md`
 - Phase: `0 — Contracts and child-plan boundaries`
 - Date: 2026-07-06
