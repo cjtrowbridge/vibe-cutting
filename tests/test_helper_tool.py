@@ -67,7 +67,9 @@ class HelperToolTests(unittest.TestCase):
     def test_boxes_manifest_loads(self):
         tool = helper_tool.get_tool("boxes")
         self.assertEqual(tool["tool_class"], "callable_helper")
-        self.assertEqual(tool["runtime"]["module"], "boxes.scripts.boxes_main")
+        self.assertEqual(tool["_adapter_model"], "provider")
+        self.assertEqual(tool["provider"]["kind"], "pixi_environment")
+        self.assertEqual(tool["provider"]["invocation"]["module"], "boxes.scripts.boxes_main")
         self.assertEqual(tool["outputs"]["primary_format"], "svg")
         self.assertFalse(tool["safety"]["controls_hardware"])
 
@@ -76,9 +78,9 @@ class HelperToolTests(unittest.TestCase):
         self.assertEqual(helper_tool.source_revision(tool), tool["source"]["pinned_revision"])
         self.assertTrue(helper_tool.source_is_clean(tool))
 
-    def test_environment_is_confined_to_tmp(self):
+    def test_environment_is_confined_to_tools(self):
         tool = helper_tool.get_tool("boxes")
-        expected_root = (REPO_ROOT / ".tmp" / "helper-tools").resolve()
+        expected_root = (REPO_ROOT / ".tools" / "environments").resolve()
         tool["_environment_path"].relative_to(expected_root)
 
     def test_repo_path_rejects_escape(self):
@@ -96,13 +98,12 @@ class HelperToolTests(unittest.TestCase):
     def test_manifest_source_must_be_third_party(self):
         manifest = json.loads((REPO_ROOT / "tool_adapters" / "boxes.json").read_text())
         manifest["source"]["path"] = "scripts"
-        manifest["runtime"]["install_source"] = "scripts"
         with self.assertRaisesRegex(helper_tool.ToolError, "must be under third_party"):
             helper_tool.validate_manifest(manifest, REPO_ROOT / "tool_adapters" / "boxes.json")
 
     def test_readiness_fails_closed_without_environment(self):
         tool = helper_tool.get_tool("boxes")
-        with mock.patch.object(helper_tool, "site_packages_path", return_value=Path("/missing/site-packages")):
+        with mock.patch.object(helper_tool, "provider_environment_path", return_value=Path("/missing/provider-env")):
             state = helper_tool.inspect_tool(tool)
         self.assertFalse(state["environment_present"])
         self.assertFalse(state["ready"])
@@ -222,7 +223,7 @@ class HelperToolTests(unittest.TestCase):
             with self.assertRaisesRegex(ProviderError, "unsupported"):
                 provider.prepare_scaffold()
 
-    def test_validate_command_reports_legacy_adapter(self):
+    def test_validate_command_reports_provider_adapter(self):
         result = subprocess.run(
             [sys.executable, str(MODULE_PATH), "validate"],
             cwd=REPO_ROOT,
@@ -231,7 +232,8 @@ class HelperToolTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload["adapters"][0]["adapter_model"], "legacy_python_module")
+        self.assertEqual(payload["adapters"][0]["adapter_model"], "provider")
+        self.assertEqual(payload["adapters"][0]["provider_kind"], "pixi_environment")
 
 
 if __name__ == "__main__":

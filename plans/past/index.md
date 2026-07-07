@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-06-19-45-51 | plans/past/2026-07-06-19-19-57_migrate-boxes-to-provider-helper.md | Migrate Boxes.py to Provider Helper | Convert Boxes.py from the legacy helper path to a locked provider adapter with typed YAML generation, managed setup, deterministic SVG validation, and legacy cleanup.
 2026-07-06-19-19-29 | plans/past/2026-07-06-19-08-31_build-generalized-helper-adapter-platform.md | Build Generalized Helper Adapter Platform | Implement Phase 2 provider-discriminated helper adapter contracts, setup-provider scaffolding, typed request/result schemas, provenance, and common validation without migrating Boxes.py yet.
 2026-07-06-14-51-14 | plans/past/2026-07-06-10-44-27_build-native-bootstrap-and-managed-base-runtime.md | Build Native Bootstrap and Managed Base Runtime | Implement Phase 1 native bootstrap launchers, pinned manager acquisition, managed Python execution, host Git verification, submodule checks, and clean-host tests.
 2026-07-06-10-42-46 | plans/past/2026-07-06-10-29-35_define-portable-helper-bootstrap-contracts.md | Define Portable Helper Bootstrap Contracts | Complete Phase 0 by fixing host prerequisites, bootstrap boundaries, readiness states, managed command invocation, and gated child-plan acceptance rules.

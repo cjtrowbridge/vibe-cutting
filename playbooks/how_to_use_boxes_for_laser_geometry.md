@@ -6,7 +6,7 @@
 
 Use the pinned Boxes.py callable helper for fitted structural laser geometry while preserving host ownership of operations, validation, artifacts, and G-code.
 
-Boxes.py currently uses the schema-version `1` legacy helper path. Do not rewrite Boxes.py usage to provider schema-version `2` until the Phase 3 migration plan is active.
+Boxes.py uses the schema-version `2` provider helper path. Use managed bootstrap commands for setup and invocation.
 
 ## Use Boxes.py When
 
@@ -20,15 +20,15 @@ Do not use it for simple tokens, ordinary repeated shapes, raster engraving, mac
 
 ```bash
 setup/bootstrap.sh run -- scripts/helper_tool.py validate
-python3 scripts/helper_tool.py check boxes
-python3 scripts/helper_tool.py run boxes -- --list
-python3 scripts/helper_tool.py run boxes -- RegularBox --help
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- RegularBox --help
 ```
 
 If readiness fails, request approval before:
 
 ```bash
-python3 scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
 ```
 
 ## Deterministic Generation
@@ -36,7 +36,7 @@ python3 scripts/helper_tool.py setup boxes
 Direct single-generator output includes creation-time metadata and is suitable only for exploration. Authoritative builds must use Boxes.py’s YAML multi-generator path, which enables reproducible metadata:
 
 ```bash
-python3 scripts/helper_tool.py run boxes -- \
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- \
   --multi-generator .tmp/boxes/<design>/generator.yml \
   .tmp/boxes/<design>/generated
 ```
@@ -77,7 +77,7 @@ Boxes.py-generated G-code, DXF conversion, LightBurn files, and sheet merging ar
 
 ## Verification
 
-- `python3 scripts/helper_tool.py check boxes` reports `ready: true`.
+- `setup/bootstrap.sh run -- scripts/helper_tool.py check boxes` reports `ready: true`.
 - The submodule is clean and pinned.
 - Two identical YAML invocations produce byte-identical SVG.
 - SVG operations map only to declared colors.

@@ -2,7 +2,7 @@
 
 Callable helper tools are separately maintained third-party repositories that extend design capabilities without becoming part of the host Python process. They remain pinned submodules and run through `scripts/helper_tool.py`.
 
-Phase 2 adds provider-based adapter scaffolding for future helpers. The existing Boxes.py manifest is still the schema-version `1` legacy path until Phase 3 migrates it.
+Provider-based adapters are the default helper model. Boxes.py is the first migrated provider helper.
 
 ## Why This Layer Exists
 
@@ -12,15 +12,14 @@ Laser design spans several specialized domains: fitted structures, geometry proj
 
 ```bash
 setup/bootstrap.sh run -- scripts/helper_tool.py validate
-python3 scripts/helper_tool.py list
-python3 scripts/helper_tool.py validate
-python3 scripts/helper_tool.py describe boxes
-python3 scripts/helper_tool.py check boxes
-python3 scripts/helper_tool.py setup boxes
-python3 scripts/helper_tool.py run boxes -- --list
+setup/bootstrap.sh run -- scripts/helper_tool.py list
+setup/bootstrap.sh run -- scripts/helper_tool.py describe boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
 ```
 
-`setup` installs the pinned local submodule and its dependencies beneath `.tmp/helper-tools/<id>/`. It may download dependencies. The environment is disposable, records resolved Python/package provenance, and is invalidated when the source pin or adapter manifest changes.
+`setup` installs the pinned local submodule and its dependencies beneath `.tools/environments/<id>/<fingerprint>/`. It may download dependencies. The environment is repository-local, records resolved Python/package provenance, and is invalidated when the source pin, adapter manifest, or lock hash changes.
 
 ## Provider Adapter Model
 

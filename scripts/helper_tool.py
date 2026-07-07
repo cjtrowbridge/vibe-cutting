@@ -289,6 +289,28 @@ def site_packages_path(environment_path):
     return environment_path / "site-packages"
 
 
+def provider_fingerprint(tool):
+    return tool["_provider_report"]["environment_fingerprint"]
+
+
+def provider_environment_path(tool):
+    return tool["_environment_path"] / provider_fingerprint(tool)
+
+
+def provider_site_packages_path(tool):
+    return provider_environment_path(tool) / "site-packages"
+
+
+def provider_marker(tool):
+    path = provider_environment_path(tool) / "provider-ready.json"
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+
+
 def manifest_sha256(tool):
     return hashlib.sha256(tool["_adapter_path"].read_bytes()).hexdigest()
 
@@ -369,6 +391,25 @@ def inspect_provider_tool(tool):
     expected_revision = tool["source"]["pinned_revision"]
     states = tool["readiness"]["states"]
     provider_report = tool["_provider_report"]
+    marker = provider_marker(tool)
+    marker_matches = bool(
+        marker
+        and marker.get("tool_id") == tool["id"]
+        and marker.get("source_revision") == expected_revision
+        and marker.get("adapter_sha256") == manifest_sha256(tool)
+        and marker.get("environment_fingerprint") == provider_fingerprint(tool)
+    )
+    import_ready = False
+    import_error = None
+    module = tool["provider"]["invocation"].get("module")
+    if marker_matches and module:
+        result = run_capture(
+            [sys.executable, "-c", f"import {module.split('.')[0]}"],
+            site_packages=provider_site_packages_path(tool),
+        )
+        import_ready = result.returncode == 0
+        if not import_ready:
+            import_error = result.stderr.strip() or result.stdout.strip()
     state = {
         "id": tool["id"],
         "display_name": tool["display_name"],
@@ -385,6 +426,12 @@ def inspect_provider_tool(tool):
         "readiness_states": states,
         "fabrication_approved": False,
         "provider_report": provider_report,
+        "environment_present": provider_environment_path(tool).is_dir(),
+        "install_marker_matches": marker_matches,
+        "installed_python": marker.get("python_version") if marker else None,
+        "installed_package_count": len(marker.get("packages", [])) if marker else 0,
+        "import_ready": import_ready,
+        "import_error": import_error,
         "ready": False,
     }
     state["registered"] = all(
@@ -396,7 +443,7 @@ def inspect_provider_tool(tool):
             "registered" in states,
         ]
     )
-    state["ready"] = state["registered"] and "invocation-ready" in states
+    state["ready"] = state["registered"] and marker_matches and import_ready and "invocation-ready" in states
     return state
 
 
@@ -509,7 +556,18 @@ def run_with_output_preservation(output_paths, operation):
 
 def setup_tool(tool):
     if tool.get("_adapter_model") == "provider":
-        fail(f"Provider-managed setup for {tool['id']} is scaffolded but not migrated in this phase.")
+        driver = safe_repo_path(tool["provider"]["invocation"]["driver"], f"Provider driver for {tool['id']}")
+        result = subprocess.run(
+            [sys.executable, str(driver), "setup", "--manifest", str(tool["_adapter_path"])],
+            cwd=REPO_ROOT,
+            check=False,
+        )
+        if result.returncode:
+            fail(f"Provider setup failed for {tool['id']} with exit code {result.returncode}.")
+        state = inspect_tool(tool)
+        if not state["ready"]:
+            fail(f"Provider setup completed but {tool['id']} did not pass readiness checks.")
+        return state
     state = inspect_tool(tool)
     for key, message in [
         ("source_present", "source submodule is missing"),
@@ -588,7 +646,20 @@ def setup_tool(tool):
 
 def run_tool(tool, arguments):
     if tool.get("_adapter_model") == "provider":
-        fail(f"Provider-managed invocation for {tool['id']} is scaffolded but not migrated in this phase.")
+        state = inspect_tool(tool)
+        if not state["ready"]:
+            fail(f"Helper tool {tool['id']} is not ready. Run: setup/bootstrap.sh run -- scripts/helper_tool.py setup {tool['id']}")
+        if arguments and arguments[0] == "--":
+            arguments = arguments[1:]
+        driver = safe_repo_path(tool["provider"]["invocation"]["driver"], f"Provider driver for {tool['id']}")
+        result = subprocess.run(
+            [sys.executable, str(driver), "run", "--manifest", str(tool["_adapter_path"]), "--", *arguments],
+            cwd=REPO_ROOT,
+            check=False,
+        )
+        if not source_is_clean(tool):
+            fail(f"Helper tool {tool['id']} modified its source submodule; output is rejected.")
+        return result.returncode
     state = inspect_tool(tool)
     if not state["ready"]:
         fail(f"Helper tool {tool['id']} is not ready. Run: python3 scripts/helper_tool.py setup {tool['id']}")

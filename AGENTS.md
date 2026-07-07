@@ -58,12 +58,13 @@ Execute the helper-stack roadmap through one bounded child plan per phase. Use `
 Inspect and prepare callable helper tools:
 
 ```bash
-python3 scripts/helper_tool.py list
-python3 scripts/helper_tool.py check boxes
-python3 scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py list
+setup/bootstrap.sh run -- scripts/helper_tool.py validate
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
 ```
 
-`python3 scripts/helper_tool.py` remains a transitional development-host command until later provider phases move helper setup behind the managed bootstrap. Helper setup may download dependencies. Obtain approval before running it when network access is not already authorized.
+Helper setup may download dependencies. Obtain approval before running it when network access is not already authorized.
 
 ## Helper-Tool Routing
 
@@ -76,7 +77,7 @@ Before authoring a design, use `references/geometry-backend-selection.md` and `r
 
 Callable helpers generate untrusted source geometry. The host pipeline always retains ownership of operation mapping, machine/material recipes, bounds, ordering, previews, manifests, G-code, artifact installation, and readiness claims. Never use helper-generated G-code as the authoritative machine artifact without a separately approved adapter and validation plan.
 
-Provider-based helper adapters use schema-version `2` and declare one of `pixi_environment`, `openscad_library`, `system_application`, or `manual_operator`. Schema-version `1` adapters, including `boxes`, remain supported only as transitional legacy helpers until their migration phase. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate` before relying on helper routing.
+Provider-based helper adapters use schema-version `2` and declare one of `pixi_environment`, `openscad_library`, `system_application`, or `manual_operator`. `boxes` is a provider helper. Schema-version `1` adapters are supported only as transitional legacy helpers when an active migration plan explicitly permits them. Run `setup/bootstrap.sh run -- scripts/helper_tool.py validate` before relying on helper routing.
 
 ## Laser Playbooks
 

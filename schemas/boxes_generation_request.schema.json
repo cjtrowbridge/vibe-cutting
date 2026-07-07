@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Boxes.py YAML Multi-Generator Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool_id",
+    "request_type",
+    "generator_yaml",
+    "output_directory",
+    "expected_outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "tool_id": {
+      "const": "boxes"
+    },
+    "request_type": {
+      "const": "yaml_multi_generator"
+    },
+    "generator_yaml": {
+      "type": "string"
+    },
+    "output_directory": {
+      "type": "string"
+    },
+    "expected_outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "format", "required"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "format": {
+            "const": "svg"
+          },
+          "required": {
+            "const": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

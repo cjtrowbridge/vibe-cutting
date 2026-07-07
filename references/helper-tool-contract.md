@@ -69,7 +69,7 @@ See `references/helper-runtime-providers.md` for routing and readiness semantics
 
 ## Environment Contract
 
-The current legacy `scripts/helper_tool.py setup <id>` implementation installs beneath `.tmp/helper-tools/<id>/`; Phase 3 replaces this transitional model for Boxes.py. The portable target installs fingerprinted environments beneath `.tools/environments/<id>/`. Either environment is accepted only when:
+Provider helpers install fingerprinted environments beneath `.tools/environments/<id>/`. Legacy schema-version `1` helpers may still install beneath `.tmp/helper-tools/<id>/` only when an active migration plan explicitly permits that temporary path. Either environment is accepted only when:
 
 - The source submodule exists and is clean.
 - Its checked-out commit matches the manifest pin.

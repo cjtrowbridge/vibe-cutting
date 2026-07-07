@@ -82,14 +82,14 @@ Callable helper tools remain separate third-party repositories and run in subpro
 ```bash
 python3 scripts/helper_tool.py list
 python3 scripts/helper_tool.py validate
-python3 scripts/helper_tool.py check boxes
-python3 scripts/helper_tool.py setup boxes
-python3 scripts/helper_tool.py run boxes -- --list
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
 ```
 
 `setup` may download Python dependencies into `.tmp/helper-tools/`; it does not install global packages or modify the submodule.
 
-Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures. Its SVG is an input to the host pipeline—not authoritative G-code. Provider-based helper adapters are scaffolded for future migrations, but Boxes.py remains on the legacy helper path until its migration phase. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
+Boxes.py provides parametric boxes, trays, shelves, fitted panels, finger joints, living hinges, gears, and related laser-cut structures through the provider helper path. Its SVG is an input to the host pipeline—not authoritative G-code. See `docs/helper-tools.md` and `docs/tools/boxes.md`.
 
 ## Safety
 

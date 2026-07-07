@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Helper runtime providers describe how a callable helper is prepared and invoked without making that helper part of the host codebase. Provider adapters are schema-version `2` manifests. The legacy Boxes.py adapter remains schema-version `1` until its Phase 3 migration.
+Helper runtime providers describe how a callable helper is prepared and invoked without making that helper part of the host codebase. Provider adapters are schema-version `2` manifests. Boxes.py is the first migrated provider helper.
 
 ## Provider Types
 

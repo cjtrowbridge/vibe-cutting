@@ -16,22 +16,22 @@ Initialize submodules, then inspect readiness:
 
 ```bash
 git submodule update --init --recursive
-python3 scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
 ```
 
 If the environment is missing:
 
 ```bash
-python3 scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
 ```
 
-Setup may access Python package indexes. It installs under `.tmp/helper-tools/boxes/` and does not modify `third_party/boxes/`.
+Setup may access Python package indexes. It installs under `.tools/environments/boxes/<fingerprint>/` and does not modify `third_party/boxes/`.
 
 ## Explore Generators
 
 ```bash
-python3 scripts/helper_tool.py run boxes -- --list
-python3 scripts/helper_tool.py run boxes -- RegularBox --help
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- RegularBox --help
 ```
 
 ## Generate Reproducibly
@@ -39,7 +39,7 @@ python3 scripts/helper_tool.py run boxes -- RegularBox --help
 Single-generator CLI output includes a creation timestamp. Fabrication builds should use a committed or staged YAML generator specification through `--multi-generator`, which enables reproducible output:
 
 ```bash
-python3 scripts/helper_tool.py run boxes -- \
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- \
   --multi-generator .tmp/boxes/example/generator.yml \
   .tmp/boxes/example/generated
 ```
@@ -69,7 +69,7 @@ Unverified thickness or burn values produce calibration-only artifacts.
 - Pinned source: `third_party/boxes/`.
 - Adapter: `tool_adapters/boxes.json`.
 - License: GPL-3.0-or-later, retained in the submodule.
-- Runtime: separate subprocess using a disposable `.tmp` environment.
+- Runtime: separate subprocess using a managed provider environment under `.tools/`.
 - Accepted output: SVG geometry.
 - Not accepted: authoritative Boxes.py G-code, direct hardware control, source modifications, or host-process imports.
 

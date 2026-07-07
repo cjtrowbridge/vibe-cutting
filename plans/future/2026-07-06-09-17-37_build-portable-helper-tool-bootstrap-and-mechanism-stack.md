@@ -132,18 +132,18 @@ Each phase must define:
   - [x] 5.9 Implement provider-level smoke-test hooks.
   - [x] 5.10 Implement provider-level cleanup of incomplete staged environments.
 
-- [ ] 6. Migrate and harden the Boxes.py integration.
-  - [ ] 6.1 Convert `tool_adapters/boxes.json` to the generalized schema.
-  - [ ] 6.2 Create a locked repository-local Boxes.py environment.
-  - [ ] 6.3 Create a typed Boxes.py generation-request schema.
-  - [ ] 6.4 Create `setup/tools/boxes.py` for setup and smoke testing.
-  - [ ] 6.5 Create an operational Boxes.py adapter driver for typed generation.
-  - [ ] 6.6 Preserve YAML multi-generator mode for reproducible SVG generation.
-  - [ ] 6.7 Enforce SVG-only authoritative source output.
-  - [ ] 6.8 Enforce declared operation-color mappings and reject unknown fabrication colors.
-  - [ ] 6.9 Enforce calibrated thickness and single-owner burn compensation.
-  - [ ] 6.10 Add setup, readiness, deterministic-output, path-safety, mutation, and malformed-output tests.
-  - [ ] 6.11 Remove the superseded `.tmp/helper-tools/boxes` setup model after migration validation.
+- [x] 6. Migrate and harden the Boxes.py integration.
+  - [x] 6.1 Convert `tool_adapters/boxes.json` to the generalized schema.
+  - [x] 6.2 Create a locked repository-local Boxes.py environment.
+  - [x] 6.3 Create a typed Boxes.py generation-request schema.
+  - [x] 6.4 Create `setup/tools/boxes.py` for setup and smoke testing.
+  - [x] 6.5 Create an operational Boxes.py adapter driver for typed generation.
+  - [x] 6.6 Preserve YAML multi-generator mode for reproducible SVG generation.
+  - [x] 6.7 Enforce SVG-only authoritative source output.
+  - [x] 6.8 Enforce declared operation-color mappings and reject unknown fabrication colors.
+  - [x] 6.9 Enforce calibrated thickness and single-owner burn compensation.
+  - [x] 6.10 Add setup, readiness, deterministic-output, path-safety, mutation, and malformed-output tests.
+  - [x] 6.11 Remove the superseded `.tmp/helper-tools/boxes` setup model after migration validation.
 
 - [ ] 7. Integrate CadQuery and CQ_Gears as one tool stack.
   - [ ] 7.1 Verify compatible CadQuery, CQ_Gears, Python, OCP, and platform versions.

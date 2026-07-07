@@ -32,14 +32,15 @@ Normal builds atomically replace `output/<design>/`. Revision builds create immu
 ## Helper Tools
 
 ```bash
-python3 scripts/helper_tool.py list
-python3 scripts/helper_tool.py describe boxes
-python3 scripts/helper_tool.py check boxes
-python3 scripts/helper_tool.py setup boxes
-python3 scripts/helper_tool.py run boxes -- --list
+setup/bootstrap.sh run -- scripts/helper_tool.py list
+setup/bootstrap.sh run -- scripts/helper_tool.py validate
+setup/bootstrap.sh run -- scripts/helper_tool.py describe boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py check boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py setup boxes
+setup/bootstrap.sh run -- scripts/helper_tool.py run boxes -- --list
 ```
 
-`check` exits nonzero until the submodule, pin, license, isolated install marker, and subprocess import are valid. `setup` may use the network and writes only beneath `.tmp/helper-tools/<id>/`. Helper source geometry must be imported by a supported design adapter before `laser_build.py` can validate or build it.
+`check` exits nonzero until the submodule, pin, license, provider install marker, and subprocess import are valid. `setup` may use the network and writes only beneath `.tools/`. Helper source geometry must be imported by a supported design adapter before `laser_build.py` can validate or build it.
 
 ## Modes
 
