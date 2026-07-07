@@ -2,8 +2,8 @@
 
 | Capability | Provider | Linux x86-64 | Other Supported Pixi Platforms | Fabrication Authority |
 |---|---|---:|---:|---:|
-| Managed Python runtime | `setup/bootstrap.*` | Verified | Pending clean-host evidence | No |
-| Native laser build | `scripts/laser_build.py` | Verified | Pending clean-host evidence | Calibration-only artifacts |
+| Managed Python runtime | `setup/bootstrap.*` | Verified | Windows x86-64 and macOS hosted runner verified; Linux ARM64 and macOS Intel pending | No |
+| Native laser build | `scripts/laser_build.py` | Verified | Windows x86-64 and macOS hosted runner verified for managed `--help`; Linux ARM64 and macOS Intel pending | Calibration-only artifacts |
 | Boxes.py | `boxes` | Verified | Pending clean-host evidence | No |
 | CadQuery + CQ_Gears | `cq_gears` | Verified | Pending clean-host evidence | No |
 | BOSL2 + OpenSCAD | `bosl2` | Verified when OpenSCAD is present | Pending OpenSCAD evidence | No |
@@ -25,6 +25,7 @@
 - `tool_adapters/*.json` records source pins, provider kinds, safety boundaries, and readiness states.
 - `.github/workflows/cross-platform-bootstrap.yml` runs Linux, Windows, and macOS bootstrap verification and uploads host-readiness reports as CI artifacts.
 - `docs/ci-verification.md` defines the CI checks, cache policy, optional heavyweight helpers, and evidence caveats.
+- GitHub Actions run `28882090219` passed Linux x86-64, Windows x86-64, and macOS hosted-runner bootstrap verification and uploaded `host-readiness-Linux-X64`, `host-readiness-Windows-X64`, and `host-readiness-macOS-ARM64`.
 
 ## CI Evidence Policy
 

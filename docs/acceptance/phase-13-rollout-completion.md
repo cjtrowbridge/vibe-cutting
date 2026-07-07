@@ -58,4 +58,4 @@ Every implementation phase has one archived child plan and one acceptance report
 
 ## Readiness Decision
 
-The portable helper-tool bootstrap and mechanism stack rollout is complete at the repository level. Cross-platform CI results and physical fabrication evidence remain separate downstream evidence sources; neither is implied by this rollout.
+The portable helper-tool bootstrap and mechanism stack rollout is complete at the repository level. GitHub Actions run `28882090219` passed Linux x86-64, Windows x86-64, and macOS hosted-runner bootstrap verification after the rollout fix commits. Physical fabrication evidence remains separate downstream evidence and is not implied by this rollout.
