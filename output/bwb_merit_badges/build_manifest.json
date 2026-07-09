@@ -1,0 +1,87 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2352526,
+      "path": "design.svg",
+      "sha256": "1e8fa155dd514705194f26d672ef70363490e6040b38d61ba9dfc65cc50ffec5"
+    },
+    {
+      "bytes": 2189904,
+      "path": "job.gcode",
+      "sha256": "0f0a472b252162699f3f34de888da1ebce84a351c3e7f3ebaa7bc393de6ceb0f"
+    },
+    {
+      "bytes": 5022,
+      "path": "job_manifest.json",
+      "sha256": "5b44ae747680868ab5024e96b7ae524c09e87ec5929acc713d8059d49b34c2e3"
+    },
+    {
+      "bytes": 2173,
+      "path": "job_plan.json",
+      "sha256": "5cfbcaf5dd119d6591951324468c245bca411cca3447a3e2a1a9d77d86b4e2d8"
+    },
+    {
+      "bytes": 670,
+      "path": "material_setup.md",
+      "sha256": "45049a7b9d7476615bf61fc987fd04a6092225033ffd799fc9c4162379b9e1f1"
+    },
+    {
+      "bytes": 2171641,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "sha256": "7fc8362c90ef4fca2638e15b0593c54e2b983ae7171a4e0446c1b36db2b1e8c6"
+    },
+    {
+      "bytes": 18357,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "sha256": "23de2ee937b8eaac34e1026f8c6239a93261ad8682f462c63ad2e2de18d89890"
+    },
+    {
+      "bytes": 266,
+      "path": "operations.csv",
+      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+    },
+    {
+      "bytes": 19607,
+      "path": "preview.png",
+      "sha256": "00a3adab038441d3f30bedbd2099d4bfc3aafc7dc6d372ca8ce1fee78ff33f06"
+    }
+  ],
+  "build_scope": "complete",
+  "design": "bwb_merit_badges",
+  "revision": "rev_0001",
+  "schema_version": 1,
+  "sources": [
+    {
+      "path": "scripts/laser_build.py",
+      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+    },
+    {
+      "path": "designs/bwb_merit_badges/project.json",
+      "sha256": "8c69e57472c264f4a43b006fec8e3e9613071bdca2755a7fe88bde640a246295"
+    },
+    {
+      "path": "designs/bwb_merit_badges/configs/rev_0001.json",
+      "sha256": "e11c0bcce63aac44479bba6377512e7421ceaccecf0708f1a1d79d3045d31f68"
+    },
+    {
+      "path": "machines/creality/falcon_a1_pro.json",
+      "sha256": "8bdc177d56e8218928053b636b4fd2719c6e655b6ca0e28eabc4a52afbee80c4"
+    },
+    {
+      "path": "materials/wood/basswood_3mm.json",
+      "sha256": "091b5a2f83d8b25d1eed31a0fc624d2aaa9a9011fcf57f26c1fe8df409013a40"
+    },
+    {
+      "path": "openscad/text_geometry.scad",
+      "sha256": "7b82c413cc6f30d60744ca55cf576c422e6b0be72fb6cfcce3f706327b60d655"
+    },
+    {
+      "path": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+      "sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3"
+    },
+    {
+      "path": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
+      "sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939"
+    }
+  ]
+}

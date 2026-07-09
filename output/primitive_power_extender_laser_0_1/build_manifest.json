@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 18970,
+      "path": "design.svg",
+      "sha256": "b105d1887624de3bb0e1431ffa9dbdf8cf263414aa855e0cea6e45aea1bcaa10"
+    },
+    {
+      "bytes": 21788,
+      "path": "job.gcode",
+      "sha256": "063436fc087b2f30728fa0d4428f4298aaa378389a7b35389af4eebaaf2f27cf"
+    },
+    {
+      "bytes": 2771,
+      "path": "job_manifest.json",
+      "sha256": "bece31be81821439e610ae3ef97f530c95b67c321ddf54a4622d7573a4746a4f"
+    },
+    {
+      "bytes": 2186,
+      "path": "job_plan.json",
+      "sha256": "12faeb697aa8c9ba17882274727762fe3ea45920de128741474a2118879728c4"
+    },
+    {
+      "bytes": 677,
+      "path": "material_setup.md",
+      "sha256": "7577c966b27bf3ed0fbde051114f2918480e2f815cd5d21eabd2841a5ea2c9fc"
+    },
+    {
+      "bytes": 5211,
+      "path": "mechanism_validation.json",
+      "sha256": "bcd89b33ce6791fc96d1f23a9fec3f3970346e08df9b79d56a078e21da437c54"
+    },
+    {
+      "bytes": 1397,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "sha256": "61c836e4a90e96d86b880a685653435591d034af0a4401f962b6a34c5db92609"
+    },
+    {
+      "bytes": 20485,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "sha256": "2bbf40395f6fff6ec0a2d3861e959680520557c6a28b53ed5fb2988262b3ed85"
+    },
+    {
+      "bytes": 266,
+      "path": "operations.csv",
+      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+    },
+    {
+      "bytes": 4901,
+      "path": "preview.png",
+      "sha256": "fe63598547ec0f2ef4e24b192d08f166d306606873f30c9cd0735484f4f979e9"
+    }
+  ],
+  "build_scope": "complete",
+  "design": "primitive_power_extender_laser_0_1",
+  "revision": "rev_0001",
+  "schema_version": 1,
+  "sources": [
+    {
+      "path": "scripts/laser_build.py",
+      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+    },
+    {
+      "path": "designs/primitive_power_extender_laser_0_1/project.json",
+      "sha256": "f68a0cb020a16cebf269852e940b0e0dc3e1ffb2a0172eed15cc8a85c37d4b23"
+    },
+    {
+      "path": "designs/primitive_power_extender_laser_0_1/configs/rev_0001.json",
+      "sha256": "989a635191d2d96d53a0468328c0c68f9e7b134c5b033f6c796e93e0500a0561"
+    },
+    {
+      "path": "machines/creality/falcon_a1_pro.json",
+      "sha256": "8bdc177d56e8218928053b636b4fd2719c6e655b6ca0e28eabc4a52afbee80c4"
+    },
+    {
+      "path": "materials/wood/basswood_3mm.json",
+      "sha256": "091b5a2f83d8b25d1eed31a0fc624d2aaa9a9011fcf57f26c1fe8df409013a40"
+    },
+    {
+      "path": "designs/primitive_power_extender_laser_0_1/mechanisms/primitive_power_extender.mechanism.json",
+      "sha256": "00eeacd651b72aed52c07d74fa28141eb88e9637e0d7db2b2ab61dab3cb65390"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "calibration_status": "manufacturer_seed_unverified",
+  "combined_artifact": {
+    "artifact": "job.gcode",
+    "bytes": 3341626,
+    "sha256": "965c38d69c62b34bdc486ba10380ce6a6950e69be3acf9e64d703fb5d6744389"
+  },
+  "design": "queer_sex_party_merit_badges",
+  "effective_work_area_mm": [
+    300.0,
+    268.0
+  ],
+  "machine_id": "creality_falcon_a1_pro",
+  "machine_name": "Creality Falcon A1 Pro",
+  "machine_profile_status": "provisional",
+  "material_id": "basswood_3mm",
+  "material_name": "Basswood, 3 mm",
+  "material_profile_status": "manufacturer_seed_unverified",
+  "module_ids": [
+    "blue_20w"
+  ],
+  "operation_order": [
+    "vector_engrave",
+    "through_cut"
+  ],
+  "operation_stages": [
+    {
+      "air_assist": "low",
+      "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "bytes": 3323363,
+      "material_id": "basswood_3mm",
+      "material_name": "Basswood, 3 mm",
+      "material_profile_status": "manufacturer_seed_unverified",
+      "operation": "vector_engrave",
+      "order": 1,
+      "pass_overrides": [],
+      "passes_per_run": 1,
+      "power_percent": 30,
+      "rerun_effect": "adds 1 more vector_engrave pass",
+      "rerunnable": true,
+      "sha256": "decc34f73372f6eecd34a8c5fb5f4fc3e2541e02fefa0cf6653faf442925991f",
+      "speed_mm_per_min": 5000,
+      "thickness_mm": 3.0
+    },
+    {
+      "air_assist": "high",
+      "artifact": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "bytes": 18357,
+      "material_id": "basswood_3mm",
+      "material_name": "Basswood, 3 mm",
+      "material_profile_status": "manufacturer_seed_unverified",
+      "operation": "through_cut",
+      "order": 2,
+      "pass_overrides": [],
+      "passes_per_run": 1,
+      "power_percent": 100,
+      "rerun_effect": "adds 1 more through_cut pass",
+      "rerunnable": true,
+      "sha256": "23de2ee937b8eaac34e1026f8c6239a93261ad8682f462c63ad2e2de18d89890",
+      "speed_mm_per_min": 500,
+      "thickness_mm": 3.0
+    }
+  ],
+  "rerun_policy": "Rerunning an operation artifact repeats that artifact's full passes_per_run count.",
+  "revision": "rev_0001",
+  "schema_version": 1,
+  "thickness_mm": 3.0
+}

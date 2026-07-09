@@ -1,0 +1,177 @@
+{
+  "badges": [
+    {
+      "description": "Preserves, labels, shares, and remembers which tiny envelope contains next season\u2019s abundance.",
+      "id": "seed_librarian",
+      "quantity": 3,
+      "title": "Seed Librarian"
+    },
+    {
+      "description": "Transforms rot, scraps, leaves, and questionable buckets into dark civic magic.",
+      "id": "compost_goblin",
+      "quantity": 3,
+      "title": "Compost Goblin"
+    },
+    {
+      "description": "Understands hoses, timers, leaks, pressure, and the emotional needs of thirsty plants.",
+      "id": "irrigation_whisperer",
+      "quantity": 2,
+      "title": "Irrigation Whisperer"
+    },
+    {
+      "description": "Negotiates trellises, pruning, volunteers, and the annual crisis of too many tomatoes.",
+      "id": "tomato_diplomat",
+      "quantity": 2,
+      "title": "Tomato Diplomat"
+    },
+    {
+      "description": "Creates landing zones for bees, butterflies, hummingbirds, and other tiny garden celebrities.",
+      "id": "pollinator_concierge",
+      "quantity": 2,
+      "title": "Pollinator Concierge"
+    },
+    {
+      "description": "Coaxes fragile starts through germination, transplant shock, hardening off, and existential dread.",
+      "id": "seedling_midwife",
+      "quantity": 2,
+      "title": "Seedling Midwife"
+    },
+    {
+      "description": "Makes sure abundance becomes meals, gifts, pantry donations, and not just zucchini trauma.",
+      "id": "harvest_distribution_agent",
+      "quantity": 2,
+      "title": "Harvest Distribution Agent"
+    },
+    {
+      "description": "Keeps track of what worked, what failed, who planted what, and why the squash tunnel became controversial.",
+      "id": "garden_gossip_archivist",
+      "quantity": 2,
+      "title": "Garden Gossip Archivist"
+    },
+    {
+      "description": "Sees edges, guilds, flows, microclimates, and the possibility of a food forest in every awkward corner.",
+      "id": "permaculture_pattern_scout",
+      "quantity": 2,
+      "title": "Permaculture Pattern Scout"
+    },
+    {
+      "description": "Builds tiny topographies for thyme, sage, oregano, and the dream of Mediterranean drainage.",
+      "id": "herb_spiral_initiate",
+      "quantity": 2,
+      "title": "Herb Spiral Initiate"
+    },
+    {
+      "description": "Quietly turns garden surplus into nourishment for people who need it.",
+      "id": "mutual_aid_produce_fairy",
+      "quantity": 2,
+      "title": "Mutual Aid Produce Fairy"
+    }
+  ],
+  "design": "community_garden_merit_badges",
+  "design_type": "merit_badge_set",
+  "effective_work_area_mm": [
+    300.0,
+    268.0
+  ],
+  "engraving": {
+    "backend": "openscad_font",
+    "body_font_size_mm": 3.0,
+    "fill": "horizontal_hatch",
+    "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+    "font_name": "Liberation Sans:style=Regular",
+    "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+    "hatch_spacing_mm": 0.18,
+    "line_gap_ratio": 0.22,
+    "openscad_minimum_version": "2021.01",
+    "openscad_version": "2021.01",
+    "title_font_file": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
+    "title_font_name": "Liberation Sans:style=Bold",
+    "title_font_sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939",
+    "title_font_size_mm": 3.6
+  },
+  "engraving_inset_mm": 2.0,
+  "engraving_segment_count": 49716,
+  "job_plan": "job_plan.json",
+  "layout": {
+    "columns": 4,
+    "edge_margin_mm": 2.0,
+    "envelope_mm": [
+      294.0,
+      262.0
+    ],
+    "gap_mm": 2.0,
+    "rows": 6,
+    "type": "grid_fill"
+  },
+  "machine_profile": "creality_falcon_a1_pro",
+  "machine_profile_status": "provisional",
+  "material_profile": "basswood_3mm",
+  "material_profile_status": "manufacturer_seed_unverified",
+  "maximum_quantity": 24,
+  "operation_artifacts": [
+    {
+      "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "material_id": "basswood_3mm",
+      "operation": "vector_engrave",
+      "passes_per_run": 1,
+      "rerun_effect": "adds 1 more vector_engrave pass",
+      "sha256": "b00b40600f46493114b58d29ad76c7bfbdc6316295edfd0847a39684e8941946",
+      "thickness_mm": 3.0
+    },
+    {
+      "artifact": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "material_id": "basswood_3mm",
+      "operation": "through_cut",
+      "passes_per_run": 1,
+      "rerun_effect": "adds 1 more through_cut pass",
+      "sha256": "23de2ee937b8eaac34e1026f8c6239a93261ad8682f462c63ad2e2de18d89890",
+      "thickness_mm": 3.0
+    }
+  ],
+  "operation_order": [
+    "vector_engrave",
+    "through_cut"
+  ],
+  "quantity": 24,
+  "readiness": "calibration_only",
+  "recipes": {
+    "score": {
+      "air_assist": "low",
+      "passes": 1,
+      "power_percent": 20,
+      "speed_mm_per_min": 3000
+    },
+    "through_cut": {
+      "air_assist": "high",
+      "passes": 1,
+      "power_percent": 100,
+      "speed_mm_per_min": 500
+    },
+    "vector_engrave": {
+      "air_assist": "low",
+      "passes": 1,
+      "power_percent": 30,
+      "speed_mm_per_min": 5000
+    }
+  },
+  "revision": "rev_0001",
+  "schema_version": 1,
+  "set_name": "Community Garden",
+  "stock_mm": [
+    300.0,
+    300.0,
+    3.0
+  ],
+  "token": {
+    "corner_radius_mm": 4.0,
+    "height_mm": 42.0,
+    "shape": "rounded_rectangle",
+    "text_padding_mm": 4.0,
+    "width_mm": 72.0
+  },
+  "warnings": [
+    "Stock exceeds the machine work area; geometry is constrained to the effective intersection.",
+    "Material recipes are unverified manufacturer seed values; calibration is required.",
+    "Normal-font hatch spacing is unverified; run an engraving calibration before fabrication."
+  ]
+}

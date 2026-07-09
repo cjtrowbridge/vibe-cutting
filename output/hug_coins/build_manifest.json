@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 4484455,
+      "path": "design.svg",
+      "sha256": "acc1c5a1b1c339671de1bda7598e7f06ebe93d540aacb5995c0acdd90b7faf3a"
+    },
+    {
+      "bytes": 4148901,
+      "path": "job.gcode",
+      "sha256": "494fcd50fe575f2e8e4412d40935412eebfbbd627c7964b9dd3c62ed484adc2d"
+    },
+    {
+      "bytes": 2827,
+      "path": "job_manifest.json",
+      "sha256": "8789e2880918af23a60eeb9b99f22728fba594e2bfd25b7584d2867adb4116a9"
+    },
+    {
+      "bytes": 2167,
+      "path": "job_plan.json",
+      "sha256": "544be08e0f7441eb2290ea98e4c7a780a136b3120c438f9a992c526766a9d861"
+    },
+    {
+      "bytes": 670,
+      "path": "material_setup.md",
+      "sha256": "54ec04bc9e57c522da01e9fd1f15581f9adcd9c91bb957dd43129292990a7667"
+    },
+    {
+      "bytes": 3988201,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "sha256": "cf039b1c31eefc03a0f3a54472141ae936609b869eec46a0850bca870a86915f"
+    },
+    {
+      "bytes": 160794,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4"
+    },
+    {
+      "bytes": 266,
+      "path": "operations.csv",
+      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+    },
+    {
+      "bytes": 18795,
+      "path": "preview.png",
+      "sha256": "cb9dc328ae3180dc4141f47529305addbffb6a05d3eb979f29d8361d20f6af51"
+    }
+  ],
+  "build_scope": "complete",
+  "design": "hug_coins",
+  "revision": "rev_0003",
+  "schema_version": 1,
+  "sources": [
+    {
+      "path": "scripts/laser_build.py",
+      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+    },
+    {
+      "path": "designs/hug_coins/project.json",
+      "sha256": "e23a5b095f5dd3899dd132578882d58b575b0668f160dd2b05f707e1722d8bb4"
+    },
+    {
+      "path": "designs/hug_coins/configs/rev_0003.json",
+      "sha256": "e553cd37559280d97e684609643d6d771f4c34e2ad433b06542196e877b33aba"
+    },
+    {
+      "path": "machines/creality/falcon_a1_pro.json",
+      "sha256": "8bdc177d56e8218928053b636b4fd2719c6e655b6ca0e28eabc4a52afbee80c4"
+    },
+    {
+      "path": "materials/wood/basswood_3mm.json",
+      "sha256": "091b5a2f83d8b25d1eed31a0fc624d2aaa9a9011fcf57f26c1fe8df409013a40"
+    },
+    {
+      "path": "openscad/text_geometry.scad",
+      "sha256": "7b82c413cc6f30d60744ca55cf576c422e6b0be72fb6cfcce3f706327b60d655"
+    },
+    {
+      "path": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+      "sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3"
+    }
+  ]
+}

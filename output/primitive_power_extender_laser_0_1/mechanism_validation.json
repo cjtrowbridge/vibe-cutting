@@ -1,0 +1,184 @@
+{
+  "checks": [
+    {
+      "message": "mesh input_to_output expected 40.000 mm, declared 40.000 mm, measured 40.000 mm",
+      "name": "mesh_distance",
+      "passed": true
+    },
+    {
+      "message": "mesh input_to_output expected ratio -1.000000, declared -1.000000",
+      "name": "mesh_ratio",
+      "passed": true
+    },
+    {
+      "message": "mesh input_to_output backlash 0.080 mm >= 0.050 mm",
+      "name": "mesh_backlash",
+      "passed": true
+    },
+    {
+      "message": "mesh input_to_output expected driven phase 180.000 deg, declared 180.000 deg",
+      "name": "phase_transfer",
+      "passed": true
+    },
+    {
+      "message": "part input_rotor bore 5.200 mm clears axle input_axle by 0.200 mm",
+      "name": "bore_clearance",
+      "passed": true
+    },
+    {
+      "message": "part input_rotor tooth-root estimate 3.142 mm >= 0.800 mm",
+      "name": "tooth_root",
+      "passed": true
+    },
+    {
+      "message": "part input_rotor web estimate 14.900 mm >= 1.200 mm",
+      "name": "web_thickness",
+      "passed": true
+    },
+    {
+      "message": "part output_rotor bore 5.200 mm clears axle output_axle by 0.200 mm",
+      "name": "bore_clearance",
+      "passed": true
+    },
+    {
+      "message": "part output_rotor tooth-root estimate 3.142 mm >= 0.800 mm",
+      "name": "tooth_root",
+      "passed": true
+    },
+    {
+      "message": "part output_rotor web estimate 14.900 mm >= 1.200 mm",
+      "name": "web_thickness",
+      "passed": true
+    },
+    {
+      "message": "part input_rotor is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part output_rotor is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part input_axle is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part output_axle is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part spacer_left is assigned to layer spacer",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part spacer_right is assigned to layer spacer",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part reg_lower_left is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part reg_lower_right is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part reg_upper_left is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part reg_upper_right is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part power_input_interface is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "part power_output_interface is assigned to layer drive",
+      "name": "part_layer",
+      "passed": true
+    },
+    {
+      "message": "layer drive registration ids exist: ok",
+      "name": "stack_registration",
+      "passed": true
+    },
+    {
+      "message": "layer spacer registration ids exist: ok",
+      "name": "stack_registration",
+      "passed": true
+    },
+    {
+      "message": "layer cover registration ids exist: ok",
+      "name": "stack_registration",
+      "passed": true
+    },
+    {
+      "message": "interface power_input references part power_input_interface",
+      "name": "interface_part",
+      "passed": true
+    },
+    {
+      "message": "interface power_input references channel power_main",
+      "name": "interface_channel",
+      "passed": true
+    },
+    {
+      "message": "interface power_input key matches power_main",
+      "name": "channel_key",
+      "passed": true
+    },
+    {
+      "message": "interface power_output references part power_output_interface",
+      "name": "interface_part",
+      "passed": true
+    },
+    {
+      "message": "interface power_output references channel power_main",
+      "name": "interface_channel",
+      "passed": true
+    },
+    {
+      "message": "interface power_output key matches power_main",
+      "name": "channel_key",
+      "passed": true
+    },
+    {
+      "message": "duplicate cut paths: {}",
+      "name": "duplicate_cut_paths",
+      "passed": true
+    },
+    {
+      "message": "helper artifact .tmp/primitive_power_extender/cq_gears_primary.svg records request hash",
+      "name": "helper_geometry_provenance",
+      "passed": true
+    },
+    {
+      "message": "helper artifact .tmp/primitive_power_extender/bosl2_comparison.svg records request hash",
+      "name": "helper_geometry_provenance",
+      "passed": true
+    }
+  ],
+  "job_manifest_fragment": {
+    "mechanism_check_count": 34,
+    "mechanism_id": "primitive_power_extender_laser_0_1",
+    "mechanism_validation_passed": true
+  },
+  "mechanism_id": "primitive_power_extender_laser_0_1",
+  "model_sha256": "3b4dae91e1475516a09da430bde3ae1e2fa615ac76e6b9cc7c3eb2b81afe7b03",
+  "passed": true,
+  "schema_version": 1,
+  "source": "designs/primitive_power_extender_laser_0_1/mechanisms/primitive_power_extender.mechanism.json"
+}

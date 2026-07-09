@@ -1,0 +1,98 @@
+{
+  "coin_diameter_mm": 30.0,
+  "design": "hug_coins",
+  "design_type": "coin_sheet",
+  "effective_work_area_mm": [
+    300.0,
+    268.0
+  ],
+  "engraving": {
+    "backend": "openscad_font",
+    "fill": "horizontal_hatch",
+    "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+    "font_name": "Liberation Sans:style=Regular",
+    "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+    "hatch_spacing_mm": 0.18,
+    "line_gap_ratio": 0.22,
+    "openscad_minimum_version": "2021.01",
+    "openscad_version": "2021.01"
+  },
+  "engraving_inset_mm": 1.0,
+  "engraving_segment_count": 72981,
+  "engraving_text": "good for one free hug anywhere any time",
+  "job_plan": "job_plan.json",
+  "layout": {
+    "columns": 9,
+    "edge_margin_mm": 2.0,
+    "envelope_mm": [
+      293.5,
+      244.77430013854078
+    ],
+    "gap_mm": 1.0,
+    "rows": 9,
+    "type": "hex_max"
+  },
+  "machine_profile": "creality_falcon_a1_pro",
+  "machine_profile_status": "provisional",
+  "material_profile": "basswood_3mm",
+  "material_profile_status": "manufacturer_seed_unverified",
+  "maximum_quantity": 81,
+  "operation_artifacts": [
+    {
+      "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
+      "material_id": "basswood_3mm",
+      "operation": "vector_engrave",
+      "passes_per_run": 1,
+      "rerun_effect": "adds 1 more vector_engrave pass",
+      "sha256": "cf039b1c31eefc03a0f3a54472141ae936609b869eec46a0850bca870a86915f",
+      "thickness_mm": 3.0
+    },
+    {
+      "artifact": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
+      "material_id": "basswood_3mm",
+      "operation": "through_cut",
+      "passes_per_run": 1,
+      "rerun_effect": "adds 1 more through_cut pass",
+      "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4",
+      "thickness_mm": 3.0
+    }
+  ],
+  "operation_order": [
+    "vector_engrave",
+    "through_cut"
+  ],
+  "quantity": 81,
+  "readiness": "calibration_only",
+  "recipes": {
+    "score": {
+      "air_assist": "low",
+      "passes": 1,
+      "power_percent": 20,
+      "speed_mm_per_min": 3000
+    },
+    "through_cut": {
+      "air_assist": "high",
+      "passes": 1,
+      "power_percent": 100,
+      "speed_mm_per_min": 500
+    },
+    "vector_engrave": {
+      "air_assist": "low",
+      "passes": 1,
+      "power_percent": 30,
+      "speed_mm_per_min": 5000
+    }
+  },
+  "revision": "rev_0003",
+  "schema_version": 1,
+  "stock_mm": [
+    300.0,
+    300.0,
+    3.0
+  ],
+  "warnings": [
+    "Stock exceeds the machine work area; geometry is constrained to the effective intersection.",
+    "Material recipes are unverified manufacturer seed values; calibration is required.",
+    "Normal-font hatch spacing is unverified; run an engraving calibration before fabrication."
+  ]
+}

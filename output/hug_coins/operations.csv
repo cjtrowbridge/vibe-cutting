@@ -1,0 +1,3 @@
+order,operation,speed_mm_per_min,power_percent,passes_per_run,air_assist,artifact
+1,vector_engrave,5000,30,1,low,operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode
+2,through_cut,500,100,1,high,operations/002_through_cut__basswood_3mm__run_1_pass.gcode
