@@ -1,9 +1,9 @@
 {
   "artifacts": [
     {
-      "bytes": 2359367,
+      "bytes": 2359431,
       "path": "design.svg",
-      "sha256": "7ed55ae35d62af8f775fe629e6d352b20a7ed27f6fd5ea9214f284372c9e95ae"
+      "sha256": "d30030ddc6d02a3ea75925e89054511a8ece818e5e97e518675422742a5fed6d"
     },
     {
       "bytes": 2196645,
@@ -13,12 +13,12 @@
     {
       "bytes": 5306,
       "path": "job_manifest.json",
-      "sha256": "b1e24cbba991a3547a604c76a982b8a981d3daa2b23e2382132c030ff6f69b4c"
+      "sha256": "259624f1f84a137f71e0f4ca8fffd2a9bf40ecb90c2d4bb6394cc4de7bb2f9d0"
     },
     {
       "bytes": 2749,
       "path": "job_plan.json",
-      "sha256": "75227bcf5440a582bbe897ab8a72d1fdf6408e296522d6d8c96ee7d3b401251f"
+      "sha256": "e1e749e6bd400208185a4565a9984a6051f4a8a731211d4995c39470ee8a7f52"
     },
     {
       "bytes": 670,
@@ -31,9 +31,9 @@
       "sha256": "30a8ee2ef361bede4ea1215cc31d3532c196f3be4e047b9e7dfe994da923ee31"
     },
     {
-      "bytes": 20168,
+      "bytes": 20225,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-      "sha256": "63eba058e1b944a60cad429c7bbb2f28ae2b2a90a02e6a37a73a03aaccd60505"
+      "sha256": "9e0da979bebf4d86a589858a45b9b6065f732e739a7487ad5e5fbbb1be805db6"
     },
     {
       "bytes": 9368,
@@ -41,9 +41,9 @@
       "sha256": "efb47d07976c361690ed5c7416d0aa252952667ed7d6fe7804c998bd41ad1327"
     },
     {
-      "bytes": 11621,
+      "bytes": 11653,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-      "sha256": "8e2ae1ccf8ebc64cb6fe1c3659c528fdcaa3a56fba6f6a04832d9630f88ef352"
+      "sha256": "68498f07509eeaca4f607965bc969bf02c999dc86c1e709ca94d0b74dbb7c9d0"
     },
     {
       "bytes": 398,
@@ -63,7 +63,7 @@
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "edb1ecc27b2cb2ea0e257587a3a6504c8c796b9ef4a793af12bf934cce82fc1d"
+      "sha256": "6ace8538b40f3ab33bed03b08f6b73aef671d510a10aa97d0925b53e6cdc782f"
     },
     {
       "path": "designs/queer_sex_party_merit_badges/project.json",

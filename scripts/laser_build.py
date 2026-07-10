@@ -1100,13 +1100,13 @@ def generate_svg(config, layout, segments):
         f'<line x1="{x1:.3f}" y1="{y1:.3f}" x2="{x2:.3f}" y2="{y2:.3f}"/>'
         for x1, y1, x2, y2 in segments
     )
-    # Microscopic anchor paths for SVG bounds
-    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
-    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
+    # 5mm corner brackets to defeat app noise cropping
+    lines.append('<path d="M 0,0 L 5,0 M 0,0 L 0,5"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width-5:.3f},{height:.3f} M {width:.3f},{height:.3f} L {width:.3f},{height-5:.3f}"/>')
     lines.append("</g>")
     lines.append('<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">')
-    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
-    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
+    lines.append('<path d="M 0,0 L 5,0 M 0,0 L 0,5"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width-5:.3f},{height:.3f} M {width:.3f},{height:.3f} L {width:.3f},{height-5:.3f}"/>')
     lines.extend(
         '<path d="'
         + " ".join(
@@ -1388,9 +1388,12 @@ def generate_engraving_png(config, layout, segments):
     image = bytearray([0] * width * height * 4)
     if width > 0 and height > 0:
         color = (30, 80, 220, 255)
-        # Top-left and bottom-right opaque anchor pixels
-        image[0:4] = color
-        image[-4:] = color
+        # 5mm corner brackets
+        length = round(5 * pixels_per_mm)
+        draw_line(image, width, height, 0, 0, length, 0, color)
+        draw_line(image, width, height, 0, 0, 0, length, color)
+        draw_line(image, width, height, width - 1, height - 1, width - 1 - length, height - 1, color)
+        draw_line(image, width, height, width - 1, height - 1, width - 1, height - 1 - length, color)
     for x1, y1, x2, y2 in segments:
         draw_line(
             image,
@@ -1426,8 +1429,8 @@ def generate_cut_svg(config, layout):
         f'<g transform="translate(0 {height:.3f}) scale(1 -1)">',
         '<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">',
     ]
-    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
-    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
+    lines.append('<path d="M 0,0 L 5,0 M 0,0 L 0,5"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width-5:.3f},{height:.3f} M {width:.3f},{height:.3f} L {width:.3f},{height-5:.3f}"/>')
     lines.extend(
         '<path d="'
         + " ".join(

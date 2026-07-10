@@ -41,10 +41,10 @@
       "sha256": "c0b7095a8bda4137977f348f222b750d798454b2bf45ec1fce407430df2c1b04",
       "sidecar_artifacts": [
         {
-          "bytes": 21127,
+          "bytes": 21179,
           "kind": "engraving_png",
           "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-          "sha256": "73e3b6384eb5978cb631e62c181a116f468d7f14f0e03d35aff050230875d4f0"
+          "sha256": "b04f534e9ce52b2c9a721699e070f41cfbe53f77b83ddbc06fd4e4036155146d"
         }
       ],
       "speed_mm_per_min": 5000,
@@ -67,10 +67,10 @@
       "sha256": "efb47d07976c361690ed5c7416d0aa252952667ed7d6fe7804c998bd41ad1327",
       "sidecar_artifacts": [
         {
-          "bytes": 11621,
+          "bytes": 11653,
           "kind": "cut_svg",
           "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-          "sha256": "8e2ae1ccf8ebc64cb6fe1c3659c528fdcaa3a56fba6f6a04832d9630f88ef352"
+          "sha256": "68498f07509eeaca4f607965bc969bf02c999dc86c1e709ca94d0b74dbb7c9d0"
         }
       ],
       "speed_mm_per_min": 500,
