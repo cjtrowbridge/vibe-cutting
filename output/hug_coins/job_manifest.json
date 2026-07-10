@@ -45,6 +45,14 @@
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more vector_engrave pass",
       "sha256": "cf039b1c31eefc03a0f3a54472141ae936609b869eec46a0850bca870a86915f",
+      "sidecar_artifacts": [
+        {
+          "bytes": 14052,
+          "kind": "engraving_png",
+          "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+          "sha256": "7b9ac97bfd50eb221342cd39558e16c91f32b1b63b18de3704838913d2a11d00"
+        }
+      ],
       "thickness_mm": 3.0
     },
     {
@@ -54,6 +62,14 @@
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more through_cut pass",
       "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4",
+      "sidecar_artifacts": [
+        {
+          "bytes": 204483,
+          "kind": "cut_svg",
+          "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+          "sha256": "a5dc8a8b1aa4cb0a1c14570b2597ffe724fd3e518a289a742c3eb1da31696443"
+        }
+      ],
       "thickness_mm": 3.0
     }
   ],

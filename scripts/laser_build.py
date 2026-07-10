@@ -1212,12 +1212,45 @@ def pass_label(count):
     return f"run_{count}_{noun}"
 
 
-def operation_artifact_name(order, operation, material):
+def operation_artifact_name(order, operation, material, extension=".gcode"):
     recipe = material["recipes"][operation]
     return (
         "operations/"
-        f"{order:03d}_{slug(operation)}__{slug(material['id'])}__{pass_label(recipe['passes'])}.gcode"
+        f"{order:03d}_{slug(operation)}__{slug(material['id'])}__{pass_label(recipe['passes'])}{extension}"
     )
+
+
+def operation_sidecar_kind(operation):
+    if operation == "vector_engrave":
+        return "engraving_png"
+    if operation == "through_cut":
+        return "cut_svg"
+    fail(f"Unsupported operation sidecar: {operation}")
+
+
+def operation_sidecar_artifact_name(order, operation, material):
+    extension_by_operation = {
+        "vector_engrave": ".png",
+        "through_cut": ".svg",
+    }
+    try:
+        extension = extension_by_operation[operation]
+    except KeyError:
+        fail(f"Unsupported operation sidecar: {operation}")
+    return operation_artifact_name(order, operation, material, extension)
+
+
+def operation_sidecar_records(stage, order, operation, material):
+    relative_path = operation_sidecar_artifact_name(order, operation, material)
+    path = stage / relative_path
+    return [
+        {
+            "kind": operation_sidecar_kind(operation),
+            "path": relative_path,
+            "bytes": path.stat().st_size,
+            "sha256": sha256(path),
+        }
+    ]
 
 
 def operation_stage_records(stage, material):
@@ -1244,6 +1277,7 @@ def operation_stage_records(stage, material):
                 "rerun_effect": f"adds {recipe['passes']} more {operation} pass{'es' if recipe['passes'] != 1 else ''}",
                 "bytes": path.stat().st_size,
                 "sha256": sha256(path),
+                "sidecar_artifacts": operation_sidecar_records(stage, order, operation, material),
             }
         )
     return records
@@ -1278,8 +1312,9 @@ def job_plan(stage, context, layout):
 
 def set_pixel(image, width, height, x, y, color):
     if 0 <= x < width and 0 <= y < height:
-        index = (y * width + x) * 3
-        image[index : index + 3] = bytes(color)
+        channels = len(color)
+        index = (y * width + x) * channels
+        image[index : index + channels] = bytes(color)
 
 
 def draw_line(image, width, height, x0, y0, x1, y1, color):
@@ -1338,6 +1373,68 @@ def generate_preview_png(config, layout, segments):
         + png_chunk(b"IDAT", zlib.compress(raw, 9))
         + png_chunk(b"IEND", b"")
     )
+
+
+def generate_engraving_png(config, layout, segments):
+    pixels_per_mm = 3
+    width = round(layout["effective_width_mm"] * pixels_per_mm)
+    height = round(layout["effective_height_mm"] * pixels_per_mm)
+    image = bytearray([0] * width * height * 4)
+    for x1, y1, x2, y2 in segments:
+        draw_line(
+            image,
+            width,
+            height,
+            round(x1 * pixels_per_mm),
+            height - 1 - round(y1 * pixels_per_mm),
+            round(x2 * pixels_per_mm),
+            height - 1 - round(y2 * pixels_per_mm),
+            (30, 80, 220, 255),
+        )
+    raw = b"".join(
+        b"\x00" + bytes(image[row * width * 4 : (row + 1) * width * 4])
+        for row in range(height)
+    )
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + png_chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0))
+        + png_chunk(b"IDAT", zlib.compress(raw, 9))
+        + png_chunk(b"IEND", b"")
+    )
+
+
+def generate_cut_svg(config, layout):
+    width = layout["effective_width_mm"]
+    height = layout["effective_height_mm"]
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.3f}mm" '
+        f'height="{height:.3f}mm" viewBox="0 0 {width:.3f} {height:.3f}">',
+        "<metadata>Through-cut operation sidecar only. Units: millimeters.</metadata>",
+        f'<g transform="translate(0 {height:.3f}) scale(1 -1)">',
+        '<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">',
+    ]
+    lines.extend(
+        '<path d="'
+        + " ".join(
+            [f"M {path[0][0]:.3f},{path[0][1]:.3f}"]
+            + [f"L {point_x:.3f},{point_y:.3f}" for point_x, point_y in path[1:]]
+            + ["Z"]
+        )
+        + '"/>'
+        for path in cut_paths(config, layout, circle_segments=144, corner_segments=12)
+    )
+    lines.extend(["</g>", "</g>", "</svg>"])
+    return "\n".join(lines) + "\n"
+
+
+def write_operation_sidecar(path, operation, config, layout, segments):
+    if operation == "vector_engrave":
+        path.write_bytes(generate_engraving_png(config, layout, segments))
+    elif operation == "through_cut":
+        path.write_text(generate_cut_svg(config, layout), encoding="utf-8")
+    else:
+        fail(f"Unsupported operation sidecar: {operation}")
 
 
 def job_manifest(context, layout, segment_count, mechanism_report=None, plan=None):
@@ -1399,6 +1496,7 @@ def job_manifest(context, layout, segment_count, mechanism_report=None, plan=Non
                 "thickness_mm": stage["thickness_mm"],
                 "rerun_effect": stage["rerun_effect"],
                 "sha256": stage["sha256"],
+                "sidecar_artifacts": stage["sidecar_artifacts"],
             }
             for stage in plan["operation_stages"]
         ]
@@ -1444,7 +1542,7 @@ def write_operations(path, material, plan=None):
         for stage in plan.get("operation_stages", [])
     } if plan else {}
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "order",
@@ -1454,11 +1552,16 @@ def write_operations(path, material, plan=None):
                 "passes_per_run",
                 "air_assist",
                 "artifact",
+                "sidecar_artifacts",
             ]
         )
         for order, operation in enumerate(operation_order(), 1):
             recipe = material["recipes"][operation]
             stage = stages_by_operation.get(operation, {})
+            sidecar_paths = "|".join(
+                artifact["path"]
+                for artifact in stage.get("sidecar_artifacts", [])
+            )
             writer.writerow(
                 [
                     order,
@@ -1468,6 +1571,7 @@ def write_operations(path, material, plan=None):
                     recipe["passes"],
                     recipe["air_assist"],
                     stage.get("artifact", operation_artifact_name(order, operation, material)),
+                    sidecar_paths,
                 ]
             )
 
@@ -1636,6 +1740,8 @@ def execute(args):
             generate_operation_gcode(operation, context["config"], context["machine"], context["material"], layout, segments),
             encoding="utf-8",
         )
+        sidecar_path = stage / operation_sidecar_artifact_name(order, operation, context["material"])
+        write_operation_sidecar(sidecar_path, operation, context["config"], layout, segments)
     (stage / "job.gcode").write_text(
         generate_gcode(context["config"], context["machine"], context["material"], layout, segments),
         encoding="utf-8",

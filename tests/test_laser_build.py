@@ -1,8 +1,10 @@
 import copy
 import importlib.util
 import math
+import struct
 import tempfile
 import unittest
+import zlib
 from pathlib import Path
 
 
@@ -18,6 +20,70 @@ class LaserBuildTests(unittest.TestCase):
     def setUpClass(cls):
         cls.context = laser_build.resolve_design("shot_coins")
         laser_build.validate_context(cls.context)
+
+    def write_staged_build(self, stage, context, quantity_override=1):
+        layout = laser_build.compute_layout(
+            context["config"],
+            context["machine"],
+            quantity_override=quantity_override,
+        )
+        segments = laser_build.all_engraving_segments(context["config"], layout)
+        (stage / "operations").mkdir()
+        (stage / "design.svg").write_text(
+            laser_build.generate_svg(context["config"], layout, segments),
+            encoding="utf-8",
+        )
+        (stage / "preview.png").write_bytes(laser_build.generate_preview_png(context["config"], layout, segments))
+        for order, operation in enumerate(laser_build.operation_order(), 1):
+            (stage / laser_build.operation_artifact_name(order, operation, context["material"])).write_text(
+                laser_build.generate_operation_gcode(
+                    operation,
+                    context["config"],
+                    context["machine"],
+                    context["material"],
+                    layout,
+                    segments,
+                ),
+                encoding="utf-8",
+            )
+            laser_build.write_operation_sidecar(
+                stage / laser_build.operation_sidecar_artifact_name(order, operation, context["material"]),
+                operation,
+                context["config"],
+                layout,
+                segments,
+            )
+        (stage / "job.gcode").write_text(
+            laser_build.generate_gcode(
+                context["config"],
+                context["machine"],
+                context["material"],
+                layout,
+                segments,
+            ),
+            encoding="utf-8",
+        )
+        plan = laser_build.job_plan(stage, context, layout)
+        laser_build.write_json(stage / "job_plan.json", plan)
+        laser_build.write_json(
+            stage / "job_manifest.json",
+            laser_build.job_manifest(context, layout, len(segments), plan=plan),
+        )
+        laser_build.write_operations(stage / "operations.csv", context["material"], plan)
+        laser_build.write_setup(stage / "material_setup.md", context, layout)
+        laser_build.write_json(stage / "build_manifest.json", laser_build.build_manifest(stage, context))
+        return plan
+
+    def png_idat_payload(self, payload):
+        offset = 8
+        chunks = []
+        while offset < len(payload):
+            chunk_length = struct.unpack(">I", payload[offset : offset + 4])[0]
+            chunk_type = payload[offset + 4 : offset + 8]
+            chunk_data = payload[offset + 8 : offset + 8 + chunk_length]
+            chunks.append((chunk_type, chunk_data))
+            offset += 12 + chunk_length
+        return b"".join(data for chunk_type, data in chunks if chunk_type == b"IDAT")
 
     def test_maximum_layout_is_in_bounds_and_separated(self):
         config = self.context["config"]
@@ -117,6 +183,14 @@ class LaserBuildTests(unittest.TestCase):
             cut_artifact,
             "operations/002_through_cut__basswood_3mm__run_3_passes.gcode",
         )
+        self.assertEqual(
+            laser_build.operation_sidecar_artifact_name(1, "vector_engrave", material),
+            "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+        )
+        self.assertEqual(
+            laser_build.operation_sidecar_artifact_name(2, "through_cut", material),
+            "operations/002_through_cut__basswood_3mm__run_3_passes.svg",
+        )
         self.assertEqual(cut_gcode.count("; pass "), 3)
         self.assertEqual(combined_gcode.count("; pass "), 4)
         self.assertIn("; material=basswood_3mm thickness_mm=3.0", cut_gcode)
@@ -137,8 +211,7 @@ class LaserBuildTests(unittest.TestCase):
             stage = Path(temporary_directory)
             (stage / "operations").mkdir()
             for order, operation in enumerate(laser_build.operation_order(), 1):
-                path = stage / laser_build.operation_artifact_name(order, operation, material)
-                path.write_text(
+                (stage / laser_build.operation_artifact_name(order, operation, material)).write_text(
                     laser_build.generate_operation_gcode(
                         operation,
                         context["config"],
@@ -148,6 +221,13 @@ class LaserBuildTests(unittest.TestCase):
                         segments,
                     ),
                     encoding="utf-8",
+                )
+                laser_build.write_operation_sidecar(
+                    stage / laser_build.operation_sidecar_artifact_name(order, operation, material),
+                    operation,
+                    context["config"],
+                    layout,
+                    segments,
                 )
             (stage / "job.gcode").write_text(
                 laser_build.generate_gcode(
@@ -171,6 +251,98 @@ class LaserBuildTests(unittest.TestCase):
         self.assertEqual(cut_stage["thickness_mm"], 3.0)
         self.assertEqual(cut_stage["rerun_effect"], "adds 3 more through_cut passes")
         self.assertTrue(cut_stage["artifact"].endswith("__run_3_passes.gcode"))
+        self.assertEqual(
+            cut_stage["sidecar_artifacts"][0]["path"],
+            "operations/002_through_cut__basswood_3mm__run_3_passes.svg",
+        )
+        self.assertEqual(cut_stage["sidecar_artifacts"][0]["kind"], "cut_svg")
+
+    def test_operation_sidecars_are_recorded_in_manifests_and_csv(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            stage = Path(temporary_directory)
+            plan = self.write_staged_build(stage, self.context)
+            build_manifest = laser_build.load_json(stage / "build_manifest.json")
+            job_manifest = laser_build.load_json(stage / "job_manifest.json")
+            operations_csv = (stage / "operations.csv").read_text(encoding="utf-8")
+
+        manifest_paths = {record["path"] for record in build_manifest["artifacts"]}
+        self.assertIn("operations/001_vector_engrave__basswood_3mm__run_1_pass.png", manifest_paths)
+        self.assertIn("operations/002_through_cut__basswood_3mm__run_1_pass.svg", manifest_paths)
+        self.assertEqual(
+            plan["operation_stages"][0]["sidecar_artifacts"][0]["kind"],
+            "engraving_png",
+        )
+        self.assertEqual(
+            job_manifest["operation_artifacts"][1]["sidecar_artifacts"][0]["path"],
+            "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+        )
+        self.assertIn("sidecar_artifacts", operations_csv.splitlines()[0])
+        self.assertIn("operations/001_vector_engrave__basswood_3mm__run_1_pass.png", operations_csv)
+
+    def test_engraving_sidecar_png_is_transparent_rgba(self):
+        layout = laser_build.compute_layout(
+            self.context["config"],
+            self.context["machine"],
+            quantity_override=1,
+        )
+        segments = laser_build.all_engraving_segments(self.context["config"], layout)
+        payload = laser_build.generate_engraving_png(self.context["config"], layout, segments)
+
+        self.assertEqual(payload[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(payload[12:16], b"IHDR")
+        self.assertEqual(payload[24], 8)
+        self.assertEqual(payload[25], 6)
+        width = struct.unpack(">I", payload[16:20])[0]
+        height = struct.unpack(">I", payload[20:24])[0]
+        raw = zlib.decompress(self.png_idat_payload(payload))
+        rows = [
+            raw[index * (1 + width * 4) : (index + 1) * (1 + width * 4)]
+            for index in range(height)
+        ]
+        self.assertTrue(all(row[0] == 0 for row in rows))
+        alpha_values = [
+            pixel_row[column]
+            for row in rows
+            for pixel_row in [row[1:]]
+            for column in range(3, len(pixel_row), 4)
+        ]
+        self.assertIn(0, alpha_values)
+        self.assertIn(255, alpha_values)
+
+    def test_cut_sidecar_svg_contains_only_cut_geometry(self):
+        layout = laser_build.compute_layout(
+            self.context["config"],
+            self.context["machine"],
+            quantity_override=1,
+        )
+        svg = laser_build.generate_cut_svg(self.context["config"], layout)
+
+        self.assertIn('id="through_cut"', svg)
+        self.assertIn("<path", svg)
+        self.assertNotIn('id="vector_engrave"', svg)
+        self.assertNotIn("<line", svg)
+
+    def test_audit_fails_when_operation_sidecar_is_missing_or_modified(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            stage = Path(temporary_directory)
+            self.write_staged_build(stage, self.context)
+            sidecar = stage / "operations/001_vector_engrave__basswood_3mm__run_1_pass.png"
+
+            sidecar.unlink()
+            with self.assertRaisesRegex(SystemExit, "Artifact inventory mismatch"):
+                laser_build.audit(stage)
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            stage = Path(temporary_directory)
+            self.write_staged_build(stage, self.context)
+            sidecar = stage / "operations/002_through_cut__basswood_3mm__run_1_pass.svg"
+
+            sidecar.write_text(
+                sidecar.read_text(encoding="utf-8") + "<!-- tampered -->\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(SystemExit, "Artifact audit failed"):
+                laser_build.audit(stage)
 
     def test_invalid_recipe_pass_count_is_rejected(self):
         invalid_context = copy.deepcopy(self.context)

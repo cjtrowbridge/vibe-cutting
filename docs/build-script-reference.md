@@ -1,5 +1,7 @@
 # Build Script Reference
 
+For a broader human-and-agent guide to every repository script, managed invocation, and pipeline safety boundary, see `scripts/README.md`.
+
 The core build script runs through the managed bootstrap so the repository supplies its Python runtime locally:
 
 ```bash
@@ -33,13 +35,16 @@ Normal builds atomically replace `output/<design>/`. Revision builds create immu
 
 - `job.gcode`: complete combined job in operation order.
 - `operations/*.gcode`: independently runnable operation-stage files.
+- `operations/*.png`: transparent-background engraving sidecars for operation-level inspection and transfer.
+- `operations/*.svg`: cut-only sidecars for operation-level inspection and transfer.
 - `job_plan.json`: machine-readable operation order, material assumptions, recipe settings, pass counts, stage artifact hashes, and rerun semantics.
 - `job_manifest.json`: design, readiness, recipe, warning, and operation artifact summary.
 - `build_manifest.json`: exact artifact inventory with byte counts and hashes.
-- `operations.csv`: operator-readable operation table with artifact paths and passes per run.
+- `operations.csv`: operator-readable operation table with G-code artifact paths, sidecar artifact paths, and passes per run.
 - `material_setup.md`: setup checklist and calibration warnings.
 
 Operation-stage filenames use `<order>_<operation>__<material_id>__run_<n>_pass(es).gcode`, for example `002_through_cut__basswood_3mm__run_1_pass.gcode`. Rerunning one of these files repeats its full configured pass count.
+Operation sidecars use the same filename prefix with an operation-specific extension, for example `001_vector_engrave__basswood_3mm__run_1_pass.png` and `002_through_cut__basswood_3mm__run_1_pass.svg`. Sidecars are recorded in `job_plan.json`, summarized in `job_manifest.json`, and hashed in `build_manifest.json`; they are not machine-executable artifacts.
 
 ## Helper Tools
 

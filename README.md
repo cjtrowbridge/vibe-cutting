@@ -53,10 +53,12 @@ The normal build creates `output/shot_coins/` with:
 - `design.svg` and `preview.png`
 - `job.gcode` for the complete combined job
 - `operations/*.gcode` files for independently runnable operation stages
+- `operations/*.png` transparent engraving sidecars and `operations/*.svg` cut sidecars for operation-level inspection/transfer
 - `job_plan.json`, `job_manifest.json`, and `build_manifest.json`
 - `operations.csv` and `material_setup.md`
 
 Operation-stage filenames include operation, material, thickness-bearing material ID, and pass count, such as `operations/002_through_cut__basswood_3mm__run_1_pass.gcode`. Rerunning an operation artifact repeats that artifact's full configured pass count.
+PNG/SVG operation sidecars use the same filename prefix as the corresponding G-code artifact. Sidecars are audited and hashed, but G-code remains the machine-authoritative artifact.
 
 Use `--new-revision` to create a new immutable design config and matching artifact snapshot. See `docs/build-script-reference.md` for all supported options.
 

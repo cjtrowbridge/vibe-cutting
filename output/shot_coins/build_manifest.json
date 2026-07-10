@@ -11,14 +11,14 @@
       "sha256": "5d6012ea6465a82fd9e7f6e75fbec295805c8ee9f87519e69d07a371b406eacc"
     },
     {
-      "bytes": 2829,
+      "bytes": 3395,
       "path": "job_manifest.json",
-      "sha256": "ea811a6f7a2997374da5bef279b0380b1f5c4517bf40a66bdb2af614b2a0a096"
+      "sha256": "51f7630158b61f792cba8618355eda1596211c2dfc907bf8d5500821ec043fcd"
     },
     {
-      "bytes": 2168,
+      "bytes": 2734,
       "path": "job_plan.json",
-      "sha256": "0394175fdbd666930a6640a572072d332433c000b1d8dc424da105a25fc852b8"
+      "sha256": "bfc77db3d9856b50c32b4c97c4c70042a4ce6957ad1c943c78e17f15555e1402"
     },
     {
       "bytes": 670,
@@ -31,14 +31,24 @@
       "sha256": "0e321bbce0b1f2b349df2a03168f29a5c6016ec2320a1bc0983c51136427cee6"
     },
     {
+      "bytes": 14187,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+      "sha256": "d769369d5623b132dd967b3b38ab3c72558338db4d61b7f90519af37c4b4fd8c"
+    },
+    {
       "bytes": 160794,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
       "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4"
     },
     {
-      "bytes": 266,
+      "bytes": 204483,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+      "sha256": "a5dc8a8b1aa4cb0a1c14570b2597ffe724fd3e518a289a742c3eb1da31696443"
+    },
+    {
+      "bytes": 398,
       "path": "operations.csv",
-      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+      "sha256": "022b0d343757d19870e00445b5f71b826f909225fbef7bcfac7b21c13ba2c2c7"
     },
     {
       "bytes": 18953,
@@ -53,7 +63,7 @@
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+      "sha256": "6b32488f4c2dddb717183905e23378e26bc51e22b8fd2997e877e3e3bc03c6b4"
     },
     {
       "path": "designs/shot_coins/project.json",

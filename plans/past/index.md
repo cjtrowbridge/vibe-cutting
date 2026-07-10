@@ -2,6 +2,8 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-09-19-02-37 | plans/past/2026-07-10-00-00-00_document-scripts-pipeline.md | Document Scripts Pipeline | Add verbose scripts-folder documentation for humans and agents explaining script responsibilities, safe invocation, and how to run the laser pipeline end to end.
+2026-07-09-18-50-23 | plans/past/2026-07-09-10-30-00_add-png-svg-build-artifacts.md | Generate Operation-Specific PNG and SVG Artifacts | Augment the build pipeline to produce .png files for engraving operations and .svg files for cutting operations, in addition to existing G-code artifacts.
 2026-07-07-11-08-54 | plans/past/2026-07-07-10-52-37_add-pass-aware-operation-artifacts.md | Add Pass-Aware Operation Artifacts | Update the laser build pipeline to model recipe pass schedules, emit per-operation G-code artifacts with material/thickness/pass-count filenames, and record rerun semantics in job manifests.
 2026-07-06-21-17-49 | plans/past/2026-07-06-22-12-04_complete-helper-stack-rollout.md | Complete Helper Stack Rollout | Finish migration cleanup, documentation command verification, manifest/playbook audits, license-boundary review, roadmap reconciliation, and final phase evidence.
 2026-07-06-21-17-26 | plans/past/2026-07-06-22-03-12_add-cross-platform-verification.md | Add Cross-Platform Verification | Add CI scaffolding, evidence publication, and support-matrix documentation for Linux, Windows, and macOS bootstrap qualification without claiming fabrication readiness.

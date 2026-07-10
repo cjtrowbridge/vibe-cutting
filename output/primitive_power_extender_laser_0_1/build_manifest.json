@@ -11,14 +11,14 @@
       "sha256": "063436fc087b2f30728fa0d4428f4298aaa378389a7b35389af4eebaaf2f27cf"
     },
     {
-      "bytes": 2771,
+      "bytes": 3335,
       "path": "job_manifest.json",
-      "sha256": "bece31be81821439e610ae3ef97f530c95b67c321ddf54a4622d7573a4746a4f"
+      "sha256": "b2d5e4ec585be8d0f1f747d141134ab7d248ff39d807d686e032dc68464434c1"
     },
     {
-      "bytes": 2186,
+      "bytes": 2750,
       "path": "job_plan.json",
-      "sha256": "12faeb697aa8c9ba17882274727762fe3ea45920de128741474a2118879728c4"
+      "sha256": "dbdd339a15dedb677dbb62558122016dd40edb36341ac555d0415585b0d98dbc"
     },
     {
       "bytes": 677,
@@ -36,14 +36,24 @@
       "sha256": "61c836e4a90e96d86b880a685653435591d034af0a4401f962b6a34c5db92609"
     },
     {
+      "bytes": 2999,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+      "sha256": "94dc37491eea330ddb68edc77eabaa7cbd28d23d3791e5f2e7aa023b7ce545d9"
+    },
+    {
       "bytes": 20485,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
       "sha256": "2bbf40395f6fff6ec0a2d3861e959680520557c6a28b53ed5fb2988262b3ed85"
     },
     {
-      "bytes": 266,
+      "bytes": 17642,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+      "sha256": "cad500c2c4a6da2059466c99c496e384d413b63df1505a892aa71cd451f203a3"
+    },
+    {
+      "bytes": 398,
       "path": "operations.csv",
-      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+      "sha256": "022b0d343757d19870e00445b5f71b826f909225fbef7bcfac7b21c13ba2c2c7"
     },
     {
       "bytes": 4901,
@@ -58,7 +68,7 @@
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+      "sha256": "6b32488f4c2dddb717183905e23378e26bc51e22b8fd2997e877e3e3bc03c6b4"
     },
     {
       "path": "designs/primitive_power_extender_laser_0_1/project.json",
