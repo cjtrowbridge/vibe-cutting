@@ -1,9 +1,9 @@
 {
   "artifacts": [
     {
-      "bytes": 2321514,
+      "bytes": 2321690,
       "path": "design.svg",
-      "sha256": "1fc5307df0434b7e6395b37675162d914c1e1711278c1b9124fb55bba0353f48"
+      "sha256": "e62ec2d290ef1d18031883fe7b1a612637d003a56c59271ed2622a248b2e1945"
     },
     {
       "bytes": 2152320,
@@ -13,12 +13,12 @@
     {
       "bytes": 3392,
       "path": "job_manifest.json",
-      "sha256": "db1bba478908ba1d12e2cb8f65c160e44b0f9e983d1f3643a9b7e073335776d9"
+      "sha256": "3b6cdc62bda64310930fca2063f456a1d70d25d1e20057fb98da00e3259cb54a"
     },
     {
       "bytes": 2731,
       "path": "job_plan.json",
-      "sha256": "b88ad200049a5ea89e40014002de2934f94fffe337621c89aa8868dc04d892e1"
+      "sha256": "0731183ac67f70e5a4d43322da57361778137580ef948c69ce1b04539a9998cc"
     },
     {
       "bytes": 670,
@@ -31,9 +31,9 @@
       "sha256": "691198e29753525727ecdb1df9a735b4e5006f027139f7b84179e6cc61c8996a"
     },
     {
-      "bytes": 12502,
+      "bytes": 12504,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-      "sha256": "3d2d9b3d6f783271c59dc7b8bebac4d8e4ad2d37b85679e5664132d3ca9aa113"
+      "sha256": "55fc746d50f2fd12467c464cedee4426198e3ee4f42dcac0e9b664a5fea68704"
     },
     {
       "bytes": 59745,
@@ -41,9 +41,9 @@
       "sha256": "39486d801f3c0870513b55f33985c31a37bc4df8b6f850899273facfda281550"
     },
     {
-      "bytes": 76118,
+      "bytes": 76206,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-      "sha256": "dcc1430cab224922f7d9ccd6e3723b8c79cf9e1cf71d769fe19bf4b7975a4080"
+      "sha256": "44fad1387d3803772afe1649d6ab60935d867639bba55ed12f88e09f5b90e605"
     },
     {
       "bytes": 398,
@@ -63,7 +63,7 @@
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "d45630adce435d838d9a58a19fc2b0da13afadd5e8c3ff296ecf8181ace8c346"
+      "sha256": "edb1ecc27b2cb2ea0e257587a3a6504c8c796b9ef4a793af12bf934cce82fc1d"
     },
     {
       "path": "designs/hug_coins/project.json",

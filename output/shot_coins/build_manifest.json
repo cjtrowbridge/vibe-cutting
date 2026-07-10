@@ -1,9 +1,9 @@
 {
   "artifacts": [
     {
-      "bytes": 2346182,
+      "bytes": 2346358,
       "path": "design.svg",
-      "sha256": "f92a0074b8e139e3a8abf7110f8e44a2c234a49016c8686453aa65458c87f39e"
+      "sha256": "0d905c630c4bd76222faf6705c628013ed3218d55567527924b25b49e54f1ab0"
     },
     {
       "bytes": 2175308,
@@ -13,12 +13,12 @@
     {
       "bytes": 3394,
       "path": "job_manifest.json",
-      "sha256": "57c8419de60a63ce49f1a06ae3a4d1cecae0a5ded68dda1d5be886d617b42675"
+      "sha256": "9a1b677cbbfe4ab601f5e8bdb42672c800199a563d2b6c9f82240c5f33cafffc"
     },
     {
       "bytes": 2732,
       "path": "job_plan.json",
-      "sha256": "21b33b4ec0f080ccc0fd161ebbda335d78fbf4d288a8ecab7997d9d2057ded45"
+      "sha256": "ddf6878829aab2e80d886ba73e8840beaf74ace9e1b76d299481576d962afaa5"
     },
     {
       "bytes": 670,
@@ -31,9 +31,9 @@
       "sha256": "28469cb936e8a77a0aae5ab713b55c0af1fbd75eadd06087ac880d5b375baa1f"
     },
     {
-      "bytes": 12750,
+      "bytes": 12753,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-      "sha256": "1627b4db2f21289a8af647cd59f27b7e1bb81ee87b2f53e6eb83053e29db0c08"
+      "sha256": "3e0de3dbb30f4837d93fb626b08ec71d0d937b9d90be1a7aecdf86699100a14e"
     },
     {
       "bytes": 59745,
@@ -41,9 +41,9 @@
       "sha256": "39486d801f3c0870513b55f33985c31a37bc4df8b6f850899273facfda281550"
     },
     {
-      "bytes": 76118,
+      "bytes": 76206,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-      "sha256": "dcc1430cab224922f7d9ccd6e3723b8c79cf9e1cf71d769fe19bf4b7975a4080"
+      "sha256": "44fad1387d3803772afe1649d6ab60935d867639bba55ed12f88e09f5b90e605"
     },
     {
       "bytes": 398,
@@ -63,7 +63,7 @@
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "d45630adce435d838d9a58a19fc2b0da13afadd5e8c3ff296ecf8181ace8c346"
+      "sha256": "edb1ecc27b2cb2ea0e257587a3a6504c8c796b9ef4a793af12bf934cce82fc1d"
     },
     {
       "path": "designs/shot_coins/project.json",

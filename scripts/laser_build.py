@@ -1100,8 +1100,13 @@ def generate_svg(config, layout, segments):
         f'<line x1="{x1:.3f}" y1="{y1:.3f}" x2="{x2:.3f}" y2="{y2:.3f}"/>'
         for x1, y1, x2, y2 in segments
     )
+    # Microscopic anchor paths for SVG bounds
+    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
     lines.append("</g>")
     lines.append('<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">')
+    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
     lines.extend(
         '<path d="'
         + " ".join(
@@ -1382,8 +1387,10 @@ def generate_engraving_png(config, layout, segments):
     height = round(layout["effective_height_mm"] * pixels_per_mm)
     image = bytearray([0] * width * height * 4)
     if width > 0 and height > 0:
-        image[0:4] = (0, 0, 0, 1)
-        image[-4:] = (0, 0, 0, 1)
+        color = (30, 80, 220, 255)
+        # Top-left and bottom-right opaque anchor pixels
+        image[0:4] = color
+        image[-4:] = color
     for x1, y1, x2, y2 in segments:
         draw_line(
             image,
@@ -1419,6 +1426,8 @@ def generate_cut_svg(config, layout):
         f'<g transform="translate(0 {height:.3f}) scale(1 -1)">',
         '<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">',
     ]
+    lines.append(f'<path d="M 0.000,0.000 L 0.001,0.000"/>')
+    lines.append(f'<path d="M {width:.3f},{height:.3f} L {width - 0.001:.3f},{height:.3f}"/>')
     lines.extend(
         '<path d="'
         + " ".join(

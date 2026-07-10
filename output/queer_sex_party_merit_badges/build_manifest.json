@@ -1,67 +1,77 @@
 {
   "artifacts": [
     {
-      "bytes": 3588692,
+      "bytes": 2359367,
       "path": "design.svg",
-      "sha256": "cc224d08b8310f690b854a16ffbde5fdc00510c2f00f9bf5744e608650510a69"
+      "sha256": "7ed55ae35d62af8f775fe629e6d352b20a7ed27f6fd5ea9214f284372c9e95ae"
     },
     {
-      "bytes": 3341626,
+      "bytes": 2196645,
       "path": "job.gcode",
-      "sha256": "965c38d69c62b34bdc486ba10380ce6a6950e69be3acf9e64d703fb5d6744389"
+      "sha256": "c4e8a47e3154c4b0d507f0ba7ccc90f4d576adfe492a4aa9c5514d79161adbdd"
     },
     {
-      "bytes": 4741,
+      "bytes": 5306,
       "path": "job_manifest.json",
-      "sha256": "337881130aeb6bb29f00021667b219f708f7642fda198171e85cd817feb73ae0"
+      "sha256": "b1e24cbba991a3547a604c76a982b8a981d3daa2b23e2382132c030ff6f69b4c"
     },
     {
-      "bytes": 2185,
+      "bytes": 2749,
       "path": "job_plan.json",
-      "sha256": "268480993f2d154784600c8398ed5e332d9fc389a4e16bce5127f254d3ba454c"
+      "sha256": "75227bcf5440a582bbe897ab8a72d1fdf6408e296522d6d8c96ee7d3b401251f"
     },
     {
       "bytes": 670,
       "path": "material_setup.md",
-      "sha256": "45049a7b9d7476615bf61fc987fd04a6092225033ffd799fc9c4162379b9e1f1"
+      "sha256": "e0d36c9892b2c55f27120627434e04626b6d945f32d6a46f6faad0525bd7eae7"
     },
     {
-      "bytes": 3323363,
+      "bytes": 2187371,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
-      "sha256": "decc34f73372f6eecd34a8c5fb5f4fc3e2541e02fefa0cf6653faf442925991f"
+      "sha256": "30a8ee2ef361bede4ea1215cc31d3532c196f3be4e047b9e7dfe994da923ee31"
     },
     {
-      "bytes": 18357,
+      "bytes": 20168,
+      "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+      "sha256": "63eba058e1b944a60cad429c7bbb2f28ae2b2a90a02e6a37a73a03aaccd60505"
+    },
+    {
+      "bytes": 9368,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
-      "sha256": "23de2ee937b8eaac34e1026f8c6239a93261ad8682f462c63ad2e2de18d89890"
+      "sha256": "efb47d07976c361690ed5c7416d0aa252952667ed7d6fe7804c998bd41ad1327"
     },
     {
-      "bytes": 266,
+      "bytes": 11621,
+      "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+      "sha256": "8e2ae1ccf8ebc64cb6fe1c3659c528fdcaa3a56fba6f6a04832d9630f88ef352"
+    },
+    {
+      "bytes": 398,
       "path": "operations.csv",
-      "sha256": "89d3f9258ca88dc1ad9b6e3f48738b9a32bd83d207c88f00ce28bf94931e53ff"
+      "sha256": "022b0d343757d19870e00445b5f71b826f909225fbef7bcfac7b21c13ba2c2c7"
     },
     {
-      "bytes": 18066,
+      "bytes": 23124,
       "path": "preview.png",
-      "sha256": "cc9d6accc4306af9f157fc2e85fcd2e4f7229a4cedae33de59ceca8b2284c200"
+      "sha256": "14e45e9efcf402bbb42f9a0911b0c7f429dd357065d79ee7ac38cb64f6a77c8b"
     }
   ],
   "build_scope": "complete",
   "design": "queer_sex_party_merit_badges",
-  "revision": "rev_0001",
+  "revision": "rev_0002",
   "schema_version": 1,
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "13fb1e5b3622af189052479616f175656304e14e053187560ccda17c0a936ab8"
+      "sha256": "edb1ecc27b2cb2ea0e257587a3a6504c8c796b9ef4a793af12bf934cce82fc1d"
     },
     {
       "path": "designs/queer_sex_party_merit_badges/project.json",
       "sha256": "0346cf353721b6c097ff1964b482ee355eebd192eed183b470c287b2755a8e0d"
     },
     {
-      "path": "designs/queer_sex_party_merit_badges/configs/rev_0001.json",
-      "sha256": "f0883e715fadebadb4b19ec04ba5975ce4e7f3c8eda2bd8a1c81eedb8dae8678"
+      "path": "designs/queer_sex_party_merit_badges/configs/rev_0002.json",
+      "sha256": "105869a4440ddfc2e4741b43b77b882c19671295fa5b0eb114cc8b1cd276d04c"
     },
     {
       "path": "machines/creality/falcon_a1_pro.json",

@@ -3,37 +3,37 @@
     {
       "description": "Ensures the necessary supplies are present, accessible, and not mysteriously missing when the infrastructure of pleasure depends on them.",
       "id": "lube_logistics_coordinator",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Lube Logistics Coordinator"
     },
     {
       "description": "Provides blankets, water, snacks, reassurance, forehead kisses, grounding, or whatever helps people land softly.",
       "id": "aftercare_angel",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Aftercare Angel"
     },
     {
       "description": "Skilled in noticing vibes, body language, social signals, awkward pauses, and when it is time to back up or check in.",
       "id": "read_the_room_ranger",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Read the Room Ranger"
     },
     {
       "description": "Certified participant in fleeting, meaningful, absurdly well-negotiated moments of queer connection.",
       "id": "bureau_of_temporary_intimacy",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Bureau of Temporary Intimacy"
     },
     {
       "description": "Bravely interrupts chaos, flirting, dancing, and poor decisions to remind everyone to drink some water.",
       "id": "hydration_slut",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Hydration Slut"
     },
     {
       "description": "Awarded for exceptional restraint, emotional discipline, and surviving bass-induced attachment delusions.",
       "id": "did_not_fall_in_love_with_the_dj",
-      "quantity": 4,
+      "quantity": 2,
       "title": "Did Not Fall in Love With the DJ"
     }
   ],
@@ -45,7 +45,7 @@
   ],
   "engraving": {
     "backend": "openscad_font",
-    "body_font_size_mm": 3.0,
+    "body_font_size_mm": 4.0,
     "fill": "horizontal_hatch",
     "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
     "font_name": "Liberation Sans:style=Regular",
@@ -57,27 +57,27 @@
     "title_font_file": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
     "title_font_name": "Liberation Sans:style=Bold",
     "title_font_sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939",
-    "title_font_size_mm": 3.6
+    "title_font_size_mm": 4.6
   },
-  "engraving_inset_mm": 2.0,
-  "engraving_segment_count": 60788,
+  "engraving_inset_mm": 3.0,
+  "engraving_segment_count": 40110,
   "job_plan": "job_plan.json",
   "layout": {
-    "columns": 4,
+    "columns": 3,
     "edge_margin_mm": 2.0,
     "envelope_mm": [
-      294.0,
-      262.0
+      282.0,
+      261.0
     ],
-    "gap_mm": 2.0,
-    "rows": 6,
+    "gap_mm": 3.0,
+    "rows": 4,
     "type": "grid_fill"
   },
   "machine_profile": "creality_falcon_a1_pro",
   "machine_profile_status": "provisional",
   "material_profile": "basswood_3mm",
   "material_profile_status": "manufacturer_seed_unverified",
-  "maximum_quantity": 24,
+  "maximum_quantity": 12,
   "operation_artifacts": [
     {
       "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
@@ -85,7 +85,15 @@
       "operation": "vector_engrave",
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more vector_engrave pass",
-      "sha256": "decc34f73372f6eecd34a8c5fb5f4fc3e2541e02fefa0cf6653faf442925991f",
+      "sha256": "30a8ee2ef361bede4ea1215cc31d3532c196f3be4e047b9e7dfe994da923ee31",
+      "sidecar_artifacts": [
+        {
+          "bytes": 20168,
+          "kind": "engraving_png",
+          "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
+          "sha256": "63eba058e1b944a60cad429c7bbb2f28ae2b2a90a02e6a37a73a03aaccd60505"
+        }
+      ],
       "thickness_mm": 3.0
     },
     {
@@ -94,7 +102,15 @@
       "operation": "through_cut",
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more through_cut pass",
-      "sha256": "23de2ee937b8eaac34e1026f8c6239a93261ad8682f462c63ad2e2de18d89890",
+      "sha256": "efb47d07976c361690ed5c7416d0aa252952667ed7d6fe7804c998bd41ad1327",
+      "sidecar_artifacts": [
+        {
+          "bytes": 11621,
+          "kind": "cut_svg",
+          "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
+          "sha256": "8e2ae1ccf8ebc64cb6fe1c3659c528fdcaa3a56fba6f6a04832d9630f88ef352"
+        }
+      ],
       "thickness_mm": 3.0
     }
   ],
@@ -102,7 +118,7 @@
     "vector_engrave",
     "through_cut"
   ],
-  "quantity": 24,
+  "quantity": 12,
   "readiness": "calibration_only",
   "recipes": {
     "score": {
@@ -124,7 +140,7 @@
       "speed_mm_per_min": 5000
     }
   },
-  "revision": "rev_0001",
+  "revision": "rev_0002",
   "schema_version": 1,
   "set_name": "Queer Sex Party",
   "stock_mm": [
@@ -133,11 +149,11 @@
     3.0
   ],
   "token": {
-    "corner_radius_mm": 4.0,
-    "height_mm": 42.0,
+    "corner_radius_mm": 6.0,
+    "height_mm": 63.0,
     "shape": "rounded_rectangle",
-    "text_padding_mm": 4.0,
-    "width_mm": 72.0
+    "text_padding_mm": 6.0,
+    "width_mm": 92.0
   },
   "warnings": [
     "Stock exceeds the machine work area; geometry is constrained to the effective intersection.",
