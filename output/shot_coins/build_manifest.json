@@ -1,49 +1,49 @@
 {
   "artifacts": [
     {
-      "bytes": 4532071,
+      "bytes": 2346182,
       "path": "design.svg",
-      "sha256": "0c5f453725d700644652f2ce285b2b9ccc8835a764452144c51b79f5e5b95096"
+      "sha256": "f92a0074b8e139e3a8abf7110f8e44a2c234a49016c8686453aa65458c87f39e"
     },
     {
-      "bytes": 4193277,
+      "bytes": 2175308,
       "path": "job.gcode",
-      "sha256": "5d6012ea6465a82fd9e7f6e75fbec295805c8ee9f87519e69d07a371b406eacc"
+      "sha256": "c0bd55fde07f34c28d92eca73cbc0f38206c4ae425d0cd27208d39cdf9a14b61"
     },
     {
-      "bytes": 3395,
+      "bytes": 3394,
       "path": "job_manifest.json",
-      "sha256": "51f7630158b61f792cba8618355eda1596211c2dfc907bf8d5500821ec043fcd"
+      "sha256": "57c8419de60a63ce49f1a06ae3a4d1cecae0a5ded68dda1d5be886d617b42675"
     },
     {
-      "bytes": 2734,
+      "bytes": 2732,
       "path": "job_plan.json",
-      "sha256": "bfc77db3d9856b50c32b4c97c4c70042a4ce6957ad1c943c78e17f15555e1402"
+      "sha256": "21b33b4ec0f080ccc0fd161ebbda335d78fbf4d288a8ecab7997d9d2057ded45"
     },
     {
       "bytes": 670,
       "path": "material_setup.md",
-      "sha256": "54ec04bc9e57c522da01e9fd1f15581f9adcd9c91bb957dd43129292990a7667"
+      "sha256": "baaa59ed8b7a89637ebd777a42be57c43ad97e7874d7f2129e9cc5819cf313c7"
     },
     {
-      "bytes": 4032577,
+      "bytes": 2115657,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
-      "sha256": "0e321bbce0b1f2b349df2a03168f29a5c6016ec2320a1bc0983c51136427cee6"
+      "sha256": "28469cb936e8a77a0aae5ab713b55c0af1fbd75eadd06087ac880d5b375baa1f"
     },
     {
-      "bytes": 14187,
+      "bytes": 12750,
       "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-      "sha256": "d769369d5623b132dd967b3b38ab3c72558338db4d61b7f90519af37c4b4fd8c"
+      "sha256": "1627b4db2f21289a8af647cd59f27b7e1bb81ee87b2f53e6eb83053e29db0c08"
     },
     {
-      "bytes": 160794,
+      "bytes": 59745,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
-      "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4"
+      "sha256": "39486d801f3c0870513b55f33985c31a37bc4df8b6f850899273facfda281550"
     },
     {
-      "bytes": 204483,
+      "bytes": 76118,
       "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-      "sha256": "a5dc8a8b1aa4cb0a1c14570b2597ffe724fd3e518a289a742c3eb1da31696443"
+      "sha256": "dcc1430cab224922f7d9ccd6e3723b8c79cf9e1cf71d769fe19bf4b7975a4080"
     },
     {
       "bytes": 398,
@@ -51,27 +51,27 @@
       "sha256": "022b0d343757d19870e00445b5f71b826f909225fbef7bcfac7b21c13ba2c2c7"
     },
     {
-      "bytes": 18953,
+      "bytes": 17702,
       "path": "preview.png",
-      "sha256": "eee88e6151b830239bb03a2b611eab38ce7bdb9fa55fdd09d65c76a4e3770f48"
+      "sha256": "3538fac631c7c98fc4ca4111437ec1952cfda9ef2a6135e66f8bcd6d4849f1a9"
     }
   ],
   "build_scope": "complete",
   "design": "shot_coins",
-  "revision": "rev_0005",
+  "revision": "rev_0006",
   "schema_version": 1,
   "sources": [
     {
       "path": "scripts/laser_build.py",
-      "sha256": "6b32488f4c2dddb717183905e23378e26bc51e22b8fd2997e877e3e3bc03c6b4"
+      "sha256": "d45630adce435d838d9a58a19fc2b0da13afadd5e8c3ff296ecf8181ace8c346"
     },
     {
       "path": "designs/shot_coins/project.json",
       "sha256": "95ea90891f6ab820a64e35a2d16a23acca8eb1f29747e4ed908371edc5424f94"
     },
     {
-      "path": "designs/shot_coins/configs/rev_0005.json",
-      "sha256": "7a66bc01a6aa0ba0b7cb5b0136e91a2255fd2ef670f223e89f6711ee98060cdd"
+      "path": "designs/shot_coins/configs/rev_0006.json",
+      "sha256": "c2d9403e115f6980f1106eb52794a4b21bc51b3cfb9cd1178484fa0a08fbfda8"
     },
     {
       "path": "machines/creality/falcon_a1_pro.json",

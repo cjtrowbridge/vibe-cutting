@@ -2,6 +2,7 @@
 
 Format: `last_modified | path | title | summary`
 
+2026-07-10-10-27-50 | plans/past/2026-07-10-09-42-08_improve-laser-pipeline-and-designs.md | Improve Laser Pipeline Constraints and Design Scales | Update pipeline artifacts to use shared bounding boxes, add clearance asserts, and scale up all coin/badge designs to account for wide physical laser kerf.
 2026-07-09-19-02-37 | plans/past/2026-07-10-00-00-00_document-scripts-pipeline.md | Document Scripts Pipeline | Add verbose scripts-folder documentation for humans and agents explaining script responsibilities, safe invocation, and how to run the laser pipeline end to end.
 2026-07-09-18-50-23 | plans/past/2026-07-09-10-30-00_add-png-svg-build-artifacts.md | Generate Operation-Specific PNG and SVG Artifacts | Augment the build pipeline to produce .png files for engraving operations and .svg files for cutting operations, in addition to existing G-code artifacts.
 2026-07-07-11-08-54 | plans/past/2026-07-07-10-52-37_add-pass-aware-operation-artifacts.md | Add Pass-Aware Operation Artifacts | Update the laser build pipeline to model recipe pass schedules, emit per-operation G-code artifacts with material/thickness/pass-count filenames, and record rerun semantics in job manifests.

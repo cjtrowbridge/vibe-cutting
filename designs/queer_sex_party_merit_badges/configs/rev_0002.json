@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "revision": "rev_0002",
+  "design_type": "merit_badge_set",
+  "set_name": "Queer Sex Party",
+  "sheet_width_mm": 300.0,
+  "sheet_height_mm": 300.0,
+  "edge_margin_mm": 2.0,
+  "token_width_mm": 84.0,
+  "token_height_mm": 52.0,
+  "corner_radius_mm": 6.0,
+  "token_gap_mm": 3.0,
+  "engraving_inset_mm": 3.0,
+  "text_padding_mm": 6.0,
+  "expected_kerf_width": 3.0,
+  "minimum_cut_clearance": 1.0,
+  "layout": "grid_fill",
+  "quantity": "maximum",
+  "text_backend": "openscad_font",
+  "font_name": "Liberation Sans:style=Regular",
+  "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+  "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+  "title_font_name": "Liberation Sans:style=Bold",
+  "title_font_file": "assets/fonts/liberation-sans/LiberationSans-Bold.ttf",
+  "title_font_sha256": "1b5f2da6f4cadce4c05b9ecebe3a6fcd374eb95ae443605e799f4c3287978939",
+  "font_fill": "horizontal_hatch",
+  "hatch_spacing_mm": 0.18,
+  "font_line_gap_ratio": 0.22,
+  "title_font_size_mm": 4.6,
+  "title_line_height_mm": 7.0,
+  "body_font_size_mm": 4.0,
+  "body_line_height_mm": 6.0,
+  "section_gap_mm": 2.0,
+  "openscad_curve_segments": 48,
+  "openscad_minimum_version": "2021.01",
+  "badges": [
+    {
+      "id": "lube_logistics_coordinator",
+      "title": "Lube Logistics Coordinator",
+      "description": "Ensures the necessary supplies are present, accessible, and not mysteriously missing when the infrastructure of pleasure depends on them."
+    },
+    {
+      "id": "aftercare_angel",
+      "title": "Aftercare Angel",
+      "description": "Provides blankets, water, snacks, reassurance, forehead kisses, grounding, or whatever helps people land softly."
+    },
+    {
+      "id": "read_the_room_ranger",
+      "title": "Read the Room Ranger",
+      "description": "Skilled in noticing vibes, body language, social signals, awkward pauses, and when it is time to back up or check in."
+    },
+    {
+      "id": "bureau_of_temporary_intimacy",
+      "title": "Bureau of Temporary Intimacy",
+      "description": "Certified participant in fleeting, meaningful, absurdly well-negotiated moments of queer connection."
+    },
+    {
+      "id": "hydration_slut",
+      "title": "Hydration Slut",
+      "description": "Bravely interrupts chaos, flirting, dancing, and poor decisions to remind everyone to drink some water."
+    },
+    {
+      "id": "did_not_fall_in_love_with_the_dj",
+      "title": "Did Not Fall in Love With the DJ",
+      "description": "Awarded for exceptional restraint, emotional discipline, and surviving bass-induced attachment delusions."
+    }
+  ]
+}

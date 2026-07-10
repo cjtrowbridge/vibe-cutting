@@ -1,5 +1,5 @@
 {
-  "coin_diameter_mm": 30.0,
+  "coin_diameter_mm": 45.0,
   "design": "shot_coins",
   "design_type": "coin_sheet",
   "effective_work_area_mm": [
@@ -17,26 +17,26 @@
     "openscad_minimum_version": "2021.01",
     "openscad_version": "2021.01"
   },
-  "engraving_inset_mm": 1.0,
-  "engraving_segment_count": 73791,
+  "engraving_inset_mm": 3.0,
+  "engraving_segment_count": 38640,
   "engraving_text": "good for one free shot anywhere any time",
   "job_plan": "job_plan.json",
   "layout": {
-    "columns": 9,
+    "columns": 5,
     "edge_margin_mm": 2.0,
     "envelope_mm": [
-      293.5,
-      244.77430013854078
+      261.0,
+      252.84609690826528
     ],
-    "gap_mm": 1.0,
-    "rows": 9,
+    "gap_mm": 3.0,
+    "rows": 6,
     "type": "hex_max"
   },
   "machine_profile": "creality_falcon_a1_pro",
   "machine_profile_status": "provisional",
   "material_profile": "basswood_3mm",
   "material_profile_status": "manufacturer_seed_unverified",
-  "maximum_quantity": 81,
+  "maximum_quantity": 30,
   "operation_artifacts": [
     {
       "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
@@ -44,13 +44,13 @@
       "operation": "vector_engrave",
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more vector_engrave pass",
-      "sha256": "0e321bbce0b1f2b349df2a03168f29a5c6016ec2320a1bc0983c51136427cee6",
+      "sha256": "28469cb936e8a77a0aae5ab713b55c0af1fbd75eadd06087ac880d5b375baa1f",
       "sidecar_artifacts": [
         {
-          "bytes": 14187,
+          "bytes": 12750,
           "kind": "engraving_png",
           "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-          "sha256": "d769369d5623b132dd967b3b38ab3c72558338db4d61b7f90519af37c4b4fd8c"
+          "sha256": "1627b4db2f21289a8af647cd59f27b7e1bb81ee87b2f53e6eb83053e29db0c08"
         }
       ],
       "thickness_mm": 3.0
@@ -61,13 +61,13 @@
       "operation": "through_cut",
       "passes_per_run": 1,
       "rerun_effect": "adds 1 more through_cut pass",
-      "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4",
+      "sha256": "39486d801f3c0870513b55f33985c31a37bc4df8b6f850899273facfda281550",
       "sidecar_artifacts": [
         {
-          "bytes": 204483,
+          "bytes": 76118,
           "kind": "cut_svg",
           "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-          "sha256": "a5dc8a8b1aa4cb0a1c14570b2597ffe724fd3e518a289a742c3eb1da31696443"
+          "sha256": "dcc1430cab224922f7d9ccd6e3723b8c79cf9e1cf71d769fe19bf4b7975a4080"
         }
       ],
       "thickness_mm": 3.0
@@ -77,7 +77,7 @@
     "vector_engrave",
     "through_cut"
   ],
-  "quantity": 81,
+  "quantity": 30,
   "readiness": "calibration_only",
   "recipes": {
     "score": {
@@ -99,7 +99,7 @@
       "speed_mm_per_min": 5000
     }
   },
-  "revision": "rev_0005",
+  "revision": "rev_0006",
   "schema_version": 1,
   "stock_mm": [
     300.0,

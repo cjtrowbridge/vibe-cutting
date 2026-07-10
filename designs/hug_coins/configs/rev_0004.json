@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "revision": "rev_0004",
+  "coin_diameter_mm": 45.0,
+  "sheet_width_mm": 300.0,
+  "sheet_height_mm": 300.0,
+  "edge_margin_mm": 2.0,
+  "coin_gap_mm": 3.0,
+  "engraving_inset_mm": 3.0,
+  "expected_kerf_width": 3.0,
+  "minimum_cut_clearance": 1.0,
+  "layout": "hex_max",
+  "quantity": "maximum",
+  "text_backend": "openscad_font",
+  "font_name": "Liberation Sans:style=Regular",
+  "font_file": "assets/fonts/liberation-sans/LiberationSans-Regular.ttf",
+  "font_sha256": "bade59d822652f76e6941aa87b40a87c13d1cc70db98ededb5011127efafd1d3",
+  "font_fill": "horizontal_hatch",
+  "hatch_spacing_mm": 0.18,
+  "font_line_gap_ratio": 0.22,
+  "openscad_curve_segments": 48,
+  "openscad_minimum_version": "2021.01",
+  "text_lines": [
+    "GOOD FOR",
+    "ONE FREE",
+    "HUG",
+    "ANYWHERE",
+    "ANY TIME"
+  ]
+}

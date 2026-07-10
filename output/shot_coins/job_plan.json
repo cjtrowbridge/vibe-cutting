@@ -2,8 +2,8 @@
   "calibration_status": "manufacturer_seed_unverified",
   "combined_artifact": {
     "artifact": "job.gcode",
-    "bytes": 4193277,
-    "sha256": "5d6012ea6465a82fd9e7f6e75fbec295805c8ee9f87519e69d07a371b406eacc"
+    "bytes": 2175308,
+    "sha256": "c0bd55fde07f34c28d92eca73cbc0f38206c4ae425d0cd27208d39cdf9a14b61"
   },
   "design": "shot_coins",
   "effective_work_area_mm": [
@@ -27,7 +27,7 @@
     {
       "air_assist": "low",
       "artifact": "operations/001_vector_engrave__basswood_3mm__run_1_pass.gcode",
-      "bytes": 4032577,
+      "bytes": 2115657,
       "material_id": "basswood_3mm",
       "material_name": "Basswood, 3 mm",
       "material_profile_status": "manufacturer_seed_unverified",
@@ -38,13 +38,13 @@
       "power_percent": 30,
       "rerun_effect": "adds 1 more vector_engrave pass",
       "rerunnable": true,
-      "sha256": "0e321bbce0b1f2b349df2a03168f29a5c6016ec2320a1bc0983c51136427cee6",
+      "sha256": "28469cb936e8a77a0aae5ab713b55c0af1fbd75eadd06087ac880d5b375baa1f",
       "sidecar_artifacts": [
         {
-          "bytes": 14187,
+          "bytes": 12750,
           "kind": "engraving_png",
           "path": "operations/001_vector_engrave__basswood_3mm__run_1_pass.png",
-          "sha256": "d769369d5623b132dd967b3b38ab3c72558338db4d61b7f90519af37c4b4fd8c"
+          "sha256": "1627b4db2f21289a8af647cd59f27b7e1bb81ee87b2f53e6eb83053e29db0c08"
         }
       ],
       "speed_mm_per_min": 5000,
@@ -53,7 +53,7 @@
     {
       "air_assist": "high",
       "artifact": "operations/002_through_cut__basswood_3mm__run_1_pass.gcode",
-      "bytes": 160794,
+      "bytes": 59745,
       "material_id": "basswood_3mm",
       "material_name": "Basswood, 3 mm",
       "material_profile_status": "manufacturer_seed_unverified",
@@ -64,13 +64,13 @@
       "power_percent": 100,
       "rerun_effect": "adds 1 more through_cut pass",
       "rerunnable": true,
-      "sha256": "cf22fba984d02a58be4627c1dea6574efd8580fab094a14b939cd254719268a4",
+      "sha256": "39486d801f3c0870513b55f33985c31a37bc4df8b6f850899273facfda281550",
       "sidecar_artifacts": [
         {
-          "bytes": 204483,
+          "bytes": 76118,
           "kind": "cut_svg",
           "path": "operations/002_through_cut__basswood_3mm__run_1_pass.svg",
-          "sha256": "a5dc8a8b1aa4cb0a1c14570b2597ffe724fd3e518a289a742c3eb1da31696443"
+          "sha256": "dcc1430cab224922f7d9ccd6e3723b8c79cf9e1cf71d769fe19bf4b7975a4080"
         }
       ],
       "speed_mm_per_min": 500,
@@ -78,7 +78,7 @@
     }
   ],
   "rerun_policy": "Rerunning an operation artifact repeats that artifact's full passes_per_run count.",
-  "revision": "rev_0005",
+  "revision": "rev_0006",
   "schema_version": 1,
   "thickness_mm": 3.0
 }

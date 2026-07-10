@@ -4,7 +4,7 @@
 - Material: Basswood, 3 mm (manufacturer_seed_unverified)
 - Stock: 300.0 x 300.0 x 3.0 mm
 - Effective work area: 300.0 x 268.0 mm
-- Token quantity: 81
+- Token quantity: 30
 - Engraving backend: openscad_font
 - Engraving font: Liberation Sans:style=Regular
 - Operation artifacts in `operations/` can be run independently.

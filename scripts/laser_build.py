@@ -1092,6 +1092,7 @@ def generate_svg(config, layout, segments):
         '<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.3f}mm" height="{height:.3f}mm" viewBox="0 0 {width:.3f} {height:.3f}">',
         "<metadata>Engraving first; through cuts second. Units: millimeters.</metadata>",
+        f'<rect x="0" y="0" width="{width:.3f}" height="{height:.3f}" fill="none" stroke="none" />',
         f'<g transform="translate(0 {height:.3f}) scale(1 -1)">',
         '<g id="vector_engrave" fill="none" stroke="#0000ff" stroke-width="0.12">',
     ]
@@ -1380,6 +1381,9 @@ def generate_engraving_png(config, layout, segments):
     width = round(layout["effective_width_mm"] * pixels_per_mm)
     height = round(layout["effective_height_mm"] * pixels_per_mm)
     image = bytearray([0] * width * height * 4)
+    if width > 0 and height > 0:
+        image[0:4] = (0, 0, 0, 1)
+        image[-4:] = (0, 0, 0, 1)
     for x1, y1, x2, y2 in segments:
         draw_line(
             image,
@@ -1411,6 +1415,7 @@ def generate_cut_svg(config, layout):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.3f}mm" '
         f'height="{height:.3f}mm" viewBox="0 0 {width:.3f} {height:.3f}">',
         "<metadata>Through-cut operation sidecar only. Units: millimeters.</metadata>",
+        f'<rect x="0" y="0" width="{width:.3f}" height="{height:.3f}" fill="none" stroke="none" />',
         f'<g transform="translate(0 {height:.3f}) scale(1 -1)">',
         '<g id="through_cut" fill="none" stroke="#ff0000" stroke-width="0.12">',
     ]
@@ -1727,6 +1732,38 @@ def execute(args):
         return
     if segments is None:
         segments = all_engraving_segments(context["config"], layout, relative_segments)
+
+    # Clearance assert
+    minimum_cut_clearance = float(context["config"].get("minimum_cut_clearance", 0.0))
+    expected_kerf_width = float(context["config"].get("expected_kerf_width", 0.0))
+    effective_clearance = minimum_cut_clearance + (expected_kerf_width / 2.0)
+    if effective_clearance > 0.0 and segments:
+        engraving_min_x = min(min(x1, x2) for x1, y1, x2, y2 in segments)
+        engraving_min_y = min(min(y1, y2) for x1, y1, x2, y2 in segments)
+        engraving_max_x = max(max(x1, x2) for x1, y1, x2, y2 in segments)
+        engraving_max_y = max(max(y1, y2) for x1, y1, x2, y2 in segments)
+        for path in cut_paths(context["config"], layout):
+            for point_x, point_y in path:
+                if (engraving_min_x - effective_clearance <= point_x <= engraving_max_x + effective_clearance and
+                    engraving_min_y - effective_clearance <= point_y <= engraving_max_y + effective_clearance):
+                    # We are in the global bounding box. Let's do a more precise segment distance check.
+                    collision = False
+                    for sx1, sy1, sx2, sy2 in segments:
+                        # Distance from point to segment
+                        l2 = (sx2 - sx1)**2 + (sy2 - sy1)**2
+                        if l2 == 0:
+                            dist = math.hypot(point_x - sx1, point_y - sy1)
+                        else:
+                            t = max(0, min(1, ((point_x - sx1)*(sx2 - sx1) + (point_y - sy1)*(sy2 - sy1)) / l2))
+                            proj_x = sx1 + t * (sx2 - sx1)
+                            proj_y = sy1 + t * (sy2 - sy1)
+                            dist = math.hypot(point_x - proj_x, point_y - proj_y)
+                        if dist < effective_clearance:
+                            collision = True
+                            break
+                    if collision:
+                        fail(f"Cut path intersects with engraving segment plus {effective_clearance}mm clearance.")
+
     temp_parent = REPO_ROOT / ".tmp" / "laser" / args.design
     temp_parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=f"{revision}_", dir=temp_parent))
